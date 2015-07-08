@@ -2,12 +2,15 @@
   "name": "server-methods",
   "version": "0.0.1",
   "description": "Declaratively publish functions for remote invocation.",
-  "main": "./src/index.js",
-  "dependencies": {},
+  "main": "./src/server/index.js",
+  "dependencies": {
+    "immutable": "^3.7.4",
+    "js-util": "0.0.3",
+    "lodash": "^3.6.0"
+  },
   "devDependencies": {
     "babel": "^5.6.14",
     "babel-eslint": "^3.1.20",
-    "lodash": "^3.6.0",
     "gulp": "^3.9.0",
     "gulp-eslint": "^0.15.0",
     "mocha": "^2.2.1",
@@ -16,7 +19,7 @@
   "scripts": {
     "start": "node .",
     "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
-    "tdd":  "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch"
+    "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch"
   },
   "repository": {
     "type": "git",
