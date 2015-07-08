@@ -1,6 +1,8 @@
 # server-methods
 Declaratively publish functions for remote invocation.
 
+[![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
+
 Credit: Conceptually based on Meteor's server methods pattern.
 
 

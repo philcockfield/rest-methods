@@ -1,7 +1,7 @@
 {
   "name": "server-methods",
   "version": "0.0.1",
-  "description": "Declarative server methods to invoked by remote clients.",
+  "description": "Declaratively publish functions for remote invocation.",
   "main": "./src/index.js",
   "dependencies": {},
   "devDependencies": {
@@ -20,10 +20,10 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/philcockfield/server-methods.git"
   },
   "keywords": [],
   "author": "Phil Cockfield",
   "license": "MIT",
-  "homepage": ""
+  "homepage": "https://github.com/philcockfield/server-methods"
 }
