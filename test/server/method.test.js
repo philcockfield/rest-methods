@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Method from '../../src/server/method';
+import Method from '../../src/server/Method';
 
 
 describe('Method', () => {

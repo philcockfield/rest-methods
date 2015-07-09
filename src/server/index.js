@@ -1,12 +1,15 @@
 import _ from 'lodash';
-import Method from './method';
+import Method from './Method';
 import state from './state';
 import middleware from './middleware';
+
+let isInitialized = false;
+
 
 /**
 * API for registering methods.
 */
-class Server {
+export default {
   /**
   * Initializes the server module.
   *
@@ -16,8 +19,10 @@ class Server {
   *                       Default: /server-methods/
   */
   init(connect, options = {}) {
+    if (isInitialized) { throw new Error('Already initialized.'); }
     connect.use(middleware(options.path || '/server-methods/'));
-  }
+    isInitialized = true;
+  },
 
 
   /**
@@ -44,9 +49,4 @@ class Server {
     return state.methods.toObject();
   }
 
-}
-
-
-
-// Export singleton.
-export default new Server();
+};

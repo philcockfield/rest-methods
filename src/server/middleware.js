@@ -35,7 +35,7 @@ export default (path) => {
           sendJson(getMethods());
 
       } else {
-        next()
+        next();
       }
 
       // switch (req.url) {

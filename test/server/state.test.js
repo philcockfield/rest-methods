@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import Immutable from 'immutable';
-import Server from '../../';
+import Server from '../../server';
 import state from '../../src/server/state';
 
 

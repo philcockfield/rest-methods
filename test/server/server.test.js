@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import _ from 'lodash';
-import Server from '../../';
-import Method from '../../src/server/method';
+import Server from '../../server';
+import Method from '../../src/server/Method';
 import state from '../../src/server/state';
 
 
@@ -12,8 +12,15 @@ describe('Server', () => {
   });
 
 
-  it('has a `methods` function', () => {
-    expect(Server.methods).to.be.an.instanceof(Function);
+  describe('init', () => {
+    it('throw if initialized more than once', () => {
+      const connect = { use: () => {} };
+      Server.init(connect);
+      let fn = () => {
+        Server.init(connect);
+      };
+      expect(fn).to.throw(/Already initialized./);
+    });
   });
 
 

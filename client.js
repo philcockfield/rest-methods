@@ -1,2 +1,2 @@
-import client from './src/client';
-export default client;
+import serverProxy from './src/client/serverProxy';
+export default serverProxy;
