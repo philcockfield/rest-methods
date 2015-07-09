@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import util from 'js-util';
+
 
 
 
@@ -14,5 +16,6 @@ export default class Method {
     // Store state.
     this.name = name;
     this.func = func;
+    this.params = util.functionParameters(func);
   }
 }

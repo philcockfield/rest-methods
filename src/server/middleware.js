@@ -1,6 +1,15 @@
 import state from './state';
 
 
+const getMethods = () => {
+  return state.methods.map((method) => {
+    return {
+      params: method.params
+    };
+  });
+};
+
+
 
 /**
 * The connect middleware for managing API calls to the server.
@@ -14,20 +23,16 @@ export default (path) => {
 
   // Middleware.
   return (req, res, next) => {
-      let sendJson = (obj) => {
+      const sendJson = (obj) => {
           res.setHeader('Content-Type', 'application/json');
           res.send(JSON.stringify(obj));
       };
-
 
       if (req.url === path) {
 
           // TODO: Only on GET.
 
-          let result = state.methods.map((item) => {
-            return {};
-          });
-          sendJson(result);
+          sendJson(getMethods());
 
       } else {
         next()
