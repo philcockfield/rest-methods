@@ -3,7 +3,6 @@ Declaratively publish functions for remote invocation.
 
 [![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 
-Credit: Conceptually based on Meteor's server methods pattern.
 
 
 ## Quick Start
@@ -34,6 +33,10 @@ On the client when using WebPack:
     promise = Server.call('foo/bar', a1, a2);
     promise = Server.apply('foo/bar');
 
+
+
+## Credit
+Conceptually based on Meteor's server methods pattern.
 
 
 
