@@ -11,6 +11,21 @@ Credit: Conceptually based on Meteor's server methods pattern.
     npm run tdd  # (Watch)
 
 
+## API Notes
+
+    Server.methods({
+      'foo/bar': () => {
+      }
+    });
+
+    let promise = Server.methods.foo(1,2,3);
+    let fooNamespace = Server.methods.foo;
+    Server.methods.foo.bar();
+
+    promise = Server.call('foo/bar', a1, a2);
+    promise = Server.apply('foo/bar');
+
+
 
 
 ## License (MIT)

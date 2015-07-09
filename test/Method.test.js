@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import Method from '../src/server/Method';
 
 
-
 describe('Method', () => {
   it('stores name and function', () => {
     let fn = () => {};
@@ -22,6 +21,5 @@ describe('Method', () => {
     let fn = () => { new Method('foo'); };
     expect(fn).to.throw(/Function not specified for the method 'foo'./);
   });
-
 
 });
