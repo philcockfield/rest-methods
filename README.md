@@ -6,6 +6,15 @@ Declaratively publish functions for remote invocation.
 Credit: Conceptually based on Meteor's server methods pattern.
 
 
+## Quick Start
+
+    npm install --save server-methods
+
+On the client when using WebPack:
+
+    import Server from 'server-methods/client'
+
+
 ## Test
     npm test
     npm run tdd  # (Watch)

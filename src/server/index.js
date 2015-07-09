@@ -1,12 +1,25 @@
 import _ from 'lodash';
 import Method from './Method';
 import state from './state';
-
+import middleware from './middleware';
 
 /**
 * API for registering methods.
 */
 class Server {
+  /**
+  * Initializes the server module.
+  *
+  * @param connect: The connect app to apply the middleware to.
+  * @param options:
+  *           - path: Optional. The base URL path for AJAX calls.
+  *                       Default: /server-methods/
+  */
+  init(connect, options = {}) {
+    connect.use(middleware(options.path || '/server-methods/'));
+  }
+
+
   /**
   * Registers or retrieves the complete set of methods.
   *
@@ -18,7 +31,7 @@ class Server {
   * @return an object containing the set of method definitions.
   */
   methods(definition) {
-    // Store method definitions if passed.
+    // Write: store method definitions if passed.
     if (definition) {
       _.keys(definition).forEach((key) => {
           let methods = state.methods;
@@ -27,9 +40,10 @@ class Server {
       });
     }
 
-    // Finish up.
+    // Read.
     return state.methods.toObject();
   }
+
 }
 
 
