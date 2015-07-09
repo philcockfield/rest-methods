@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Method from './Method';
+import Method from './method';
 import state from './state';
 import middleware from './middleware';
 

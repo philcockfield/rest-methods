@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import _ from 'lodash';
-import Server from '../';
-import Method from '../src/server/Method';
-import state from '../src/server/state';
+import Server from '../../';
+import Method from '../../src/server/method';
+import state from '../../src/server/state';
 
 
 

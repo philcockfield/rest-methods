@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import Immutable from 'immutable';
-import Server from '../';
-import state from '../src/server/state';
+import Server from '../../';
+import state from '../../src/server/state';
 
 
 describe('State (Internal)', () => {
