@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import bodyParser from 'body-parser';
 import Method from './Method';
 import state from './state';
 import middleware from './middleware';
@@ -14,13 +15,11 @@ export default {
   * Initializes the server module.
   *
   * @param connect: The connect app to apply the middleware to.
-  * @param options:
-  *           - path: Optional. The base URL path for AJAX calls.
-  *                       Default: /server-methods/
   */
-  init(connect, options = {}) {
+  init(connect) {
     if (isInitialized) { throw new Error('Already initialized.'); }
-    connect.use(middleware(options.path || '/server-methods/'));
+    connect.use(bodyParser.json());
+    connect.use(middleware());
     isInitialized = true;
   },
 

@@ -19,7 +19,16 @@ On the client when using WebPack:
     npm run tdd  # (Watch)
 
 
-## API Notes
+
+## TODO
+
+- Return values from server methods
+- Unit tests for promises (fake http)
+- Async response from server.
+- Remove config URL base path.
+
+## API Notes TEMP
+
 
     Server.methods({
       'foo/bar': () => {

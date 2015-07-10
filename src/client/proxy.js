@@ -1,14 +1,20 @@
 import _ from 'lodash';
-import { Handlers } from 'js-util';
-import state from './state';
 import MethodProxy from './MethodProxy';
+import http from './http.js';
+import { Handlers } from 'js-util';
+import { BASE_URL } from '../const';
+
 const readyHandlers = new Handlers();
+
+export const state = {
+  methods: []
+};
 
 
 /**
 * The proxy to the server methods.
 */
-export default {
+const api = {
   isReady: false,
 
 
@@ -17,24 +23,15 @@ export default {
   * @param func: The callback function.
   */
   onReady(func) {
-    readyHandlers.push(func);
-    return this;
-  },
-
-
-  /**
-  * Initalizes the proxy with the server methods.
-  * @param methods: An object containing the method definitions from the server.
-  */
-  registerMethods(methods = {}) {
-    // Store methods.
-    _.keys(methods).forEach((key) => {
-      state.methods[key] = new MethodProxy(key, methods[key].params);
-    });
-
-    // Finish up.
-    readyHandlers.invoke();
-    this.isReady = true;
+    if (api.isReady) {
+      // Already initialized - invoke callback immediately.
+      if (_.isFunction(func)) {
+        func();
+      }
+    } else {
+      // Store callback to invoke later.
+      readyHandlers.push(func);
+    }
     return this;
   },
 
@@ -69,3 +66,40 @@ export default {
     return method.invoke(args);
   }
 };
+
+
+
+/**
+* Initalizes the proxy with the server methods.
+* @param methods: An object containing the method definitions from the server.
+*/
+export const registerMethods = (methods = {}) => {
+  // Store methods.
+  _.keys(methods).forEach((key) => {
+    state.methods[key] = new MethodProxy(key, methods[key].params);
+  });
+
+  // Finish up.
+  readyHandlers.invoke();
+  api.isReady = true;
+  return this;
+};
+
+
+
+/**
+* Initializes the module client-side, pulling the manifest of
+* methods from the server.
+*/
+export const init = () => {
+  http.get(`/${ BASE_URL }/manifest`, (err, result) => {
+      if (err) {
+        throw new Error(`Failed to retrieve server-method manifest from server [code: ${ err.status }].`);
+      } else {
+        registerMethods(result.methods);
+      }
+  });
+};
+
+
+export default api;

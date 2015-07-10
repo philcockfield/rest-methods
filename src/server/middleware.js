@@ -1,11 +1,12 @@
 import state from './state';
+import { BASE_URL } from '../const';
 
 
 const getMethods = () => {
   return state.methods.map((method) => {
     return {
       params: method.params
-    };
+    }
   });
 };
 
@@ -13,13 +14,9 @@ const getMethods = () => {
 
 /**
 * The connect middleware for managing API calls to the server.
-* @param path: The base path of the API url.
 * @return the connect middleware function.
 */
-export default (path) => {
-  // Setup initial conditions.
-  path = path.replace(/^\//, '').replace(/\/$/, '');
-  path = `/${ path }/`;
+export default () => {
 
   // Middleware.
   return (req, res, next) => {
@@ -28,32 +25,32 @@ export default (path) => {
           res.send(JSON.stringify(obj));
       };
 
-      if (req.url === path) {
+      switch (req.url) {
+        case `/${ BASE_URL }/manifest`:
+          if (req.method === 'GET') {
+            sendJson({ methods: getMethods() });
+          }
+          break;
 
-          // TODO: Only on GET.
+        case `/${ BASE_URL }/invoke`:
 
-          sendJson(getMethods());
+          if (req.method === 'POST') {
+            let data = req.body;
+            let method = state.methods.get(data.name);
 
-      } else {
-        next();
+            console.log('data', data);
+            console.log('method', method);
+            method.func(); // TEMP
+
+            sendJson({ temp:444 });
+
+          }
+
+
+          break;
+
+        default:
+          next();
       }
-
-      // switch (req.url) {
-      //   case `${ path }/`:
-      //     let result = {};
-      //     state.methods.forEach((item) => {
-      //       result[item.name] = {};
-      //     });
-      //     sendJson(result)
-      //     break;
-      //
-      //   case `${ path }/invoke`:
-      //     sendJson({foo:'thing'})
-      //     break;
-      //
-      //   default:
-      //     next();
-      //
-      // }
     };
 };

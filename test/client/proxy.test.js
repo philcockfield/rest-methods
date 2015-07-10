@@ -1,26 +1,35 @@
 import { expect } from 'chai';
-import serverProxy from '../../src/client/serverProxy';
-import state from '../../src/client/state';
+import proxy from '../../src/client/proxy';
+import { registerMethods, state } from '../../src/client/proxy';
 import MethodProxy from '../../src/client/MethodProxy';
 
 
 describe('ServerProxy', () => {
   it('is not ready upon creation', () => {
-    expect(serverProxy.isReady).to.equal(false);
+    expect(proxy.isReady).to.equal(false);
   });
 
+  describe('[onReady] callbacks', () => {
+    it('invokes callbacks when methods are registered', () => {
+      let count = 0;
+      proxy.onReady(() => count += 1);
+      registerMethods({ 'foo': {} });
+      expect(count).to.equal(1);
+      expect(proxy.isReady).to.equal(true);
+    });
 
-  it('fires [onReady] callbacks when methods are registered', () => {
-    let count = 0;
-    serverProxy.onReady(() => count += 1);
-    serverProxy.registerMethods({ 'foo': {} });
-    expect(count).to.equal(1);
-    expect(serverProxy.isReady).to.equal(true);
+
+    it('invokes callbacks immediately if already [isReady === true]', () => {
+      proxy.isReady = true;
+      let count = 0;
+      proxy.onReady(() => count += 1);
+      expect(count).to.equal(1);
+    });
   });
 
 
   it('stores methods in state', () => {
-    serverProxy.registerMethods({
+    registerMethods({
       'foo': { params:[] },
       'foo/bar': {params:['p1']}
     });
@@ -35,7 +44,7 @@ describe('ServerProxy', () => {
 
     beforeEach(() => {
       invoked = { count: 0 };
-      serverProxy.registerMethods({ foo: () => {} });
+      registerMethods({ foo: () => {} });
       method = state.methods['foo'];
       method.invoke = (args) => {
         invoked.count += 1;
@@ -45,19 +54,19 @@ describe('ServerProxy', () => {
 
     describe('[.call] method', () => {
       it('without parameters', () => {
-        serverProxy.call('foo');
+        proxy.call('foo');
         expect(invoked.count).to.equal(1);
         expect(invoked.args).to.eql([]);
       });
 
       it('with parameters', () => {
-        serverProxy.call('foo', 1, 2, 3);
+        proxy.call('foo', 1, 2, 3);
         expect(invoked.count).to.equal(1);
         expect(invoked.args).to.eql([1, 2, 3]);
       });
 
       it('throws if the method does not exist', () => {
-        let fn = () => { serverProxy.call('not-exist'); };
+        let fn = () => { proxy.call('not-exist'); };
         expect(fn).to.throw(/Method 'not-exist' does not exist./);
       });
     });
@@ -65,25 +74,25 @@ describe('ServerProxy', () => {
 
     describe('[.apply] method', () => {
       it('without parameters', () => {
-        serverProxy.apply('foo');
+        proxy.apply('foo');
         expect(invoked.count).to.equal(1);
         expect(invoked.args).to.eql([]);
       });
 
       it('with parameter array', () => {
-        serverProxy.apply('foo', [1, 2, 3]);
+        proxy.apply('foo', [1, 2, 3]);
         expect(invoked.count).to.equal(1);
         expect(invoked.args).to.eql([1, 2, 3]);
       });
 
       it('with parameter converted to array (edge-case)', () => {
-        serverProxy.apply('foo', 1, 2, 3);
+        proxy.apply('foo', 1, 2, 3);
         expect(invoked.count).to.equal(1);
         expect(invoked.args).to.eql([1]);
       });
 
       it('throws if the method does not exist', () => {
-        let fn = () => { serverProxy.apply('not-exist'); };
+        let fn = () => { proxy.apply('not-exist'); };
         expect(fn).to.throw(/Method 'not-exist' does not exist./);
       });
     });
