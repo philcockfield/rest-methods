@@ -1,14 +1,6 @@
 import { BASE_URL } from '../const';
 import Promise from 'bluebird';
-import http from './http.js';
-
-
-
-class MethodError extends Error {
-  constructor(method, message, err) {
-    super(message);
-  }
-}
+import { xhr } from 'js-util';
 
 
 
@@ -27,20 +19,15 @@ export default class MethodProxy {
   * @param args: An array of arguments.
   * @return promise.
   */
-  invoke(args = []) {
+  invoke(...args) {
     return new Promise((resolve, reject) => {
         let payload = {
-          name: this.name,
+          method: this.name,
           args: args
         };
-
-        http.post(`/${ BASE_URL }/invoke`, payload, (err, result) => {
-          if (err) {
-            reject(new MethodError(this, 'Failed while executing method', err));
-          } else {
-            resolve(result);
-          }
-        });
+        xhr.post(`/${ BASE_URL }/invoke`, payload)
+        .then((result) => { resolve(result); })
+        .catch((err) => { reject(err); });
     });
   }
 }

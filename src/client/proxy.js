@@ -106,9 +106,8 @@ export const init = () => {
   return new Promise((resolve, reject) => {
       util.xhr.get(`/${ BASE_URL }/manifest`)
       .then((result) => {
-        console.log('result', result);
-        registerMethods(result.methods);
-        resolve();
+          registerMethods(result.methods);
+          resolve();
       })
       .catch((err) => reject(err));
   });
