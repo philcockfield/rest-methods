@@ -21,7 +21,8 @@ const invoke = (method, args) => {
     };
 
     try {
-      let result = method.func.apply(undefined, args);
+      let thisContext = {};
+      let result = method.func.apply(thisContext, args);
       if (result && _.isFunction(result.then)) {
         // A promise was returned.
         result
@@ -75,7 +76,6 @@ export default () => {
                 invoke(method, data.args)
                   .then((result) => { sendJson(result); })
                   .catch((err) => {
-                    console.log('err', err);
                     res.status(500).send(err.message);
                   });
               }

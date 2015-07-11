@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { BASE_URL } from '../const';
 import Promise from 'bluebird';
 import { xhr } from 'js-util';
@@ -23,7 +24,7 @@ export default class MethodProxy {
     return new Promise((resolve, reject) => {
         let payload = {
           method: this.name,
-          args: args
+          args: _.flatten(args)
         };
         xhr.post(`/${ BASE_URL }/invoke`, payload)
         .then((result) => { resolve(result); })
