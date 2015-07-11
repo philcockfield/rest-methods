@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import MethodProxy from './MethodProxy';
-import http from './http.js';
+import util from 'js-util';
+import Promise from 'bluebird';
 import { Handlers } from 'js-util';
 import { BASE_URL } from '../const';
 
 const readyHandlers = new Handlers();
-
 export const state = {
-  methods: []
+  methods: {}
 };
 
 
@@ -16,6 +16,16 @@ export const state = {
 */
 const api = {
   isReady: false,
+
+
+  /**
+  * Resets the proxy to it's uninitialized state.
+  * NB: Used for testing.
+  */
+  reset() {
+    this.isReady = false;
+    state.methods = {};
+  },
 
 
   /**
@@ -74,6 +84,7 @@ const api = {
 * @param methods: An object containing the method definitions from the server.
 */
 export const registerMethods = (methods = {}) => {
+
   // Store methods.
   _.keys(methods).forEach((key) => {
     state.methods[key] = new MethodProxy(key, methods[key].params);
@@ -88,16 +99,18 @@ export const registerMethods = (methods = {}) => {
 
 
 /**
-* Initializes the module client-side, pulling the manifest of
-* methods from the server.
+* Initializes the module client-side, pulling the manifest
+* of methods from the server.
 */
 export const init = () => {
-  http.get(`/${ BASE_URL }/manifest`, (err, result) => {
-      if (err) {
-        throw new Error(`Failed to retrieve server-method manifest from server [code: ${ err.status }].`);
-      } else {
+  return new Promise((resolve, reject) => {
+      util.xhr.get(`/${ BASE_URL }/manifest`)
+      .then((result) => {
+        console.log('result', result);
         registerMethods(result.methods);
-      }
+        resolve();
+      })
+      .catch((err) => reject(err));
   });
 };
 

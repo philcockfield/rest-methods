@@ -2,6 +2,9 @@
 import proxy from './src/client/proxy';
 import { init } from './src/client/proxy';
 
-if (window) { init(); } // Only initialize if running in the browser.
+// Only initialize if running in the browser.
+if (window) {
+  init().catch((err) => { throw err });
+}
 
 export default proxy;

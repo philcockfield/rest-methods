@@ -1,13 +1,23 @@
 import { expect } from 'chai';
+import { xhr } from 'js-util';
+import { FakeXMLHttpRequest } from 'sinon';
 import proxy from '../../src/client/proxy';
+import { init } from '../../src/client/proxy';
 import { registerMethods, state } from '../../src/client/proxy';
 import MethodProxy from '../../src/client/MethodProxy';
 
 
-describe('ServerProxy', () => {
+describe('Proxy (Client)', () => {
+  beforeEach(() => {
+    proxy.reset()
+  });
+
+
   it('is not ready upon creation', () => {
     expect(proxy.isReady).to.equal(false);
   });
+
+
 
   describe('[onReady] callbacks', () => {
     it('invokes callbacks when methods are registered', () => {
