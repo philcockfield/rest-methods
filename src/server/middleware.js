@@ -5,7 +5,7 @@ import Promise from 'bluebird';
 import state from './state';
 import { BASE_URL } from '../const';
 
-let jsMinified;
+// let jsMinified;
 
 
 const getMethods = () => {
@@ -16,31 +16,6 @@ const getMethods = () => {
   });
 };
 
-
-const invokeMethod = (method, args) => {
-  return new Promise((resolve, reject) => {
-
-    const rejectWithError = (err) => {
-      reject(new Error(`Failed while executing '${ method.name }': ${ err.message }`));
-    };
-
-    try {
-      let thisContext = {};
-      let result = method.func.apply(thisContext, args);
-      if (result && _.isFunction(result.then)) {
-        // A promise was returned.
-        result
-          .then((asyncResult) => { resolve(asyncResult); })
-          .catch((err) => { rejectWithError(err); });
-
-      } else {
-        // A simple value was returned.
-        resolve(result);
-      }
-
-    } catch (err) { rejectWithError(err); }
-  });
-};
 
 
 
@@ -58,7 +33,7 @@ export default () => {
       };
 
 
-      console.log('req.method', req.method);
+      console.log('req.method', req.method); // TEMP
 
 
       switch (req.url) {
@@ -89,11 +64,9 @@ export default () => {
               if (!method) {
                 res.status(404).send(`Method named '${ data.method }' does not exist on the server.`);
               } else {
-                invokeMethod(method, data.args)
-                  .then((result) => { sendJson(result); })
-                  .catch((err) => {
-                    res.status(500).send(err.message);
-                  });
+                method.invoke(req, data.args)
+                .then((result) => { sendJson(result); })
+                .catch((err) => { res.status(500).send(err.message); });
               }
             }
             break;
