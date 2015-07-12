@@ -22,8 +22,6 @@ Initialize the `server-methods` middleware with a connect based web-server, for 
 
 Declare your server methods:
 
-    import Server from 'server-methods';
-
     Server.methods({
       'foo': (number, increment) => {
         return number + increment;
