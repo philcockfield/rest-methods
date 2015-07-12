@@ -10,7 +10,7 @@ Declaratively publish functions for remote invocation.
     npm install --save server-methods
 
 ### Server
-Initialize the `server-methods` middleware with a connect based web-server, for instance [Express](http://expressjs.com/):
+Initialize the `server-methods` middleware with a [connect](https://github.com/senchalabs/connect) based web-server, for instance [Express](http://expressjs.com/):
 
 
     import express from 'express';
