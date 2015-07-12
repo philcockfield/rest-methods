@@ -17,7 +17,7 @@ const getMethods = () => {
 };
 
 
-const invoke = (method, args) => {
+const invokeMethod = (method, args) => {
   return new Promise((resolve, reject) => {
 
     const rejectWithError = (err) => {
@@ -58,6 +58,9 @@ export default () => {
       };
 
 
+      console.log('req.method', req.method);
+
+
       switch (req.url) {
         // GET: The manifest of methods.
         case `/${ BASE_URL }/manifest`:
@@ -79,14 +82,14 @@ export default () => {
 
         // POST: Invoke a method.
         case `/${ BASE_URL }/invoke`:
-            if (req.method === 'POST') {
+            if (req.method === 'PUT') {
               let data = req.body;
               let method = state.methods.get(data.method);
 
               if (!method) {
                 res.status(404).send(`Method named '${ data.method }' does not exist on the server.`);
               } else {
-                invoke(method, data.args)
+                invokeMethod(method, data.args)
                   .then((result) => { sendJson(result); })
                   .catch((err) => {
                     res.status(500).send(err.message);

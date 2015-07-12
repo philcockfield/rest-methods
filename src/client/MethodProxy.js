@@ -26,7 +26,7 @@ export default class MethodProxy {
           method: this.name,
           args: _.flatten(args)
         };
-        xhr.post(`/${ BASE_URL }/invoke`, payload)
+        xhr.put(`/${ BASE_URL }/invoke`, payload)
         .then((result) => { resolve(result); })
         .catch((err) => { reject(err); });
     });
