@@ -5,7 +5,7 @@ import Promise from 'bluebird';
 import { Handlers } from 'js-util';
 import { BASE_URL } from '../const';
 
-const readyHandlers = new Handlers();
+let readyHandlers = new Handlers();
 export const state = {
   methods: {},
   queue: []
@@ -27,6 +27,7 @@ const api = {
     this.isReady = false;
     state.methods = {};
     state.queue = [];
+    readyHandlers = new Handlers();
   },
 
 
@@ -116,8 +117,13 @@ export const registerMethods = (methods = {}) => {
     });
   }
 
+  // Invoke ready handlers.
+  // NB: Delay to ensure no call-sites expect this to be synchronous.
+  //     This ensure that the queue (if it exists) gets execured before
+  //     any code within the `onReady` handlers.
+  util.delay(() => { readyHandlers.invoke(); });
+
   // Finish up.
-  readyHandlers.invoke();
   return this;
 };
 

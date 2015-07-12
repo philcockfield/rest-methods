@@ -10,7 +10,7 @@ import MethodProxy from '../../src/client/MethodProxy';
 
 describe('Proxy (Client)', () => {
   beforeEach(() => {
-    proxy.reset()
+    proxy.reset();
   });
 
 
@@ -19,14 +19,18 @@ describe('Proxy (Client)', () => {
   });
 
 
-
   describe('[onReady] callbacks', () => {
-    it('invokes callbacks when methods are registered', () => {
+    it('invokes callbacks when methods are registered', (done) => {
       let count = 0;
       proxy.onReady(() => count += 1);
       registerMethods({ 'foo': {} });
-      expect(count).to.equal(1);
-      expect(proxy.isReady).to.equal(true);
+
+      util.delay(() => {
+          expect(count).to.equal(1);
+          expect(proxy.isReady).to.equal(true);
+          done();
+      });
+
     });
 
 
