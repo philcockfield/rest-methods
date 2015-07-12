@@ -1,5 +1,5 @@
 # server-methods
-Publish javascript functions as REST endpoints for promise based remove invocation.
+Publish javascript functions as REST endpoints with promise-based remote invocation.
 
 [![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 
