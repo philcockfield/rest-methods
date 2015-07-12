@@ -9,38 +9,45 @@ Declaratively publish functions for remote invocation.
 
     npm install --save server-methods
 
-On the client when using WebPack:
+### Server
+Declare some methods on the server:
 
-    import Server from 'server-methods/client'
+    import Server from 'server-methods';
+
+    Server.methods({
+      'foo': (number, increment) => {
+        return number + increment;
+      },
+
+      'bar': () => {
+        // Return a promise for async operations.
+        return new Promise((resolve, reject) => {
+          resolve({ text:'Some result' });
+        });
+      }
+    });
+
+
+### Client
+On the client get a reference to the server proxy:
+
+      import Server from 'server-methods/client'
+
+Invoking the methods remotely returns promises:
+
+    Server.call('foo', 5, 1)
+      .then(result => {
+          // result === 6
+      })
+      .catch(err => { ... });
+
 
 
 ## Test
     npm test
-    npm run tdd  # (Watch)
+    npm run tdd  # Watch
 
 
-
-## TODO
-
-- Return values from server methods
-- Unit tests for promises (fake http)
-- Async response from server.
-- Remove config URL base path.
-
-## API Notes TEMP
-
-
-    Server.methods({
-      'foo/bar': () => {
-      }
-    });
-
-    let promise = Server.methods.foo(1,2,3);
-    let fooNamespace = Server.methods.foo;
-    Server.methods.foo.bar();
-
-    promise = Server.call('foo/bar', a1, a2);
-    promise = Server.apply('foo/bar');
 
 
 
