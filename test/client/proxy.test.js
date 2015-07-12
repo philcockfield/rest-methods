@@ -25,7 +25,7 @@ describe('Proxy (Client)', () => {
       proxy.onReady(() => count += 1);
       registerMethods({ 'foo': {} });
 
-      util.delay(() => {
+      util.delay(100, () => {
           expect(count).to.equal(1);
           expect(proxy.isReady).to.equal(true);
           done();
