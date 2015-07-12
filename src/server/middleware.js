@@ -69,16 +69,16 @@ export default () => {
 
         // GET: Server the client JS.
         //      NB: Only required if not using WebPack.
-        case `/${ BASE_URL }.js`:
-            if (req.method === 'GET') {
-              if (!jsMinified) {
-                // NB: Only loaded from file once.
-                jsMinified = fs.readFileSync(fsPath.join(__dirname, '../../dist/client.min.js')).toString();
-              }
-              res.setHeader('Content-Type', 'application/javascript');
-              res.send(jsMinified);
-            }
-            break;
+        // case `/${ BASE_URL }.js`:
+        //     if (req.method === 'GET') {
+        //       if (!jsMinified) {
+        //         // NB: Only loaded from file once.
+        //         jsMinified = fs.readFileSync(fsPath.join(__dirname, '../../dist/client.min.js')).toString();
+        //       }
+        //       res.setHeader('Content-Type', 'application/javascript');
+        //       res.send(jsMinified);
+        //     }
+        //     break;
 
         // POST: Invoke a method.
         case `/${ BASE_URL }/invoke`:
