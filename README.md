@@ -23,11 +23,11 @@ Initialize the `server-methods` middleware with a connect based web-server, for 
 Declare your server methods:
 
     Server.methods({
-      'foo': (number, increment) => {
-        return number + increment;
+      'sum': (first, second) => {
+        return first + second;
       },
 
-      'bar': () => {
+      'myAsync': () => {
         // Return a promise for async operations.
         return new Promise((resolve, reject) => {
           resolve({ text:'Some result' });
@@ -37,16 +37,15 @@ Declare your server methods:
 
 
 ### Client
-On the client get a reference to the server proxy:
+On the client get a reference to the server proxy, and be sure to include this
+file in your [WebPack](http://webpack.github.io/) build:
 
       import Server from 'server-methods/client'
 
 Invoke the methods asynchronously with promises:
 
-    Server.call('foo', 5, 1)
-      .then(result => {
-          // result === 6
-      })
+    Server.call('sum', 2, 1)
+      .then(result => { // result: 3 })
       .catch(err => { ... });
 
 
