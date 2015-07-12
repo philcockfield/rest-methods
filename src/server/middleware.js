@@ -1,7 +1,11 @@
+import fs from 'fs';
+import fsPath from 'path';
 import _ from 'lodash';
 import Promise from 'bluebird';
 import state from './state';
 import { BASE_URL } from '../const';
+
+let jsMinified;
 
 
 const getMethods = () => {
@@ -40,8 +44,6 @@ const invoke = (method, args) => {
 
 
 
-
-
 /**
 * The connect middleware for managing API calls to the server.
 * @return the connect middleware function.
@@ -59,8 +61,19 @@ export default () => {
       switch (req.url) {
         // GET: The manifest of methods.
         case `/${ BASE_URL }/manifest`:
+            if (req.method === 'GET') { sendJson({ methods: getMethods() }); }
+            break;
+
+        // GET: Server the client JS.
+        //      NB: Only required if not using WebPack.
+        case `/${ BASE_URL }.js`:
             if (req.method === 'GET') {
-              sendJson({ methods: getMethods() });
+              if (!jsMinified) {
+                // NB: Only loaded from file once.
+                jsMinified = fs.readFileSync(fsPath.join(__dirname, '../../dist/client.min.js')).toString();
+              }
+              res.setHeader('Content-Type', 'application/javascript');
+              res.send(jsMinified);
             }
             break;
 
