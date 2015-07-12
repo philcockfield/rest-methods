@@ -1,5 +1,5 @@
 # server-methods
-Declaratively publish functions for remote invocation.
+Publish javascript functions as REST endpoints.
 
 [![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 
