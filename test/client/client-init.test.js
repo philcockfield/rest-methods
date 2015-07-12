@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import util from 'js-util';
 import { xhr } from 'js-util';
 import { FakeXMLHttpRequest } from 'sinon';
-import proxy from '../../src/client/proxy';
-import { init, state } from '../../src/client/proxy';
+import client from '../../src/client/client';
+import { init, state } from '../../src/client/client';
 
 
 
@@ -11,7 +11,7 @@ describe('init', () => {
   let fakeXhr;
 
   beforeEach(() => {
-    proxy.reset();
+    client.reset();
 
     // Inject a fake XHR object.
     xhr.createXhr = () => {
@@ -22,7 +22,7 @@ describe('init', () => {
 
 
   it('registers methods upon recieving manifest from server', (done) => {
-    expect(proxy.isReady).to.equal(false);
+    expect(client.isReady).to.equal(false);
 
     const serverResponse = {
       methods: {
@@ -31,7 +31,7 @@ describe('init', () => {
     };
 
     init().then(() => {
-        expect(proxy.isReady).to.equal(true);
+        expect(client.isReady).to.equal(true);
         expect(state.methods['foo'].name).to.equal('foo');
         done()
     });

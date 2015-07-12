@@ -1,10 +1,10 @@
 /* gloal window */
-import proxy from './src/client/proxy';
-import { init } from './src/client/proxy';
+import client from './src/client/client';
+import { init } from './src/client/client';
 
 // Only initialize if running in the browser.
 if (window) {
   init().catch((err) => { throw err });
 }
 
-export default proxy;
+export default client;
