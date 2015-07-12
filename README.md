@@ -33,7 +33,7 @@ On the client get a reference to the server proxy:
 
       import Server from 'server-methods/client'
 
-Invoking the methods remotely returns promises:
+Invoke the methods asynchronously with promises:
 
     Server.call('foo', 5, 1)
       .then(result => {
