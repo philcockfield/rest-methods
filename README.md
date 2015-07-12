@@ -10,7 +10,17 @@ Declaratively publish functions for remote invocation.
     npm install --save server-methods
 
 ### Server
-Declare some methods on the server:
+Initialize the `server-methods` middleware with a connect based web-server, for instance [Express](http://expressjs.com/):
+
+
+    import express from 'express';
+    import Server from 'server-methods';
+
+    const app = express();
+    Server.init(app);
+
+
+Declare your server methods:
 
     import Server from 'server-methods';
 
