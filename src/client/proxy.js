@@ -7,7 +7,8 @@ import { BASE_URL } from '../const';
 
 const readyHandlers = new Handlers();
 export const state = {
-  methods: {}
+  methods: {},
+  queue: []
 };
 
 
@@ -25,6 +26,7 @@ const api = {
   reset() {
     this.isReady = false;
     state.methods = {};
+    state.queue = [];
   },
 
 
@@ -54,11 +56,7 @@ const api = {
   *
   * @return promise.
   */
-  call(methodName, ...args) {
-    let method = state.methods[methodName];
-    if (!method) { throw new Error(`Method '${ methodName }' does not exist.`); }
-    return method.invoke(args);
-  },
+  call(methodName, ...args) { return this.apply(methodName, args); },
 
 
   /**
@@ -71,9 +69,24 @@ const api = {
   */
   apply(methodName, args = []) {
     if (!_.isArray(args)) { args = [args]; }
-    let method = state.methods[methodName];
-    if (!method) { throw new Error(`Method '${ methodName }' does not exist.`); }
-    return method.invoke(args);
+
+    if (!this.isReady) {
+      // Queue up the method for eventual execution.
+      return new Promise((resolve, reject) => {
+          state.queue.push({
+            methodName: methodName,
+            args: args,
+            resolve: resolve,
+            reject: reject
+          });
+      });
+
+    } else {
+      // Invoke the method.
+      let method = state.methods[methodName];
+      if (!method) { throw new Error(`Method '${ methodName }' does not exist.`); }
+      return method.invoke(args);
+    }
   }
 };
 
@@ -90,9 +103,21 @@ export const registerMethods = (methods = {}) => {
     state.methods[key] = new MethodProxy(key, methods[key].params);
   });
 
+  // Invoke stored queue of methods that were registered
+  // prior to the manifest being returned from the server.
+  api.isReady = true;
+  if (state.queue.length > 0) {
+    let queue = _.clone(state.queue);
+    state.queue = [];
+    queue.forEach((item) => {
+        api.apply(item.methodName, item.args)
+        .then((result) => { item.resolve(result); })
+        .catch((err) => { item.reject(err); });
+    });
+  }
+
   // Finish up.
   readyHandlers.invoke();
-  api.isReady = true;
   return this;
 };
 
