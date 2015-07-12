@@ -1,2 +1,2 @@
-import server from './src/server';
-export default server;
+import Server from './src/server/server';
+export default Server;
