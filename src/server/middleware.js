@@ -3,8 +3,8 @@ import fsPath from 'path';
 import _ from 'lodash';
 import Promise from 'bluebird';
 import state from './state';
+import pageJS from './page-js';
 import { BASE_MODULE_PATH } from '../const';
-
 
 
 const getMethods = () => {
@@ -41,6 +41,16 @@ const sendJson = (res, obj) => {
 };
 
 
+const matchMethodUrl = (url, verb) => {
+    verb = verb.toLowerCase();
+    let context = new pageJS.Context(url);
+    let result = state.methods.find((method) => {
+        let methodVerb = method[verb];
+        return (methodVerb && methodVerb.route.match(context.path, context.params))
+    });
+    return result ? result[verb] : undefined;
+};
+
 
 
 /**
@@ -75,23 +85,19 @@ export default () => {
               break;
             }
 
-        // Invoke a method.
-        case `/${ BASE_MODULE_PATH }/invoke`:
-            let verb = req.method.toLowerCase()
-            let data = req.body;
-            let method = state.methods.get(data.method);
-
-            if (!method || !method[verb]) {
-              res.status(404).send(`A ${ req.method } method named '${ data.method }' does not exist on the server.`);
-            } else {
-              method[verb].invoke(req, data.args)
+        default:
+            // Attempt to match the URL of a method.
+            let methodVerb = matchMethodUrl(req.url, req.method);
+            if (methodVerb) {
+              // Invoke the method.
+              methodVerb.invoke(req.body.args)
                 .then((result) => { sendJson(res, result); })
                 .catch((err) => { res.status(500).send(err.message); });
-            }
-            break;
 
-        default:
-            next();
+            } else {
+              // No match - next middleware method.
+              next();
+            }
       }
     };
 };

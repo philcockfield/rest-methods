@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { BASE_MODULE_PATH } from '../const';
 import Promise from 'bluebird';
 import { xhr } from 'js-util';
+import { methodUrl } from '../util';
 
 
 /**
@@ -12,6 +13,7 @@ export default class MethodProxy {
   * Constructor.
   * @param name: The unique name of the method.
   * @param options:
+  *           - basePath: The base of the URL.
   *           - get: Definition of the GET function, eg. { params:['text', 'number'] }
   *           - put:     ..
   *           - post:   ..
@@ -20,6 +22,8 @@ export default class MethodProxy {
   constructor(name, options = {}) {
     this.name = name;
     this.verbs = {};
+    this.basePath = options.basePath || '';
+    this.basePath = '/' + this.basePath.replace(/^\/*/, '').replace(/\/*$/, '');
 
     // Store individual invoker methods for each HTTP verb.
     ['get', 'put', 'post', 'delete'].forEach(verb => {
@@ -28,6 +32,12 @@ export default class MethodProxy {
         }
     });
   }
+
+
+  /**
+  * The URL to the method's resource.
+  */
+  url() { return methodUrl(this.basePath, this.name);  }
 
 
   /**
@@ -43,7 +53,8 @@ export default class MethodProxy {
           method: this.name,
           args: _.flatten(args)
         };
-        xhr.put(`/${ BASE_MODULE_PATH }/invoke`, payload)
+
+        xhr.put(this.url(), payload)
           .then((result) => { resolve(result); })
           .catch((err) => { reject(err); });
     });

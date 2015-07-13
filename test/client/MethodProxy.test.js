@@ -12,6 +12,12 @@ describe('Client:MethodProxy', () => {
     it('stores the method name', () => {
       let method = new MethodProxy('foo');
       expect(method.name).to.equal('foo');
+      expect(method.basePath).to.equal('/');
+    });
+
+    it('stores the base path', () => {
+      let method = new MethodProxy('foo', { basePath:'///api///' });
+      expect(method.basePath).to.equal('/api');
     });
 
 
@@ -32,6 +38,14 @@ describe('Client:MethodProxy', () => {
   });
 
 
+  describe('url', () => {
+    it('returns the url with no base-path', () => {
+      let method = new MethodProxy('foo');
+      expect(method.url()).to.equal('/foo');
+    });
+  });
+
+
   describe('invoke()', () => {
     let fakeXhr, sent;
     beforeEach(() => {
@@ -47,7 +61,7 @@ describe('Client:MethodProxy', () => {
     it('invokes against the correct URL', () => {
       let method = new MethodProxy('foo/bar');
       method.invoke();
-      expect(fakeXhr.url.endsWith('/invoke')).to.equal(true);
+      expect(fakeXhr.url).to.equal(method.url());
     });
 
 

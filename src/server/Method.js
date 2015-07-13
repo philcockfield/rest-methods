@@ -1,20 +1,24 @@
 import _ from 'lodash';
 import util from 'js-util';
+import pageJS from './page-js';
+
 
 
 /**
 * Represents a method.
 */
 export default class Method {
-  constructor(name, func) {
+  constructor(name, func, routePath) {
     // Setup initial conditions.
     if (_.isEmpty(name)) { throw new Error(`Method name not specified.`); }
     if (!_.isFunction(func)) { throw new Error(`Function not specified for the method '${ name }'.`); }
+    if (_.isEmpty(routePath)) { throw new Error(`URL pattern not specified for the method '${ name }'.`); }
 
     // Store state.
     this.name = name;
     this.func = func;
     this.params = util.functionParameters(func);
+    this.route = new pageJS.Route(routePath);
   }
 
   /**
@@ -24,11 +28,11 @@ export default class Method {
   * @param args: An array of arguments.
   * @return promise.
   */
-  invoke(req, args) {
+  invoke(args) {
     return new Promise((resolve, reject) => {
         const rejectWithError = (err) => {
-          err = new Error(`Failed while executing '${ this.name }': ${ err.message }`);
-          reject(err);
+            err = new Error(`Failed while executing '${ this.name }': ${ err.message }`);
+            reject(err);
         };
 
         // Attempt to invoke the function.
