@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import Method from '../../src/server/Method';
+import Method from '../../src/server/ServerMethod';
 
 
-describe('Server:Method', () => {
+describe('Server:ServerMethod', () => {
   it('stores constructor state', () => {
     let fn = () => {};
     let method = new Method('my-method', fn, '/my-method', 'GET');

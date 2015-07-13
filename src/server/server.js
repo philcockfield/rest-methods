@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import bodyParser from 'body-parser';
-import Method from './Method';
+import Method from './ServerMethod';
 import state from './state';
 import middleware from './middleware';
 

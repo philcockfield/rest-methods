@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import _ from 'lodash';
 import server from '../../server';
-import Method from '../../src/server/Method';
+import ServerMethod from '../../src/server/ServerMethod';
 import state from '../../src/server/state';
 
 
@@ -18,10 +18,10 @@ describe('Server:methods', () => {
   it('registers a generic method (get/post/put/delete)', () => {
     let fn = () => { return 0 };
     let methods = server.methods({ 'my-method':fn });
-    expect(methods['my-method'].get).to.be.an.instanceof(Method);
-    expect(methods['my-method'].put).to.be.an.instanceof(Method);
-    expect(methods['my-method'].post).to.be.an.instanceof(Method);
-    expect(methods['my-method'].delete).to.be.an.instanceof(Method);
+    expect(methods['my-method'].get).to.be.an.instanceof(ServerMethod);
+    expect(methods['my-method'].put).to.be.an.instanceof(ServerMethod);
+    expect(methods['my-method'].post).to.be.an.instanceof(ServerMethod);
+    expect(methods['my-method'].delete).to.be.an.instanceof(ServerMethod);
     expect(methods['my-method'].get.func).to.equal(fn);
     expect(server.methods()['my-method'].get.func).to.equal(fn);
   });

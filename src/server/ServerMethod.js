@@ -7,7 +7,7 @@ import pageJS from './page-js';
 /**
 * Represents a method.
 */
-export default class Method {
+export default class ServerMethod {
   constructor(name, func, routePath, verb) {
     // Setup initial conditions.
     if (_.isEmpty(name)) { throw new Error(`Method name not specified.`); }
