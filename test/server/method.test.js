@@ -9,34 +9,43 @@ describe('Server:Method', () => {
     expect(method.name).to.equal('my-method');
     expect(method.func).to.equal(fn);
     expect(method.route.path).to.equal('/my-method');
-  });
-
-  it('throws if a name was not specified', () => {
-    let fn = () => { new Method(); };
-    expect(fn).to.throw(/Method name not specified./);
+    expect(method.verb).to.equal('GET');
   });
 
 
-  it('throws if a function was not specified', () => {
-    let fn = () => { new Method('foo'); };
-    expect(fn).to.throw(/Function not specified for the method 'foo'./);
-  });
-
-
-  it('throws if a URL was not specified', () => {
-    let fn = () => { new Method('foo', () => {}); };
-    expect(fn).to.throw(/URL pattern not specified for the method 'foo'./);
-  });
-
-
-  it('has no parameters', () => {
-    let method = new Method('foo', () => 0, '/foo');
+  it('has no function parameters', () => {
+    let method = new Method('foo', () => 0, '/foo', 'PUT');
     expect(method.params).to.eql([]);
   });
 
 
-  it('has parameters', () => {
-    let method = new Method('foo', (p1, p2) => 0, '/foo');
+  it('has function parameters', () => {
+    let method = new Method('foo', (p1, p2) => 0, '/foo', 'PUT');
     expect(method.params).to.eql(['p1', 'p2']);
+  });
+
+  describe('invoke()', () => {
+    it('passes parameters and returns promise', (done) => {
+      let fn = (num1, num2) => { return num1 + num2; };
+      let method = new Method('foo', fn, '/foo', 'PUT');
+      method.invoke([1, 2])
+      .then((result) => {
+          expect(result).to.equal(3);
+          done();
+      });
+    });
+
+
+    it('passes details within [this] context', (done) => {
+      let self = undefined;
+      let fn = function () {
+        self = this;
+      }
+      new Method('foo', fn, '/foo', 'PUT').invoke()
+      .then(function() {
+          expect(self.verb).to.equal('PUT');
+          done();
+      });
+    });
   });
 });

@@ -86,26 +86,25 @@ export default {
           if (methods.get(key)) { throw new Error(`Method '${ key }' already exists.`); }
 
           let value = definition[key];
+          let url = createUrl(key, value);
           let methodSet;
           if (_.isFunction(value)) {
             // A single function was provided.
-            // This will be used for all REST verbs.
-            let method = new Method(key, value, createUrl(key, value));
+            // It will be used for all REST verbs.
             methodSet = {
-              get: method,
-              put: method,
-              post: method,
-              delete: method
+              get: new Method(key, value, url, 'GET'),
+              put: new Method(key, value, url, 'PUT'),
+              post: new Method(key, value, url, 'POST'),
+              delete: new Method(key, value, url, 'DELETE')
             }
           } else if(_.isObject(value)) {
 
             // Create individual methods for each verb.
-            let url = createUrl(key, value);
             methodSet = {};
-            if (value.get) { methodSet.get = new Method(key, value.get, url); }
-            if (value.put) { methodSet.put = new Method(key, value.put, url); }
-            if (value.post) { methodSet.post = new Method(key, value.post, url); }
-            if (value.delete) { methodSet.delete = new Method(key, value.delete, url); }
+            if (value.get) { methodSet.get = new Method(key, value.get, url, 'GET'); }
+            if (value.put) { methodSet.put = new Method(key, value.put, url, 'PUT'); }
+            if (value.post) { methodSet.post = new Method(key, value.post, url, 'POST'); }
+            if (value.delete) { methodSet.delete = new Method(key, value.delete, url, 'DELETE'); }
 
           } else {
             throw new Error(`Type of value for method '${ key }' not supported. Must be function or object.`);

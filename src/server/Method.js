@@ -8,17 +8,19 @@ import pageJS from './page-js';
 * Represents a method.
 */
 export default class Method {
-  constructor(name, func, routePath) {
+  constructor(name, func, routePath, verb) {
     // Setup initial conditions.
     if (_.isEmpty(name)) { throw new Error(`Method name not specified.`); }
     if (!_.isFunction(func)) { throw new Error(`Function not specified for the method '${ name }'.`); }
     if (_.isEmpty(routePath)) { throw new Error(`URL pattern not specified for the method '${ name }'.`); }
+    if (_.isEmpty(verb)) { throw new Error(`HTTP verb not specified for the method '${ name }'.`); }
 
     // Store state.
     this.name = name;
     this.func = func;
     this.params = util.functionParameters(func);
     this.route = new pageJS.Route(routePath);
+    this.verb = verb;
   }
 
   /**
@@ -37,7 +39,9 @@ export default class Method {
 
         // Attempt to invoke the function.
         try {
-          let thisContext = {};
+          let thisContext = {
+            verb: this.verb
+          };
           let result = this.func.apply(thisContext, args);
           if (result && _.isFunction(result.then)) {
             // A promise was returned.
