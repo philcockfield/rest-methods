@@ -59,13 +59,6 @@
 	*/
 	window.Server = _client2['default'];
 
-	// Only initialize if running in the browser.
-	if (window) {
-	  _client2['default'].init()['catch'](function (err) {
-	    throw err;
-	  });
-	}
-
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {

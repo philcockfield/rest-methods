@@ -75,7 +75,7 @@ Then open your browser at `localhost:3030`.
 ## Development
 To build the client javascript:
 
-    npm run bundle
+    npm run build
 
 
 

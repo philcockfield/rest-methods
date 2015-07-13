@@ -5,7 +5,8 @@ Server.methods({
   foo(text) {
     console.log(this.verb);
     console.log('method: "foo"');
+    console.log('text', text);
     console.log('');
-    return { hello:222 };
+    return { text:text, verb:this.verb };
   }
 });

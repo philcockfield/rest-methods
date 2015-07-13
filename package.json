@@ -28,7 +28,7 @@
   },
   "scripts": {
     "example": "node ./example",
-    "bundle": "webpack; gulp minify",
+    "build": "webpack; gulp minify",
     "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
     "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch"
   },

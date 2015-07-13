@@ -16,7 +16,7 @@ let queuedMethodDefinitions = [];
 *
 * @return string.
 */
-export const methodUrl = (basePath, path) => {
+const methodUrl = (basePath, path) => {
   path = path.replace(/^\/*/, '');
   let url = `${ basePath }/${ path }`;
   url = '/' + url.replace(/^\/*/, '');
@@ -38,6 +38,7 @@ export default {
   */
   init(connect, options = {}) {
     if (isInitialized) { throw new Error('Already initialized.'); }
+    if (!connect) { throw new Error('Failed to initialize. Connect app not specified.'); }
 
     // Store base path.
     let path = options.basePath;
