@@ -17,10 +17,16 @@
       li {
         font-family: "Lucida Console", Monaco, monospace;
         margin-bottom: 8px;
+        margin-left: 30px;
       }
       a { text-decoration: none; }
       a:hover { text-decoration: underline; }
 
+      hr {
+        border: none;
+        border-top: solid 1px rgba(0, 0, 0, 0.3);
+        margin: 50px 0;
+      }
     </style>
 
   </head>
@@ -33,14 +39,19 @@
       <li><a href='/server-methods.client.min.js'>/server-methods.client.min.js</a></li>
     </ul>
 
+    <hr/>
+
+    <ul>
+      <li><a href='/api/foo'>/api/foo</a></li>
+      <li><a href='/api/foo/bar'>/api/foo/bar</a></li>
+    </ul>
+
   </body>
   <script type="text/javascript" src="server-methods.client.js" charset="utf-8"></script>
   <script>
     Server.init().then(function() { console.log('initialized'); });
-
     Server.put('foo', 'my text')
       .then(function (result) { console.log('result', result); })
       .catch(function (err) { console.log('err', err); })
-
   </script>
 </html>

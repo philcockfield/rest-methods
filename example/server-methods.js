@@ -2,11 +2,25 @@ import Server from '../server';
 
 
 Server.methods({
-  foo(text) {
+  'foo'(text) {
     console.log(this.verb);
     console.log('method: "foo"');
     console.log('text', text);
     console.log('');
-    return { text:text, verb:this.verb };
+    return {
+      method: 'foo',
+      verb:this.verb,
+      date: new Date(),
+      text:text,
+    };
+  },
+
+
+  'foo/bar'() {
+    return {
+      method: 'foo/bar',
+      verb:this.verb,
+      date: new Date(),
+    };
   }
 });
