@@ -8,7 +8,7 @@ import { xhr } from 'js-util';
 /**
 * Represents a proxy to a single method on the server.
 */
-export default class MethodProxy {
+export default class ClientMethod {
   /**
   * Constructor.
   * @param name: The unique name of the method.

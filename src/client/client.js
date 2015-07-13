@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import MethodProxy from './MethodProxy';
+import ClientMethod from './ClientMethod';
 import util from 'js-util';
 import Promise from 'bluebird';
 import { Handlers } from 'js-util';
@@ -118,7 +118,7 @@ export const registerMethods = (methods = {}) => {
 
   // Store methods.
   _.keys(methods).forEach((key) => {
-    state.methods[key] = new MethodProxy(key, methods[key]);
+    state.methods[key] = new ClientMethod(key, methods[key]);
   });
 
 

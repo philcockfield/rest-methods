@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import util from 'js-util';
 import client from '../../src/client/client';
 import { registerMethods, state } from '../../src/client/client';
-import MethodProxy from '../../src/client/MethodProxy';
+import ClientMethod from '../../src/client/ClientMethod';
 
 
 describe('Client:registerMethods', () => {
@@ -42,7 +42,7 @@ describe('Client:registerMethods', () => {
       'foo': {},
       'foo/bar': { get:{ params:['p1'] } }
     });
-    expect(state.methods['foo']).to.be.an.instanceof(MethodProxy);
-    expect(state.methods['foo/bar']).to.be.an.instanceof(MethodProxy);
+    expect(state.methods['foo']).to.be.an.instanceof(ClientMethod);
+    expect(state.methods['foo/bar']).to.be.an.instanceof(ClientMethod);
   });
 });
