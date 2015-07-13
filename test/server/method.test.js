@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import Method from '../../src/server/Method';
 
 
-describe('Method', () => {
+describe('Server:Method', () => {
   it('stores name and function', () => {
     let fn = () => {};
     let method = new Method('my-method', fn);

@@ -10,11 +10,15 @@ import fs from 'fs';
 import connect from 'connect';
 import http from 'http';
 import Server from '../server';
-import './methods';
+const PORT = 3030;
 
-let app = connect();
+
+// Server methods declared here:
+import './server-methods';
+
 
 // Initialize the web-server with the module's middleware.
+let app = connect();
 Server.init(app);
 
 
@@ -27,7 +31,6 @@ app.use((req, res) => {
 
 
 // Start the server.
-const PORT = 8080;
 http.createServer(app).listen(PORT);
 
 // Output some helpful details to the console.

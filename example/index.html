@@ -4,13 +4,22 @@
     <meta charset='utf-8'>
 
     <style>
-      body, h1 {
-        font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
-        font-weight: 400;
-      }
       body {
-        padding: 20px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
       }
+
+      h1 {
+        font-weight: 100;
+        font-size: 50px;
+      }
+
+      body { padding: 20px; }
+      li {
+        font-family: "Lucida Console", Monaco, monospace;
+        margin-bottom: 8px;
+      }
+      a { text-decoration: none; }
+      a:hover { text-decoration: underline; }
 
     </style>
 
@@ -19,10 +28,18 @@
 
     <h1>Server Methods</h1>
     <ul>
-      <li>
-        <a href='/server-methods/manifest'>/server-methods/manifest</a>
-      </li>
+      <li><a href='/server-methods/manifest'>/server-methods/manifest</a></li>
+      <li><a href='/server-methods.client.js'>/server-methods.client.js</a></li>
+      <li><a href='/server-methods.client.min.js'>/server-methods.client.min.js</a></li>
     </ul>
 
   </body>
+  <script type="text/javascript" src="server-methods.client.js" charset="utf-8"></script>
+  <script>
+
+    Server.call('foo', 222)
+      .then(function (result) { console.log('result', result); })
+      .catch(function (err) { console.log('err', err); })
+
+  </script>
 </html>

@@ -54,7 +54,7 @@ To start the example server:
 
     npm run example
 
-Then open your browser at `localhost:8080`.
+Then open your browser at `localhost:3030`.
 
 
 ## Test
@@ -62,6 +62,11 @@ Then open your browser at `localhost:8080`.
     npm run tdd  # Watch
 
 
+
+## Development
+To build the client javascript:
+
+    npm run bundle
 
 
 

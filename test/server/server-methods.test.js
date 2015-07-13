@@ -6,7 +6,7 @@ import state from '../../src/server/state';
 
 
 
-describe('server.methods', () => {
+describe('Server:methods', () => {
   beforeEach(() => { state.reset(); });
 
 

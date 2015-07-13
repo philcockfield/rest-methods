@@ -4,7 +4,7 @@ import state from '../../src/server/state';
 
 
 
-describe('server', () => {
+describe('Server', () => {
   beforeEach(() => { state.reset(); });
 
   it('throws if initialized more than once', () => {

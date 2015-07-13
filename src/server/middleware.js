@@ -5,7 +5,6 @@ import Promise from 'bluebird';
 import state from './state';
 import { BASE_PATH } from '../const';
 
-// let jsMinified;
 
 
 const getMethods = () => {
@@ -14,6 +13,19 @@ const getMethods = () => {
       params: method.params
     };
   });
+};
+
+
+const jsCache = {};
+const sendJs = (res, fileName) => {
+  let js = jsCache[fileName];
+  if (!js) {
+    // NB: Loaded from file only once.
+    js = fs.readFileSync(fsPath.join(__dirname, `../../dist/${ fileName }`)).toString();
+    jsCache[fileName] = js;
+  }
+  res.setHeader('Content-Type', 'application/javascript');
+  res.end(js);
 };
 
 
@@ -32,28 +44,27 @@ export default () => {
           res.end(JSON.stringify(obj));
       };
 
-
-      console.log('req.method', req.method); // TEMP
-
-
       switch (req.url) {
         // GET: The manifest of methods.
         case `/${ BASE_PATH }/manifest`:
-            if (req.method === 'GET') { sendJson({ methods: getMethods() }); }
-            break;
+            if (req.method === 'GET') {
+              sendJson({ methods: getMethods() });
+              break;
+            }
 
-        // GET: Server the client JS.
+        // GET: Serve the client JS.
         //      NB: Only required if not using WebPack.
-        // case `/${ BASE_PATH }.js`:
-        //     if (req.method === 'GET') {
-        //       if (!jsMinified) {
-        //         // NB: Only loaded from file once.
-        //         jsMinified = fs.readFileSync(fsPath.join(__dirname, '../../dist/client.min.js')).toString();
-        //       }
-        //       res.setHeader('Content-Type', 'application/javascript');
-        //       res.send(jsMinified);
-        //     }
-        //     break;
+        case `/${ BASE_PATH }.client.js`:
+            if (req.method === 'GET') {
+              sendJs(res, 'client.js');
+              break;
+            }
+
+        case `/${ BASE_PATH }.client.min.js`:
+            if (req.method === 'GET') {
+              sendJs(res, 'client.min.js');
+              break;
+            }
 
         // POST: Invoke a method.
         case `/${ BASE_PATH }/invoke`:

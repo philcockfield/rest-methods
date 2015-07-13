@@ -8,7 +8,7 @@ import { registerMethods, state } from '../../src/client/client';
 import MethodProxy from '../../src/client/MethodProxy';
 
 
-describe('Proxy (Client)', () => {
+describe('Client (Proxy)', () => {
   beforeEach(() => {
     client.reset();
   });

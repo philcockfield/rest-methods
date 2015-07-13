@@ -5,7 +5,7 @@ import { FakeXMLHttpRequest } from 'sinon';
 const { XhrError, XhrParseError } = xhr;
 
 
-describe('MethodProxy', () => {
+describe('Client:MethodProxy', () => {
   it('stores the method name', () => {
     let method = new MethodProxy('foo');
     expect(method.name).to.equal('foo');

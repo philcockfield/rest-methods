@@ -4,7 +4,7 @@ import Server from '../../server';
 import state from '../../src/server/state';
 
 
-describe('State (Internal)', () => {
+describe('Server:state (Internal)', () => {
   it('resets state', () => {
     Server.methods({ 'state-test': () => 0 });
     expect(Server.methods()).not.to.eql({});

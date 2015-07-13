@@ -3,7 +3,7 @@ import MethodProxy from './MethodProxy';
 import util from 'js-util';
 import Promise from 'bluebird';
 import { Handlers } from 'js-util';
-import { BASE_URL } from '../const';
+import { BASE_PATH } from '../const';
 
 // let readyHandlers = new Handlers();
 export const state = {
@@ -18,6 +18,22 @@ export const state = {
 */
 const api = {
   isReady: false,
+
+
+  /**
+  * Initializes the module client-side, pulling the manifest
+  * of methods from the server.
+  */
+  init() {
+    return new Promise((resolve, reject) => {
+        util.xhr.get(`/${ BASE_PATH }/manifest`)
+        .then((result) => {
+            registerMethods(result.methods);
+            resolve();
+        })
+        .catch((err) => reject(err));
+    });
+  },
 
 
   /**
@@ -131,22 +147,6 @@ export const registerMethods = (methods = {}) => {
   return this;
 };
 
-
-
-/**
-* Initializes the module client-side, pulling the manifest
-* of methods from the server.
-*/
-export const init = () => {
-  return new Promise((resolve, reject) => {
-      util.xhr.get(`/${ BASE_URL }/manifest`)
-      .then((result) => {
-          registerMethods(result.methods);
-          resolve();
-      })
-      .catch((err) => reject(err));
-  });
-};
 
 
 export default api;
