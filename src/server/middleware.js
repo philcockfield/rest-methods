@@ -3,7 +3,7 @@ import fsPath from 'path';
 import _ from 'lodash';
 import Promise from 'bluebird';
 import state from './state';
-import { BASE_PATH } from '../const';
+import { BASE_MODULE_PATH } from '../const';
 
 
 
@@ -52,7 +52,7 @@ export default () => {
   return (req, res, next) => {
       switch (req.url) {
         // GET: The manifest of methods.
-        case `/${ BASE_PATH }/manifest`:
+        case `/${ BASE_MODULE_PATH }/manifest`:
             if (req.method === 'GET') {
               sendJson(res, { methods: getMethods() });
               break;
@@ -60,20 +60,20 @@ export default () => {
 
         // GET: Serve the client JS.
         //      NB: Only required if not using WebPack.
-        case `/${ BASE_PATH }.client.js`:
+        case `/${ BASE_MODULE_PATH }.client.js`:
             if (req.method === 'GET') {
               sendJs(res, 'client.js');
               break;
             }
 
-        case `/${ BASE_PATH }.client.min.js`:
+        case `/${ BASE_MODULE_PATH }.client.min.js`:
             if (req.method === 'GET') {
               sendJs(res, 'client.min.js');
               break;
             }
 
         // Invoke a method.
-        case `/${ BASE_PATH }/invoke`:
+        case `/${ BASE_MODULE_PATH }/invoke`:
             let verb = req.method.toLowerCase()
             let data = req.body;
             let method = state.methods.get(data.method);

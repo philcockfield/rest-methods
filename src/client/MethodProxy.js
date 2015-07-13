@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { BASE_PATH } from '../const';
+import { BASE_MODULE_PATH } from '../const';
 import Promise from 'bluebird';
 import { xhr } from 'js-util';
 
@@ -43,7 +43,7 @@ export default class MethodProxy {
           method: this.name,
           args: _.flatten(args)
         };
-        xhr.put(`/${ BASE_PATH }/invoke`, payload)
+        xhr.put(`/${ BASE_MODULE_PATH }/invoke`, payload)
           .then((result) => { resolve(result); })
           .catch((err) => { reject(err); });
     });

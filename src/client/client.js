@@ -3,7 +3,7 @@ import MethodProxy from './MethodProxy';
 import util from 'js-util';
 import Promise from 'bluebird';
 import { Handlers } from 'js-util';
-import { BASE_PATH } from '../const';
+import { BASE_MODULE_PATH } from '../const';
 
 export const state = {
   methods: {},
@@ -25,7 +25,7 @@ const api = {
   */
   init() {
     return new Promise((resolve, reject) => {
-        util.xhr.get(`/${ BASE_PATH }/manifest`)
+        util.xhr.get(`/${ BASE_MODULE_PATH }/manifest`)
         .then((result) => {
             registerMethods(result.methods);
             resolve();
