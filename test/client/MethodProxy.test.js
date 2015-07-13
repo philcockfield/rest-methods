@@ -2,32 +2,38 @@ import { expect } from 'chai';
 import MethodProxy from '../../src/client/MethodProxy';
 import { xhr } from 'js-util';
 import { FakeXMLHttpRequest } from 'sinon';
+import Promise from 'bluebird';
 const { XhrError, XhrParseError } = xhr;
 
 
 describe('Client:MethodProxy', () => {
-  it('stores the method name', () => {
-    let method = new MethodProxy('foo');
-    expect(method.name).to.equal('foo');
+
+  describe('state', () => {
+    it('stores the method name', () => {
+      let method = new MethodProxy('foo');
+      expect(method.name).to.equal('foo');
+    });
+
+
+    it('has no verbs', () => {
+      let method = new MethodProxy('foo');
+      expect(method.verbs).to.eql({});
+    });
+
+
+    it('has verbs', () => {
+      const options = {
+        get: {}, put: { params:['text'] }
+      };
+      let method = new MethodProxy('foo', options);
+      expect(method.verbs.get).to.eql({});
+      expect(method.verbs.put.params).to.eql(['text']);
+    });
   });
-
-
-  it('has no params', () => {
-    let method = new MethodProxy('foo');
-    expect(method.params).to.eql([]);
-  });
-
-
-  it('has params', () => {
-    let method = new MethodProxy('foo', ['p1', 'p2']);
-    expect(method.params).to.eql(['p1', 'p2']);
-  });
-
 
 
   describe('invoke()', () => {
     let fakeXhr, sent;
-
     beforeEach(() => {
       sent = [];
       xhr.createXhr = () => {
@@ -47,15 +53,17 @@ describe('Client:MethodProxy', () => {
 
     it('invokes with no arguments', () => {
       let method = new MethodProxy('foo/bar');
-      method.invoke();
+      method.invoke('GET');
       expect(sent[0].method).to.equal('foo/bar');
+      expect(sent[0].verb).to.equal('GET');
       expect(sent[0].args).to.eql([]);
     });
 
 
     it('invokes with arguments', () => {
       let method = new MethodProxy('foo/bar');
-      method.invoke(1, 'two', { three:3 });
+      method.invoke('PUT', 1, 'two', { three:3 });
+      expect(sent[0].verb).to.equal('PUT');
       expect(sent[0].args).to.eql([1, 'two', { three:3 }]);
     });
 
@@ -83,6 +91,5 @@ describe('Client:MethodProxy', () => {
       fakeXhr.readyState = 4;
       fakeXhr.onreadystatechange();
     });
-
   });
 });

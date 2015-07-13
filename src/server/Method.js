@@ -26,30 +26,27 @@ export default class Method {
   */
   invoke(req, args) {
     return new Promise((resolve, reject) => {
+        const rejectWithError = (err) => {
+          err = new Error(`Failed while executing '${ this.name }': ${ err.message }`);
+          reject(err);
+        };
 
-      const rejectWithError = (err) => {
-        err = new Error(`Failed while executing '${ this.name }': ${ err.message }`);
-        reject(err);
-      };
+        // Attempt to invoke the function.
+        try {
+          let thisContext = {};
+          let result = this.func.apply(thisContext, args);
+          if (result && _.isFunction(result.then)) {
+            // A promise was returned.
+            result
+              .then((asyncResult) => { resolve(asyncResult); })
+              .catch((err) => { rejectWithError(err); });
 
-      // Attempt to invoke the function.
-      try {
-        let thisContext = {};
-        let result = this.func.apply(thisContext, args);
-        if (result && _.isFunction(result.then)) {
-          // A promise was returned.
-          result
-            .then((asyncResult) => { resolve(asyncResult); })
-            .catch((err) => { rejectWithError(err); });
+          } else {
+            // A simple value was returned.
+            resolve(result);
+          }
 
-        } else {
-          // A simple value was returned.
-          resolve(result);
-        }
-
-      } catch (err) { rejectWithError(err); }
+        } catch (err) { rejectWithError(err); }
     });
-
-
   }
 }

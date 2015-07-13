@@ -5,7 +5,6 @@ import Promise from 'bluebird';
 import { Handlers } from 'js-util';
 import { BASE_PATH } from '../const';
 
-// let readyHandlers = new Handlers();
 export const state = {
   methods: {},
   queue: [],
@@ -66,34 +65,26 @@ const api = {
   },
 
 
-  /**
-  * Invokes the specified method taking parameters.
-  *
-  * @param methodName: The name/key of the method to invoke.
-  * @param args: Optional. The arguments to pass to the method.
-  *
-  * @return promise.
-  */
-  call(methodName, ...args) { return this.apply(methodName, args); },
-
 
   /**
   * Invokes the specified method taking an array of parameters.
   *
+  * @param verb: The HTTP verb (GET/PUT/POST/DELETE).
   * @param methodName: The name/key of the method to invoke.
   * @param args: Optional. The arguments to pass to the method.
   *
   * @return promise.
   */
-  apply(methodName, args = []) {
+  invoke(verb, methodName, args = []) {
     if (!_.isArray(args)) { args = [args]; }
 
     if (!this.isReady) {
       // Queue up the method for eventual execution.
       return new Promise((resolve, reject) => {
           state.queue.push({
+            verb: verb,
             methodName: methodName,
-            args: args,
+            args: _.flatten(args),
             resolve: resolve,
             reject: reject
           });
@@ -102,10 +93,19 @@ const api = {
     } else {
       // Invoke the method.
       let method = state.methods[methodName];
-      if (!method) { throw new Error(`Method '${ methodName }' does not exist.`); }
-      return method.invoke(args);
+      if (!method || !method.verbs[verb.toLowerCase()]) {
+        throw new Error(`A ${ verb } method '${ methodName }' does not exist.`);
+      }
+      return method.invoke(verb, args);
     }
-  }
+  },
+
+  // HTTP verb specific invoker methods.
+  get(methodName, ...args) { return this.invoke('GET', methodName, args); },
+  put(methodName, ...args) { return this.invoke('PUT', methodName, args); },
+  post(methodName, ...args) { return this.invoke('POST', methodName, args); },
+  delete(methodName, ...args) { return this.invoke('DELETE', methodName, args); }
+
 };
 
 
@@ -118,7 +118,7 @@ export const registerMethods = (methods = {}) => {
 
   // Store methods.
   _.keys(methods).forEach((key) => {
-    state.methods[key] = new MethodProxy(key, methods[key].params);
+    state.methods[key] = new MethodProxy(key, methods[key]);
   });
 
   // Invoke stored queue of methods that were registered
@@ -128,7 +128,7 @@ export const registerMethods = (methods = {}) => {
     let queue = _.clone(state.queue);
     state.queue = [];
     queue.forEach((item) => {
-        api.apply(item.methodName, item.args)
+        api.invoke(item.verb, item.methodName, item.args)
         .then((result) => { item.resolve(result); })
         .catch((err) => { item.reject(err); });
     });

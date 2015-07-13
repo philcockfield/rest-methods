@@ -4,7 +4,7 @@ const NODE_MODULES_PATH = fsPath.join(__dirname, 'node_modules');
 
 
 module.exports = {
-  entry: './src/client/webpack-build',
+  entry: './src/client/webpack-entry',
   output: {
     filename: 'client.js',
     path: './dist'

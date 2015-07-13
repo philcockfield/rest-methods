@@ -37,7 +37,7 @@
   <script type="text/javascript" src="server-methods.client.js" charset="utf-8"></script>
   <script>
 
-    Server.call('foo', 222)
+    Server.get('foo', 222)
       .then(function (result) { console.log('result', result); })
       .catch(function (err) { console.log('err', err); })
 

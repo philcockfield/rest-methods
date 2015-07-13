@@ -9,9 +9,15 @@ import { BASE_PATH } from '../const';
 
 const getMethods = () => {
   return state.methods.map((method) => {
-    return {
-      params: method.params
-    };
+      let result = {};
+      ['get', 'put', 'post', 'delete'].map((verb) => {
+          let item = method[verb];
+          if (item) {
+            let verbDefiniton = result[verb] = {}
+            if (item.params.length > 0) { verbDefiniton.params = item.params; }
+          }
+      });
+      return result;
   });
 };
 
@@ -29,6 +35,12 @@ const sendJs = (res, fileName) => {
 };
 
 
+const sendJson = (res, obj) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(obj));
+};
+
+
 
 
 /**
@@ -36,19 +48,13 @@ const sendJs = (res, fileName) => {
 * @return the connect middleware function.
 */
 export default () => {
-
   // Middleware.
   return (req, res, next) => {
-      const sendJson = (obj) => {
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(obj));
-      };
-
       switch (req.url) {
         // GET: The manifest of methods.
         case `/${ BASE_PATH }/manifest`:
             if (req.method === 'GET') {
-              sendJson({ methods: getMethods() });
+              sendJson(res, { methods: getMethods() });
               break;
             }
 
@@ -66,19 +72,18 @@ export default () => {
               break;
             }
 
-        // POST: Invoke a method.
+        // Invoke a method.
         case `/${ BASE_PATH }/invoke`:
-            if (req.method === 'PUT') {
-              let data = req.body;
-              let method = state.methods.get(data.method);
+            let verb = req.method.toLowerCase()
+            let data = req.body;
+            let method = state.methods.get(data.method);
 
-              if (!method) {
-                res.status(404).send(`Method named '${ data.method }' does not exist on the server.`);
-              } else {
-                method.invoke(req, data.args)
-                .then((result) => { sendJson(result); })
+            if (!method || !method[verb]) {
+              res.status(404).send(`A ${ req.method } method named '${ data.method }' does not exist on the server.`);
+            } else {
+              method[verb].invoke(req, data.args)
+                .then((result) => { sendJson(res, result); })
                 .catch((err) => { res.status(500).send(err.message); });
-              }
             }
             break;
 
