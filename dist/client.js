@@ -53,8 +53,6 @@
 
 	var _client2 = _interopRequireDefault(_client);
 
-	console.log('webpack build');
-
 	/*
 	Export for webpack builds.
 	Make the [Server] object available globally.
@@ -84,9 +82,9 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _MethodProxy = __webpack_require__(4);
+	var _ClientMethod = __webpack_require__(4);
 
-	var _MethodProxy2 = _interopRequireDefault(_MethodProxy);
+	var _ClientMethod2 = _interopRequireDefault(_ClientMethod);
 
 	var _jsUtil = __webpack_require__(9);
 
@@ -98,7 +96,6 @@
 
 	var _const = __webpack_require__(5);
 
-	// let readyHandlers = new Handlers();
 	var state = {
 	  methods: {},
 	  queue: [],
@@ -118,7 +115,7 @@
 	  */
 	  init: function init() {
 	    return new _bluebird2['default'](function (resolve, reject) {
-	      _jsUtil2['default'].xhr.get('/' + _const.BASE_PATH + '/manifest').then(function (result) {
+	      _jsUtil2['default'].xhr.get('/' + _const.BASE_MODULE_PATH + '/manifest').then(function (result) {
 	        registerMethods(result.methods);
 	        resolve();
 	      })['catch'](function (err) {
@@ -156,31 +153,16 @@
 	  },
 
 	  /**
-	  * Invokes the specified method taking parameters.
-	  *
-	  * @param methodName: The name/key of the method to invoke.
-	  * @param args: Optional. The arguments to pass to the method.
-	  *
-	  * @return promise.
-	  */
-	  call: function call(methodName) {
-	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	      args[_key - 1] = arguments[_key];
-	    }
-
-	    return this.apply(methodName, args);
-	  },
-
-	  /**
 	  * Invokes the specified method taking an array of parameters.
 	  *
+	  * @param verb: The HTTP verb (GET/PUT/POST/DELETE).
 	  * @param methodName: The name/key of the method to invoke.
 	  * @param args: Optional. The arguments to pass to the method.
 	  *
 	  * @return promise.
 	  */
-	  apply: function apply(methodName) {
-	    var args = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	  invoke: function invoke(verb, methodName) {
+	    var args = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
 	    if (!_lodash2['default'].isArray(args)) {
 	      args = [args];
@@ -190,8 +172,9 @@
 	      // Queue up the method for eventual execution.
 	      return new _bluebird2['default'](function (resolve, reject) {
 	        state.queue.push({
+	          verb: verb,
 	          methodName: methodName,
-	          args: args,
+	          args: _lodash2['default'].flatten(args),
 	          resolve: resolve,
 	          reject: reject
 	        });
@@ -199,12 +182,43 @@
 	    } else {
 	      // Invoke the method.
 	      var method = state.methods[methodName];
-	      if (!method) {
-	        throw new Error('Method \'' + methodName + '\' does not exist.');
+	      if (!method || !method.verbs[verb.toLowerCase()]) {
+	        throw new Error('A ' + verb + ' method \'' + methodName + '\' does not exist.');
 	      }
-	      return method.invoke(args);
+	      return method.invoke(verb, args);
 	    }
+	  },
+
+	  // HTTP verb specific invoker methods.
+	  get: function get(methodName) {
+	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	      args[_key - 1] = arguments[_key];
+	    }
+
+	    return this.invoke('GET', methodName, args);
+	  },
+	  put: function put(methodName) {
+	    for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	      args[_key2 - 1] = arguments[_key2];
+	    }
+
+	    return this.invoke('PUT', methodName, args);
+	  },
+	  post: function post(methodName) {
+	    for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+	      args[_key3 - 1] = arguments[_key3];
+	    }
+
+	    return this.invoke('POST', methodName, args);
+	  },
+	  'delete': function _delete(methodName) {
+	    for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+	      args[_key4 - 1] = arguments[_key4];
+	    }
+
+	    return this.invoke('DELETE', methodName, args);
 	  }
+
 	};
 
 	/**
@@ -216,7 +230,7 @@
 
 	  // Store methods.
 	  _lodash2['default'].keys(methods).forEach(function (key) {
-	    state.methods[key] = new _MethodProxy2['default'](key, methods[key].params);
+	    state.methods[key] = new _ClientMethod2['default'](key, methods[key]);
 	  });
 
 	  // Invoke stored queue of methods that were registered
@@ -226,7 +240,7 @@
 	    var queue = _lodash2['default'].clone(state.queue);
 	    state.queue = [];
 	    queue.forEach(function (item) {
-	      api.apply(item.methodName, item.args).then(function (result) {
+	      api.invoke(item.verb, item.methodName, item.args).then(function (result) {
 	        item.resolve(result);
 	      })['catch'](function (err) {
 	        item.reject(err);
@@ -12656,37 +12670,73 @@
 	* Represents a proxy to a single method on the server.
 	*/
 
-	var MethodProxy = (function () {
-	  function MethodProxy(name) {
-	    var params = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	var ClientMethod = (function () {
+	  /**
+	  * Constructor.
+	  * @param name: The unique name of the method.
+	  * @param options:
+	  *           - url: The method's URL path/pattern.
+	  *           - get: Definition of the GET function, eg. { params:['text', 'number'] }
+	  *           - put:     ..
+	  *           - post:    ..
+	  *           - delete:  ..
+	  */
 
-	    _classCallCheck(this, MethodProxy);
+	  function ClientMethod(name) {
+	    var _this = this;
+
+	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    _classCallCheck(this, ClientMethod);
 
 	    this.name = name;
-	    this.params = params;
+	    this.verbs = {};
+	    this.urlPattern = options.url || '/';
+
+	    // Store individual invoker methods for each HTTP verb.
+	    ['get', 'put', 'post', 'delete'].forEach(function (verb) {
+	      if (options[verb]) {
+	        _this.verbs[verb] = options[verb];
+	      }
+	    });
 	  }
 
-	  _createClass(MethodProxy, [{
+	  _createClass(ClientMethod, [{
+	    key: 'url',
+
+	    /**
+	    * The URL to the method's resource.
+	    */
+	    value: function url() {
+	      return this.urlPattern;
+	    }
+	  }, {
 	    key: 'invoke',
 
 	    /**
 	    * Invokes the method on the server.
+	    * @param verb: The HTTP verb (GET | PUT | POST | DELETE)
 	    * @param args: An array of arguments.
 	    * @return promise.
 	    */
 	    value: function invoke() {
-	      var _this = this;
+	      var _this2 = this;
 
-	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	        args[_key] = arguments[_key];
+	      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        args[_key - 1] = arguments[_key];
 	      }
+
+	      var verb = arguments.length <= 0 || arguments[0] === undefined ? 'GET' : arguments[0];
 
 	      return new _bluebird2['default'](function (resolve, reject) {
 	        var payload = {
-	          method: _this.name,
+	          verb: verb,
+	          method: _this2.name,
 	          args: _lodash2['default'].flatten(args)
 	        };
-	        _jsUtil.xhr.put('/' + _const.BASE_PATH + '/invoke', payload).then(function (result) {
+
+	        var xhrMethod = _jsUtil.xhr[verb.toLowerCase()];
+	        xhrMethod(_this2.url(), payload).then(function (result) {
 	          resolve(result);
 	        })['catch'](function (err) {
 	          reject(err);
@@ -12695,10 +12745,10 @@
 	    }
 	  }]);
 
-	  return MethodProxy;
+	  return ClientMethod;
 	})();
 
-	exports['default'] = MethodProxy;
+	exports['default'] = ClientMethod;
 	module.exports = exports['default'];
 
 /***/ },
@@ -12713,8 +12763,8 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var BASE_PATH = 'server-methods';
-	exports.BASE_PATH = BASE_PATH;
+	var BASE_MODULE_PATH = 'server-methods';
+	exports.BASE_MODULE_PATH = BASE_MODULE_PATH;
 
 /***/ },
 /* 6 */
@@ -30558,15 +30608,8 @@
 	  * @param url: URL of the resource.
 	  * @return promise.
 	  */
-	  get: function get(url) {
-	    return new _bluebird2['default'](function (resolve, reject) {
-	      var xhr = api.createXhr();
-	      xhr.open('GET', url, true);
-	      xhr.onload = function () {
-	        return handleComplete(xhr, resolve, reject);
-	      };
-	      xhr.send();
-	    });
+	  get: function get(url, data) {
+	    return send('GET', url, data);
 	  },
 
 	  /**

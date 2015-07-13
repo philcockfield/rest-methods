@@ -19,9 +19,10 @@ export default class ServerMethod {
     this.name = name;
     this.func = func;
     this.params = util.functionParameters(func);
-    this.route = new pageJS.Route(routePath);
     this.verb = verb;
+    this.route = new pageJS.Route(routePath);
   }
+
 
   /**
   * Invokes the method function.

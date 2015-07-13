@@ -7,7 +7,11 @@ import state from '../../src/server/state';
 
 
 describe('Server:methods', () => {
-  beforeEach(() => { server.reset(); });
+  let fakeConnect = { use: () => {} };
+  beforeEach(() => {
+      server.reset();
+      server.init(fakeConnect);
+  });
 
 
   it('has no methods by default', () => {
@@ -45,6 +49,18 @@ describe('Server:methods', () => {
     expect(method.put.func).to.equal(fnPUT);
     expect(method.post.func).to.equal(fnPOST);
     expect(method.delete.func).to.equal(fnDELETE);
+  });
+
+
+  it('queues definitions until initialized', () => {
+    server.reset();
+    let methods = server.methods({
+      'my-method':{ get: () => {} }
+    });
+
+    expect(server.methods()).to.eql({});
+    server.init(fakeConnect);
+    expect(server.methods()['my-method'].get.name).to.eql('my-method');
   });
 
 

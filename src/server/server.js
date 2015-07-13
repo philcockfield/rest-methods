@@ -5,6 +5,7 @@ import state from './state';
 import middleware from './middleware';
 
 let isInitialized = false;
+let queuedMethodDefinitions = [];
 
 
 /**
@@ -51,8 +52,17 @@ export default {
     connect.use(bodyParser.json());
     connect.use(middleware());
 
-    // Finish up.
+    // Register any pending methods that have been queued.
+    //
+    // NB: Methods are prevented from being registered until the module
+    //     is initialized to ensure their route paths are correct.
+    //     This allows method to be registered at any time prior to initialization.
     isInitialized = true;
+    if (queuedMethodDefinitions.length > 0) {
+      queuedMethodDefinitions.forEach(def => { this.methods(def) });
+    }
+
+    // Finish up.
     return this;
   },
 
@@ -63,6 +73,7 @@ export default {
   reset() {
     state.reset();
     isInitialized = false;
+    queuedMethodDefinitions = [];
     return this;
   },
 
@@ -75,8 +86,12 @@ export default {
   * @return an object containing the set of method definitions.
   */
   methods(definition) {
+    if (!isInitialized && definition) {
+      queuedMethodDefinitions.push(definition);
+    }
+
     // Write: store method definitions if passed.
-    if (definition) {
+    if (isInitialized && definition) {
       const createUrl = (path, methodDef) => {
           return methodUrl(state.basePath, (methodDef.url || path));
       };

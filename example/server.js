@@ -19,7 +19,7 @@ import './server-methods';
 
 // Initialize the web-server with the module's middleware.
 let app = connect();
-Server.init(app, { basePath: '/api' });
+Server.init(app, { basePath: '/api/' });
 
 
 // Sample HTML page.
