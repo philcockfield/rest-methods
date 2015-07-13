@@ -49,6 +49,13 @@ Invoke the methods asynchronously with promises:
       .catch(err => { ... });
 
 
+## Example Server
+To start the example server:
+
+    npm run example
+
+Then open your browser at `localhost:8080`.
+
 
 ## Test
     npm test

@@ -3,7 +3,7 @@ import fsPath from 'path';
 import _ from 'lodash';
 import Promise from 'bluebird';
 import state from './state';
-import { BASE_URL } from '../const';
+import { BASE_PATH } from '../const';
 
 // let jsMinified;
 
@@ -29,7 +29,7 @@ export default () => {
   return (req, res, next) => {
       const sendJson = (obj) => {
           res.setHeader('Content-Type', 'application/json');
-          res.send(JSON.stringify(obj));
+          res.end(JSON.stringify(obj));
       };
 
 
@@ -38,13 +38,13 @@ export default () => {
 
       switch (req.url) {
         // GET: The manifest of methods.
-        case `/${ BASE_URL }/manifest`:
+        case `/${ BASE_PATH }/manifest`:
             if (req.method === 'GET') { sendJson({ methods: getMethods() }); }
             break;
 
         // GET: Server the client JS.
         //      NB: Only required if not using WebPack.
-        // case `/${ BASE_URL }.js`:
+        // case `/${ BASE_PATH }.js`:
         //     if (req.method === 'GET') {
         //       if (!jsMinified) {
         //         // NB: Only loaded from file once.
@@ -56,7 +56,7 @@ export default () => {
         //     break;
 
         // POST: Invoke a method.
-        case `/${ BASE_URL }/invoke`:
+        case `/${ BASE_PATH }/invoke`:
             if (req.method === 'PUT') {
               let data = req.body;
               let method = state.methods.get(data.method);
