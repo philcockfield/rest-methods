@@ -15,13 +15,40 @@ export default {
   * Initializes the server module.
   *
   * @param connect: The connect app to apply the middleware to.
+  * @param options:
+  *           - basePath: The base path to prepend URL's with.
   */
-  init(connect) {
+  init(connect, options = {}) {
     if (isInitialized) { throw new Error('Already initialized.'); }
+
+    // Store base path.
+    let path = options.basePath;
+    if (_.isString(path)) {
+      path = path.replace(/^\/*/, '').replace(/\/*$/, '');
+    } else {
+      path = '';
+    }
+    state.basePath = `/${ path }`;
+
+    // Register middleware.
     connect.use(bodyParser.json());
     connect.use(middleware());
+
+    // Finish up.
     isInitialized = true;
+    return this;
   },
+
+
+  /**
+  * Resets the server to an uninitialized state.
+  */
+  reset() {
+    state.reset();
+    isInitialized = false;
+    return this;
+  },
+
 
 
   /**
@@ -74,5 +101,4 @@ export default {
     // Read.
     return state.methods.toObject();
   }
-
 };

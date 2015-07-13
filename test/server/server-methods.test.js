@@ -7,7 +7,7 @@ import state from '../../src/server/state';
 
 
 describe('Server:methods', () => {
-  beforeEach(() => { state.reset(); });
+  beforeEach(() => { server.reset(); });
 
 
   it('has no methods by default', () => {

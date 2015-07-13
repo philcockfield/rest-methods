@@ -54,7 +54,10 @@ export default () => {
         // GET: The manifest of methods.
         case `/${ BASE_MODULE_PATH }/manifest`:
             if (req.method === 'GET') {
-              sendJson(res, { methods: getMethods() });
+              sendJson(res, {
+                basePath: state.basePath,
+                methods: getMethods()
+              });
               break;
             }
 
