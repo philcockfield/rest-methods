@@ -1,6 +1,15 @@
 # server-methods
 Publish javascript functions as REST endpoints with promise-based remote invocation.
 
+
+## Alt
+Name: rest-methods
+
+Model your resource-oriented API as server methods.  These are exposed as a RESTful end-point.  Invoke these on the client with a promise-based API.
+
+
+
+
 [![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 
 
