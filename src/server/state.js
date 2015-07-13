@@ -6,10 +6,10 @@ import Immutable from 'immutable';
 */
 export default {
   methods: Immutable.Map(),
-  basePath: undefined,
+  basePath: '/',
 
   reset() {
     this.methods = this.methods.clear();
-    this.basePath = undefined;
+    this.basePath = '/';
   }
 };

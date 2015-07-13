@@ -9,15 +9,10 @@ const { XhrError, XhrParseError } = xhr;
 describe('Client:MethodProxy', () => {
 
   describe('state', () => {
-    it('stores the method name', () => {
+    it('stores constructor values', () => {
       let method = new MethodProxy('foo');
       expect(method.name).to.equal('foo');
-      expect(method.basePath).to.equal('/');
-    });
-
-    it('stores the base path', () => {
-      let method = new MethodProxy('foo', { basePath:'///api///' });
-      expect(method.basePath).to.equal('/api');
+      expect(method.urlPattern).to.equal('/');
     });
 
 
@@ -38,11 +33,9 @@ describe('Client:MethodProxy', () => {
   });
 
 
-  describe('url', () => {
-    it('returns the url with no base-path', () => {
-      let method = new MethodProxy('foo');
-      expect(method.url()).to.equal('/foo');
-    });
+  it('returns the url', () => {
+    let method = new MethodProxy('foo', { url:'/foo' });
+    expect(method.url()).to.equal('/foo');
   });
 
 
@@ -52,7 +45,10 @@ describe('Client:MethodProxy', () => {
       sent = [];
       xhr.createXhr = () => {
           fakeXhr = new FakeXMLHttpRequest();
-          fakeXhr.send = (data) => { sent.push(JSON.parse(data)) };
+          fakeXhr.send = (data) => {
+              if (data) { data = JSON.parse(data); }
+              sent.push(data);
+          };
           return fakeXhr;
       };
     });
@@ -67,7 +63,7 @@ describe('Client:MethodProxy', () => {
 
     it('invokes with no arguments', () => {
       let method = new MethodProxy('foo/bar');
-      method.invoke('GET');
+      method.invoke();
       expect(sent[0].method).to.equal('foo/bar');
       expect(sent[0].verb).to.equal('GET');
       expect(sent[0].args).to.eql([]);

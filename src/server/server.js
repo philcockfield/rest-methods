@@ -3,9 +3,25 @@ import bodyParser from 'body-parser';
 import Method from './Method';
 import state from './state';
 import middleware from './middleware';
-import { methodUrl } from '../util';
 
 let isInitialized = false;
+
+
+/**
+* Generates a standard URL for a method.
+*
+* @param basePath:  The base path to prefix the URL with.
+* @param path:      The main part of the URL.
+*
+* @return string.
+*/
+export const methodUrl = (basePath, path) => {
+  path = path.replace(/^\/*/, '');
+  let url = `${ basePath }/${ path }`;
+  url = '/' + url.replace(/^\/*/, '');
+  return url;
+};
+
 
 
 /**
@@ -55,21 +71,14 @@ export default {
   /**
   * Registers or retrieves the complete set of methods.
   *
-  * @param definition: An object containing the method definitions
-  *                    taking the form of:
-  *
-  *                       { 'name':func(err, result) }
-  *
+  * @param definition: An object containing the method definitions.
   * @return an object containing the set of method definitions.
   */
   methods(definition) {
     // Write: store method definitions if passed.
     if (definition) {
-      const createUrl = (methodName, definition) => {
-
-          let url = methodUrl(state.basePath, methodName);
-          return url;
-
+      const createUrl = (path, methodDef) => {
+          return methodUrl(state.basePath, (methodDef.url || path));
       };
 
       _.keys(definition).forEach((key) => {

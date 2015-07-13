@@ -38,7 +38,8 @@ describe('Client:init', () => {
 
     fakeXhr.responseText = JSON.stringify(serverResponse);
     fakeXhr.status = 200;
-    fakeXhr.onload();
+    fakeXhr.readyState = 4;
+    fakeXhr.onreadystatechange();
   });
 
 });

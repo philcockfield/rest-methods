@@ -121,6 +121,7 @@ export const registerMethods = (methods = {}) => {
     state.methods[key] = new MethodProxy(key, methods[key]);
   });
 
+
   // Invoke stored queue of methods that were registered
   // prior to the manifest being returned from the server.
   api.isReady = true;

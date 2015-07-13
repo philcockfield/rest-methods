@@ -82,6 +82,30 @@ describe('Server:methods', () => {
   });
 
 
+  describe('url', () => {
+    it('has a default URL', () => {
+      let methods = server.methods({
+        'method':{ get: () => {} }
+      });
+      expect(methods['method'].get.route.path).to.equal('/method');
+    });
 
+    it('has a default URL with basePath prefix', () => {
+      state.basePath = '/api'
+      let methods = server.methods({
+        'method':{ get: () => {} }
+      });
+      expect(methods['method'].get.route.path).to.equal('/api/method');
+    });
 
+    it('registers a custom URL', () => {
+      let methods = server.methods({
+        'method':{
+          url: '/foo/:id',
+          get: () => {}
+        }
+      });
+      expect(methods['method'].get.route.path).to.equal('/foo/:id');
+    });
+  });
 });

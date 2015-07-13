@@ -7,12 +7,13 @@ import pageJS from './page-js';
 import { BASE_MODULE_PATH } from '../const';
 
 
-const getMethods = () => {
+const getMethods = (basePath) => {
   return state.methods.map((method) => {
       let result = {};
       ['get', 'put', 'post', 'delete'].map((verb) => {
           let item = method[verb];
           if (item) {
+            if (item.route.path) { result.url = item.route.path; }
             let verbDefiniton = result[verb] = {}
             if (item.params.length > 0) { verbDefiniton.params = item.params; }
           }
@@ -65,8 +66,7 @@ export default () => {
         case `/${ BASE_MODULE_PATH }/manifest`:
             if (req.method === 'GET') {
               sendJson(res, {
-                basePath: state.basePath,
-                methods: getMethods()
+                methods: getMethods(state.basePath)
               });
               break;
             }
@@ -89,6 +89,7 @@ export default () => {
             // Attempt to match the URL of a method.
             let methodVerb = matchMethodUrl(req.url, req.method);
             if (methodVerb) {
+
               // Invoke the method.
               methodVerb.invoke(req.body.args)
                 .then((result) => { sendJson(res, result); })

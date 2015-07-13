@@ -16,7 +16,7 @@ describe('Server', () => {
 
 
   it('has no base path by default', () => {
-    expect(state.basePath).to.equal(undefined);
+    expect(state.basePath).to.equal('/');
   });
 
 
