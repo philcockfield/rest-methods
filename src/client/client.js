@@ -16,7 +16,18 @@ export const state = {
 * The proxy to the server methods.
 */
 const api = {
+  /**
+  * Flag indicating the ready state of the client.
+  * Is true after `init` has retrieved methods from the server.
+  */
   isReady: false,
+
+
+  /**
+  * An object containing proxy's to server methods.
+  * This object is populated after `init` completes.
+  */
+  methods: {},
 
 
   /**
@@ -41,6 +52,7 @@ const api = {
   */
   reset() {
     this.isReady = false;
+    this.methods = {};
     state.methods = {};
     state.queue = [];
     state.readyHandlers = new Handlers();
@@ -118,7 +130,16 @@ export const registerMethods = (methods = {}) => {
 
   // Store methods.
   _.keys(methods).forEach((key) => {
-    state.methods[key] = new ClientMethod(key, methods[key]);
+      let method = new ClientMethod(key, methods[key]);
+      state.methods[key] = method;
+
+      // Create proxy-stubs to the method.
+      let stub = util.ns(api.methods, key, { delimiter:'/' });
+      // console.log('api.methods', api.methods);
+      // api.methods[key] = stub;
+      _.keys(method.verbs).forEach(verb => {
+          stub[verb] = (...args) => { return method.invoke(verb, args); };
+      });
   });
 
 

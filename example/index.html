@@ -49,9 +49,21 @@
   </body>
   <script type="text/javascript" src="server-methods.client.js" charset="utf-8"></script>
   <script>
-    Server.init().then(function() { console.log('initialized'); });
-    Server.put('foo', 'my text')
-      .then(function (result) { console.log('result', result); })
-      .catch(function (err) { console.log('err', err); })
+    Server.init().then(function() {
+
+      console.log('ready');
+
+      // console.log('Server.methods', Server.methods);
+      Server.methods.foo.put('hello foo')
+      .then(function (result) { console.log('get', result); });
+
+
+    });
+
+
+    // Server.put('foo', 'my text')
+    //   .then(function (result) { console.log('result', result); })
+    //   .catch(function (err) { console.log('err', err); })
+
   </script>
 </html>

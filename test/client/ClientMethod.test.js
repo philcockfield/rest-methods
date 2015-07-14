@@ -3,11 +3,12 @@ import ClientMethod from '../../src/client/ClientMethod';
 import { xhr } from 'js-util';
 import { FakeXMLHttpRequest } from 'sinon';
 import Promise from 'bluebird';
+import sinon from 'sinon';
+
 const { XhrError, XhrParseError } = xhr;
 
 
 describe('Client:ClientMethod', () => {
-
   describe('state', () => {
     it('stores constructor values', () => {
       let method = new ClientMethod('foo');

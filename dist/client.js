@@ -100,7 +100,17 @@
 	* The proxy to the server methods.
 	*/
 	var api = {
+	  /**
+	  * Flag indicating the ready state of the client.
+	  * Is true after `init` has retrieved methods from the server.
+	  */
 	  isReady: false,
+
+	  /**
+	  * An object containing proxy's to server methods.
+	  * This object is populated after `init` completes.
+	  */
+	  methods: {},
 
 	  /**
 	  * Initializes the module client-side, pulling the manifest
@@ -123,6 +133,7 @@
 	  */
 	  reset: function reset() {
 	    this.isReady = false;
+	    this.methods = {};
 	    state.methods = {};
 	    state.queue = [];
 	    state.readyHandlers = new _jsUtil.Handlers();
@@ -223,7 +234,22 @@
 
 	  // Store methods.
 	  _lodash2['default'].keys(methods).forEach(function (key) {
-	    state.methods[key] = new _ClientMethod2['default'](key, methods[key]);
+	    var method = new _ClientMethod2['default'](key, methods[key]);
+	    state.methods[key] = method;
+
+	    // Create proxy-stubs to the method.
+	    var stub = _jsUtil2['default'].ns(api.methods, key, { delimiter: '/' });
+	    // console.log('api.methods', api.methods);
+	    // api.methods[key] = stub;
+	    _lodash2['default'].keys(method.verbs).forEach(function (verb) {
+	      stub[verb] = function () {
+	        for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+	          args[_key5] = arguments[_key5];
+	        }
+
+	        return method.invoke(verb, args);
+	      };
+	    });
 	  });
 
 	  // Invoke stored queue of methods that were registered
@@ -12721,6 +12747,7 @@
 
 	      var verb = arguments.length <= 0 || arguments[0] === undefined ? 'GET' : arguments[0];
 
+	      verb = verb.toUpperCase();
 	      return new _bluebird2['default'](function (resolve, reject) {
 	        var payload = {
 	          verb: verb,
@@ -17969,10 +17996,14 @@
 	*
 	* @param root:      The root object.
 	* @param namespace: The dot-delimited NS string (excluding the root object).
+	* @param options:
+	*           - delimiter: The namespace delimiter. Default "."
 	*
 	* @returns the child object of the namespace.
 	*/
 	var ns = function ns(root, namespace) {
+	  var options = arguments[2] === undefined ? {} : arguments[2];
+
 	  if (_lodash2['default'].isString(root) || _lodash2['default'].isArray(root)) {
 	    namespace = root;
 	    root = null;
@@ -17980,6 +18011,7 @@
 	  if (isBlank(namespace)) {
 	    return;
 	  }
+	  var delimiter = options.delimiter || '.';
 
 	  var getOrCreate = function getOrCreate(parent, name) {
 	    parent[name] = parent[name] || {};
@@ -17997,7 +18029,7 @@
 
 	  // Build the namespace.
 	  if (!_lodash2['default'].isArray(namespace)) {
-	    namespace = namespace.split('.');
+	    namespace = namespace.split(delimiter);
 	  }
 	  return add(root, namespace);
 	};

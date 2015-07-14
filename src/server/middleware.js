@@ -7,7 +7,7 @@ import pageJS from './page-js';
 import { BASE_MODULE_PATH } from '../const';
 
 
-const getMethods = (basePath) => {
+const getMethods = () => {
   return state.methods.map((method) => {
       let result = {};
       ['get', 'put', 'post', 'delete'].map((verb) => {
@@ -66,7 +66,9 @@ export default () => {
         case `/${ BASE_MODULE_PATH }/manifest`:
             if (req.method === 'GET') {
               sendJson(res, {
-                methods: getMethods(state.basePath)
+                version: '0.0.0', // TODO: version
+                basePath: state.basePath,
+                methods: getMethods()
               });
               break;
             }

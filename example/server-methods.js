@@ -5,7 +5,7 @@ Server.methods({
   'foo'(text) {
     console.log(this.verb);
     console.log('method: "foo"');
-    console.log('text', text);
+    console.log('text:', text);
     console.log('');
     return {
       method: 'foo',

@@ -48,6 +48,7 @@ export default class ClientMethod {
   * @return promise.
   */
   invoke(verb = 'GET', ...args) {
+    verb = verb.toUpperCase();
     return new Promise((resolve, reject) => {
         let payload = {
           verb: verb,
