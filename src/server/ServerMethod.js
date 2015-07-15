@@ -35,9 +35,7 @@ export default class ServerMethod {
   invoke(args) {
     return new Promise((resolve, reject) => {
         const rejectWithError = (err) => {
-            // if (!err instanceof ServerMethodError) {
             err = new ServerMethodError(err.status, this.name, args, err.message);
-            // }
             reject(err);
         };
 

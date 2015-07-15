@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import ClientMethod from '../../src/client/ClientMethod';
+import { ServerMethodError } from '../../src/errors';
 import { xhr } from 'js-util';
 import { FakeXMLHttpRequest } from 'sinon';
 import Promise from 'bluebird';
@@ -92,9 +93,10 @@ describe('Client:ClientMethod', () => {
     });
 
 
-    it('throws an error', (done) => {
+    it('throws an error (malformed, no reponse-text from server)', (done) => {
       new ClientMethod('foo').invoke()
-      .catch(XhrError, (err) => {
+      .catch((err) => {
+          expect(err).to.be.an.instanceof(ServerMethodError);
           expect(err.status).to.equal(500);
           done()
       });
@@ -102,5 +104,23 @@ describe('Client:ClientMethod', () => {
       fakeXhr.readyState = 4;
       fakeXhr.onreadystatechange();
     });
+
+    it('throws an error ([ServerMethodError] returned from server)', (done) => {
+      new ClientMethod('foo').invoke()
+      .catch((err) => {
+          expect(err).to.be.an.instanceof(ServerMethodError);
+          expect(err.status).to.equal(503);
+          expect(err.method).to.equal('my-method');
+          expect(err.args).to.eql([1,2,3]);
+          expect(err.message).to.equal(':(');
+          done()
+      });
+      let serverError = new ServerMethodError(503, 'my-method', [1,2,3], ':(');
+      fakeXhr.responseText = JSON.stringify(serverError);
+      fakeXhr.status = 500;
+      fakeXhr.readyState = 4;
+      fakeXhr.onreadystatechange();
+    });
+
   });
 });

@@ -62,7 +62,12 @@ export default class ClientMethod {
             .then((result) => { resolve(result); })
             .catch((err) => {
                 // Convert the [HttpError] into a [ServerMethodError].
-                let { status, method, args, message } = JSON.parse(err.message);
+                try {
+                  var { status, method, args, message } = JSON.parse(err.message);
+                } catch (e) {
+                  // The server did not return JSON details about the method error.
+                  message = err.message;
+                }
                 reject(new ServerMethodError(status, method, args, message));
             });
     });
