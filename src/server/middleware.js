@@ -67,7 +67,7 @@ export default () => {
         case `/${ BASE_MODULE_PATH }/manifest`:
             if (req.method === 'GET') {
               sendJson(res, {
-                version: '0.0.0', // TODO: version
+                version: state.version || '0.0.0',
                 basePath: state.basePath,
                 methods: getMethods()
               });

@@ -7,9 +7,11 @@ import Immutable from 'immutable';
 export default {
   methods: Immutable.Map(),
   basePath: '/',
+  version: null,
 
   reset() {
     this.methods = this.methods.clear();
     this.basePath = '/';
+    this.version = null;
   }
 };

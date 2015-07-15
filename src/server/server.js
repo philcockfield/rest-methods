@@ -35,6 +35,7 @@ export default {
   * @param connect: The connect app to apply the middleware to.
   * @param options:
   *           - basePath: The base path to prepend URL's with.
+  *           - version:  The version number of the service.
   */
   init(connect, options = {}) {
     if (isInitialized) { throw new Error('Already initialized.'); }
@@ -48,6 +49,9 @@ export default {
       path = '';
     }
     state.basePath = `/${ path }`;
+
+    // Store state.
+    state.version = options.version;
 
     // Register middleware.
     connect.use(bodyParser.json());

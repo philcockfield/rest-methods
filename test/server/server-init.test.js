@@ -19,10 +19,15 @@ describe('Server', () => {
     expect(state.basePath).to.equal('/');
   });
 
-
-  it('configures with a base path', () => {
+  it('initializes with a base URL path', () => {
     server.init(connect, { basePath: '////api/////' });
     expect(state.basePath).to.equal('/api');
+  });
+
+
+  it('initializes with a version', () => {
+    server.init(connect, { version:'1.2.3' })
+    expect(state.version).to.equal('1.2.3');
   });
 
 });
