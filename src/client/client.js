@@ -7,7 +7,6 @@ import { BASE_MODULE_PATH } from '../const';
 
 export const state = {
   methods: {},
-  queue: [],
   readyHandlers: new Handlers()
 };
 
@@ -54,7 +53,6 @@ const api = {
     this.isReady = false;
     this.methods = {};
     state.methods = {};
-    state.queue = [];
     state.readyHandlers = new Handlers();
   },
 
@@ -88,28 +86,18 @@ const api = {
   * @return promise.
   */
   invoke(verb, methodName, args = []) {
+    // Setup initial conditions.
     if (!_.isArray(args)) { args = [args]; }
-
     if (!this.isReady) {
-      // Queue up the method for eventual execution.
-      return new Promise((resolve, reject) => {
-          state.queue.push({
-            verb: verb,
-            methodName: methodName,
-            args: _.flatten(args),
-            resolve: resolve,
-            reject: reject
-          });
-      });
-
-    } else {
-      // Invoke the method.
-      let method = state.methods[methodName];
-      if (!method || !method.verbs[verb.toLowerCase()]) {
-        throw new Error(`Failed to invoke. A ${ verb } method '${ methodName }' does not exist.`);
-      }
-      return method.invoke(verb, args);
+      throw new Error(`Initializion must be complete before invoking methods.  See 'isReady' flag.`)
     }
+
+    // Invoke the method.
+    let method = state.methods[methodName];
+    if (!method || !method.verbs[verb.toLowerCase()]) {
+      throw new Error(`Failed to invoke. A ${ verb } method '${ methodName }' does not exist.`);
+    }
+    return method.invoke(verb, args);
   },
 
   // HTTP verb specific invoker methods.
@@ -142,28 +130,10 @@ export const registerMethods = (methods = {}) => {
       });
   });
 
-
-  // Invoke stored queue of methods that were registered
-  // prior to the manifest being returned from the server.
-  api.isReady = true;
-  if (state.queue.length > 0) {
-    let queue = _.clone(state.queue);
-    state.queue = [];
-    queue.forEach((item) => {
-        api.invoke(item.verb, item.methodName, item.args)
-        .then((result) => { item.resolve(result); })
-        .catch((err) => { item.reject(err); });
-    });
-  }
-
   // Invoke ready handlers.
-  // NB: Delay to ensure no call-sites expect this to be synchronous.
-  //     This ensure that the queue (if it exists) gets execured before
-  //     any code within the `onReady` handlers.
-  util.delay(() => {
-    state.readyHandlers.invoke();
-    state.readyHandlers = new Handlers();
-  });
+  api.isReady = true;
+  state.readyHandlers.invoke();
+  state.readyHandlers = new Handlers();
 
   // Finish up.
   return this;

@@ -67,7 +67,11 @@ describe('Client:methods (proxy-stubs)', () => {
             fakeXhr.send = (data) => { sent.push(data); };
             return fakeXhr;
         };
-        client.methods.foo[verb](123)
+
+        let args = undefined
+        if (verb === 'put' || verb === 'post') { args = 123; }
+
+        client.methods.foo[verb](args)
         .then((result) => {
               expect(fakeXhr.method).to.equal(verb.toUpperCase());
               expect(result).to.eql({ myResponse: true });

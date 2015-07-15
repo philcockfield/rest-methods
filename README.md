@@ -9,15 +9,10 @@ Model your resource-oriented API as server methods.  These are exposed as a REST
 
 
 ## TODO
-- Report errors on client from server (via .catch)
-- Only return GET method if a function is specified.
-- Pass in URL to method
-- Version passed to config.
 - Generate HTML documentation page (/server-methods)
 - Server => Server communications.
-- Change /manifest => /server-methods.json
-- Throw error if parameters for GET method (if not represented in URL).
-- within server method helper: this.throw(status, message)
+- Pass query string into method
+
 
 Server examples
 - Success

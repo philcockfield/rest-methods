@@ -11,10 +11,9 @@ const { XhrError, XhrParseError } = xhr;
 
 describe('Client:ClientMethod', () => {
   describe('state', () => {
-    it('stores constructor values', () => {
+    it('stores the method name', () => {
       let method = new ClientMethod('foo');
       expect(method.name).to.equal('foo');
-      expect(method.urlPattern).to.equal('/');
     });
 
 
@@ -35,9 +34,33 @@ describe('Client:ClientMethod', () => {
   });
 
 
-  it('returns the url', () => {
-    let method = new ClientMethod('foo', { url:'/foo' });
-    expect(method.url()).to.equal('/foo');
+  describe('url', () => {
+    it('derives the URL from the method name', () => {
+      let method = new ClientMethod('////foo/bar');
+      expect(method.urlPattern).to.equal('/foo/bar');
+      expect(method.url()).to.equal('/foo/bar');
+    });
+
+
+    it('takes a custom URL (no parameters)', () => {
+      let method = new ClientMethod('foo', { url:'/foo' });
+      expect(method.url()).to.equal('/foo');
+    });
+
+
+    it('constructs URL with parameters', () => {
+      let method = new ClientMethod('foo', { url:'/foo/:org/:org/:id/edit?q=abc' });
+      let url = method.url('acme', 'edge-case', 'bob');
+      expect(url).to.equal('/foo/acme/edge-case/bob/edit?q=abc');
+    });
+
+
+    it('throws if there are not enough arguments', () => {
+      let method = new ClientMethod('foo', { url:'/foo/:org/:id/edit?q=abc' });
+      let fn = () => { method.url(); };
+      expect(fn).to.throw();
+    });
+
   });
 
 
@@ -56,17 +79,33 @@ describe('Client:ClientMethod', () => {
     });
 
 
-    it('invokes against the correct URL', () => {
+    it('sends to the method URL', () => {
       let method = new ClientMethod('foo/bar');
       method.invoke();
-      expect(fakeXhr.url).to.equal(method.url());
+      console.log('method.url()', method.url());
+      expect(fakeXhr.url).to.equal('/foo/bar');
+    });
+
+
+    it('sends to a simple URL', () => {
+      let method = new ClientMethod('foo/bar', { url:'/yo' });
+      method.invoke();
+      console.log('method.url()', method.url());
+      expect(fakeXhr.url).to.equal('/yo');
+    });
+
+
+    it('sends to a paramatised URL', () => {
+      let method = new ClientMethod('foo', { url:'/foo/:id/edit' });
+      method.invoke('GET', 'my-id');
+      expect(fakeXhr.url).to.equal('/foo/my-id/edit');
     });
 
 
     it('invokes with no arguments', () => {
-      let method = new ClientMethod('foo/bar');
+      let method = new ClientMethod('foo');
       method.invoke();
-      expect(sent[0].method).to.equal('foo/bar');
+      expect(sent[0].method).to.equal('foo');
       expect(sent[0].verb).to.equal('GET');
       expect(sent[0].args).to.eql([]);
     });
@@ -77,6 +116,13 @@ describe('Client:ClientMethod', () => {
       method.invoke('PUT', 1, 'two', { three:3 });
       expect(sent[0].verb).to.equal('PUT');
       expect(sent[0].args).to.eql([1, 'two', { three:3 }]);
+    });
+
+
+    it('removes the arguments passed in the URL', () => {
+      let method = new ClientMethod('foo', { url:'foo/:id' });
+      method.invoke('PUT', 'my-id', 1, 2);
+      expect(sent[0].args).to.eql([1, 2]);
     });
 
 
@@ -105,6 +151,7 @@ describe('Client:ClientMethod', () => {
       fakeXhr.onreadystatechange();
     });
 
+
     it('throws an error ([ServerMethodError] returned from server)', (done) => {
       new ClientMethod('foo').invoke()
       .catch((err) => {
@@ -121,6 +168,5 @@ describe('Client:ClientMethod', () => {
       fakeXhr.readyState = 4;
       fakeXhr.onreadystatechange();
     });
-
   });
 });
