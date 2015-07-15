@@ -6,6 +6,7 @@ import { ServerMethodError } from '../errors';
 import pageJS from '../page-js';
 
 
+
 /**
   * Represents a proxy to a single method on the server.
   */
@@ -99,8 +100,8 @@ export default class ClientMethod {
         }
 
         if ((verb === 'GET' || verb === 'DELETE') && args.length > 0) {
-          let msg = `You are attempting to send arguments to the '${ this.name }' ${ verb } method.`;
-          if (urlParamsTotal > 0) { msg += ` For ${ verb } methods you can only pass parameters for variables within the URL (${ this.urlPattern }).`; }
+          let msg = `Cannot send arguments to the '${ this.name }', REST does not allow you to submit data to a ${ verb } method.  Instead use the PUT or POST verbs.`;
+          if (urlParamsTotal > 0) { msg += ` This method's URL does, however, take parameters (${ this.urlPattern }).`; }
           throw new Error(msg);
         }
 
