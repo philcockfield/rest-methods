@@ -20,14 +20,19 @@ import './server-methods';
 
 // Initialize the web-server with the module's middleware.
 let app = connect();
-Server.init(app, { basePath: '/api/' });
+Server.init(app, {
+  basePath: '/api/',
+  version: '1.2.3'
+});
 
 
 // Sample HTML page.
 app.use((req, res) => {
-  fs.readFile(`${ __dirname }/index.html`, (err, result) => {
-    res.end(result.toString());
-  });
+  if (req.url === '/') {
+    fs.readFile(`${ __dirname }/index.html`, (err, result) => {
+      res.end(result.toString());
+    });
+  }
 });
 
 

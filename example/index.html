@@ -34,7 +34,7 @@
 
     <h1>Server Methods</h1>
     <ul>
-      <li><a href='/server-methods/manifest'>/server-methods/manifest</a></li>
+      <li><a href='/server-methods.json'>/server-methods.json</a></li>
       <li><a href='/server-methods.client.js'>/server-methods.client.js</a></li>
       <li><a href='/server-methods.client.min.js'>/server-methods.client.min.js</a></li>
     </ul>
@@ -54,8 +54,9 @@
       console.log('ready');
 
       // console.log('Server.methods', Server.methods);
-      Server.methods.foo.put('hello foo')
-      .then(function (result) { console.log('get', result); });
+      Server.methods.foo.put('hello foo', 777)
+      .then(function (result) { console.log('get', result); })
+      .catch(function (err) { console.log('err', err); })
 
 
     });
