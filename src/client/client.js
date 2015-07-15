@@ -36,7 +36,7 @@ const api = {
   */
   init() {
     return new Promise((resolve, reject) => {
-        util.xhr.get(`/${ BASE_MODULE_PATH }/manifest`)
+        util.xhr.get(`/${ BASE_MODULE_PATH }.json`)
         .then((result) => {
             registerMethods(result.methods);
             resolve();
