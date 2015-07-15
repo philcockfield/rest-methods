@@ -12,7 +12,7 @@ Model your resource-oriented API as server methods.  These are exposed as a REST
 - Generate HTML documentation page (/server-methods)
 - Server => Server communications.
 - Pass query string into method
-
+- Remove Immutable lib.
 
 Server examples
 - Success
