@@ -12,17 +12,41 @@ describe('Server:ServerMethod', () => {
     expect(method.verb).to.equal('GET');
   });
 
-
-  it('has no function parameters', () => {
-    let method = new Method('foo', () => 0, '/foo', 'PUT');
-    expect(method.params).to.eql([]);
+  it('has route keys', () => {
+    let method = new Method('foo', (id, query) => 0, '/foo/:id/edit/:query', 'PUT');
+    expect(method.route.keys[0].name).to.equal('id');
+    expect(method.route.keys[1].name).to.equal('query');
   });
 
 
-  it('has function parameters', () => {
-    let method = new Method('foo', (p1, p2) => 0, '/foo', 'PUT');
-    expect(method.params).to.eql(['p1', 'p2']);
+  describe('function parameters', () => {
+    it('has no function parameters', () => {
+      let method = new Method('foo', () => 0, '/foo', 'PUT');
+      expect(method.params).to.eql(undefined);
+    });
+
+
+    it('has function parameters', () => {
+      let method = new Method('foo', (p1, p2) => 0, '/foo', 'PUT');
+      expect(method.params).to.eql(['p1', 'p2']);
+    });
+
+
+    it('throws if URL contains params that are not in the function definition', () => {
+      let fn = () => {
+        let method = new Method('foo', (p1, p2) => 0, '/foo/:id', 'PUT');
+      };
+      expect(fn).to.throw();
+    });
+
+    it('throws if there are not enough parameters for the URL', () => {
+      let fn = () => {
+        let method = new Method('foo', () => 0, '/foo/:id', 'PUT');
+      };
+      expect(fn).to.throw();
+    });
   });
+
 
   describe('invoke()', () => {
     it('passes parameters and returns promise', (done) => {
@@ -35,15 +59,68 @@ describe('Server:ServerMethod', () => {
       });
     });
 
+    it('passes the URL parameters into the method first', (done) => {
+      let params = {};
+      let fn = (id, query, num1, num2) => {
+        params.id = id;
+        params.query = query;
+        return num1 + num2;
+      };
+      let method = new Method('foo', fn, '/foo/:id/:query', 'PUT');
 
-    it('passes details within [this] context', (done) => {
-      let self = undefined;
-      let fn = function () {
-        self = this;
-      }
+      method.invoke([1, 2], '/foo/my-id/my-query?foo=123')
+      .then((result) => {
+          expect(result).to.equal(3);
+          expect(params.id).to.equal('my-id');
+          expect(params.query).to.equal('my-query');
+          done();
+      });
+    });
+  });
+
+
+  describe('invoke [this] context', () => {
+    it('it has the HTTP verb', (done) => {
+      let self;
+      let fn = function () { self = this; }
       new Method('foo', fn, '/foo', 'PUT').invoke()
       .then(function() {
           expect(self.verb).to.equal('PUT');
+          done();
+      });
+    });
+
+    it('has the url', (done) => {
+      let self;
+      let fn = function () { self = this; }
+      new Method('foo', fn, '/foo', 'PUT').invoke(null, '/foo')
+      .then(function() {
+          expect(self.url.path).to.equal('/foo');
+          done();
+      });
+    });
+
+    it('has no URL parameters', (done) => {
+      let self;
+      let fn = function () { self = this; }
+      new Method('foo', fn, '/foo', 'PUT').invoke(null, '/foo')
+      .then(function() {
+          expect(self.url.params).to.eql([]);
+          done();
+      });
+    });
+
+    it('has URL parameters', (done) => {
+      let self;
+      let fn = function(id, query) { self = this; }
+      let method = new Method('foo', fn, '/foo/:id/edit/:query', 'PUT')
+      method.invoke(null, '/foo/123/edit/cow')
+      .then(function() {
+          let params = self.url.params;
+          expect(params[0]).to.equal(123);
+          expect(params[1]).to.equal('cow');
+          expect(params.id).to.equal(123);
+          expect(params.query).to.equal('cow');
           done();
       });
     });

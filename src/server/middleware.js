@@ -16,7 +16,7 @@ const getMethods = () => {
           if (item) {
             if (item.route.path) { result.url = item.route.path; }
             let verbDefiniton = result[verb] = {}
-            if (item.params.length > 0) { verbDefiniton.params = item.params; }
+            if (item.params) { verbDefiniton.params = item.params; }
           }
       });
       return result;
@@ -64,7 +64,7 @@ export default () => {
   return (req, res, next) => {
       switch (req.url) {
         // GET: The manifest of methods.
-        case `/${ BASE_MODULE_PATH }/manifest`:
+        case `/${ BASE_MODULE_PATH }.json`:
             if (req.method === 'GET') {
               sendJson(res, {
                 version: state.version || '0.0.0',
@@ -93,7 +93,7 @@ export default () => {
             let methodVerb = matchMethodUrl(req.url, req.method);
             if (methodVerb) {
               // Invoke the method.
-              methodVerb.invoke(req.body.args)
+              methodVerb.invoke(req.body.args, req.url)
                 .then((result) => { sendJson(res, result); })
                 .catch((err) => {
                     res.statusCode = err.status || 500;

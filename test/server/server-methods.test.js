@@ -118,7 +118,7 @@ describe('Server:methods', () => {
       let methods = server.methods({
         'method':{
           url: '/foo/:id',
-          get: () => {}
+          get: (id) => {}
         }
       });
       expect(methods['method'].get.route.path).to.equal('/foo/:id');
