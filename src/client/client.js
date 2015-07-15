@@ -106,7 +106,7 @@ const api = {
       // Invoke the method.
       let method = state.methods[methodName];
       if (!method || !method.verbs[verb.toLowerCase()]) {
-        throw new Error(`A ${ verb } method '${ methodName }' does not exist.`);
+        throw new Error(`Failed to invoke. A ${ verb } method '${ methodName }' does not exist.`);
       }
       return method.invoke(verb, args);
     }

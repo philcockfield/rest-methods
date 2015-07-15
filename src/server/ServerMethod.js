@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import util from 'js-util';
 import pageJS from './page-js';
+import { ServerMethodError } from '../errors';
 
 
 
@@ -34,7 +35,7 @@ export default class ServerMethod {
   invoke(args) {
     return new Promise((resolve, reject) => {
         const rejectWithError = (err) => {
-            err = new Error(`Failed while executing '${ this.name }': ${ err.message }`);
+            err = new ServerMethodError((err.status || 500), this.name, args, err.message);
             reject(err);
         };
 

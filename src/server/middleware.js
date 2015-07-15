@@ -7,6 +7,7 @@ import pageJS from './page-js';
 import { BASE_MODULE_PATH } from '../const';
 
 
+
 const getMethods = () => {
   return state.methods.map((method) => {
       let result = {};
@@ -91,11 +92,13 @@ export default () => {
             // Attempt to match the URL of a method.
             let methodVerb = matchMethodUrl(req.url, req.method);
             if (methodVerb) {
-
               // Invoke the method.
               methodVerb.invoke(req.body.args)
                 .then((result) => { sendJson(res, result); })
-                .catch((err) => { res.status(500).send(err.message); });
+                .catch((err) => {
+                    res.statusCode = err.status || 500;
+                    res.end(JSON.stringify(err));
+                });
 
             } else {
               // No match - next middleware method.

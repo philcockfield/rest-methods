@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { BASE_MODULE_PATH } from '../const';
 import Promise from 'bluebird';
 import { xhr } from 'js-util';
+import { ServerMethodError } from '../errors';
 
 
 
@@ -59,7 +60,11 @@ export default class ClientMethod {
         let xhrMethod = xhr[verb.toLowerCase()];
         xhrMethod(this.url(), payload)
             .then((result) => { resolve(result); })
-            .catch((err) => { reject(err); });
+            .catch((err) => {
+                // Convert the [HttpError] into a [ServerMethodError].
+                let { status, method, args, message } = JSON.parse(err.message);
+                reject(new ServerMethodError(status, method, args, message));
+            });
     });
   }
 }
