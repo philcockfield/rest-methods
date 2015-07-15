@@ -35,14 +35,17 @@ export default class ServerMethod {
   invoke(args) {
     return new Promise((resolve, reject) => {
         const rejectWithError = (err) => {
-            err = new ServerMethodError((err.status || 500), this.name, args, err.message);
+            // if (!err instanceof ServerMethodError) {
+            err = new ServerMethodError(err.status, this.name, args, err.message);
+            // }
             reject(err);
         };
 
         // Attempt to invoke the function.
         try {
           let thisContext = {
-            verb: this.verb
+            verb: this.verb,
+            throw: (status, message) => { throw new ServerMethodError(status, this.name, args, message); }
           };
           let result = this.func.apply(thisContext, args);
           if (result && _.isFunction(result.then)) {
