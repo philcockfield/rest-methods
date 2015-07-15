@@ -93,11 +93,6 @@ export default () => {
             let methodVerb = matchMethodUrl(req.url, req.method);
             if (methodVerb) {
               // Invoke the method.
-
-              console.log('-------------------------------------------');
-              console.log('req.body.args', req.body.args);
-              console.log('');
-
               methodVerb.invoke(req.body.args, req.url)
                 .then((result) => { sendJson(res, result); })
                 .catch((err) => {
