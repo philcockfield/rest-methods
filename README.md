@@ -8,6 +8,25 @@ Name: rest-methods
 Model your resource-oriented API as server methods.  These are exposed as a RESTful end-point.  Invoke these on the client with a promise-based API.
 
 
+## TODO
+- Report errors on client from server (via .catch)
+- Only return GET method if a function is specified.
+- Pass in URL to method
+- Version passed to config.
+- Generate HTML documentation page (/server-methods)
+- Server => Server communications.
+- Change /manifest => /server-methods.json
+- Throw error if parameters for GET method (if not represented in URL).
+- within server method helper: this.throw(status, message)
+
+Server examples
+- Success
+- throwing simple Error (500)
+- using this.throw(status, message)
+- Promise
+  - success / error
+- Differently crafted URL
+- URL params (/:id => (id))
 
 
 [![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)

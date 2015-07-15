@@ -1,8 +1,8 @@
 /* gloal window */
-import Server from './client';
+import client from './client';
 
 /*
 Export for webpack builds.
-Make the [Server] object available globally.
+Make the proxy to the server is available globally.
 */
-window.Server = Server;
+window.Server = client;
