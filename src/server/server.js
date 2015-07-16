@@ -1,11 +1,10 @@
 import _ from 'lodash';
 import bodyParser from 'body-parser';
 import Method from './ServerMethod';
-import state from './state';
 import middleware from './middleware';
+import ConnectModule from 'connect';
+import { METHODS } from '../const';
 
-let isInitialized = false;
-let queuedMethodDefinitions = [];
 
 
 /**
@@ -26,20 +25,23 @@ const methodUrl = (basePath, path) => {
 
 
 /**
-* API for registering methods.
-*/
-export default {
-  /**
-  * Initializes the server module.
-  *
-  * @param connect: The connect app to apply the middleware to.
-  * @param options:
-  *           - basePath: The base path to prepend URL's with.
-  *           - version:  The version number of the service.
+  * Represents a REST API server.
   */
-  init(connect, options = {}) {
-    if (isInitialized) { throw new Error('Already initialized.'); }
-    if (!connect) { throw new Error('Failed to initialize. Connect app not specified.'); }
+class Server {
+  /**
+    * Constructor
+    *
+    * @param connect: The connect app to apply the middleware to.
+    * @param options:
+    *           - connect:  The connect app to use.
+    *                       If not specified default connect middleware is created.
+    *           - basePath: The base path to prepend URL's with.
+    *           - version:  The version number of the service.
+    */
+  constructor(options = {}) {
+    // Store state.
+    this.version = options.version || '0.0.0';
+    this[METHODS] = {};
 
     // Store base path.
     let path = options.basePath;
@@ -48,40 +50,20 @@ export default {
     } else {
       path = '';
     }
-    state.basePath = `/${ path }`;
-
-    // Store state.
-    state.version = options.version;
+    this.basePath = `/${ path }`;
 
     // Register middleware.
-    connect.use(bodyParser.json());
-    connect.use(middleware());
-
-    // Register any pending methods that have been queued.
-    //
-    // NB: Methods are prevented from being registered until the module
-    //     is initialized to ensure their route paths are correct.
-    //     This allows method to be registered at any time prior to initialization.
-    isInitialized = true;
-    if (queuedMethodDefinitions.length > 0) {
-      queuedMethodDefinitions.forEach(def => { this.methods(def) });
+    let connect = options.connect;
+    if (!connect) {
+      connect = ConnectModule();
     }
+    connect.use(bodyParser.json());
+    connect.use(middleware(this));
+    this.connect = connect;
 
     // Finish up.
     return this;
-  },
-
-
-  /**
-  * Resets the server to an uninitialized state.
-  */
-  reset() {
-    state.reset();
-    isInitialized = false;
-    queuedMethodDefinitions = [];
-    return this;
-  },
-
+  }
 
 
   /**
@@ -91,18 +73,14 @@ export default {
   * @return an object containing the set of method definitions.
   */
   methods(definition) {
-    if (!isInitialized && definition) {
-      queuedMethodDefinitions.push(definition);
-    }
-
     // Write: store method definitions if passed.
-    if (isInitialized && definition) {
+    if (definition) {
       const createUrl = (path, methodDef) => {
-          return methodUrl(state.basePath, (methodDef.url || path));
+          return methodUrl(this.basePath, (methodDef.url || path));
       };
 
       _.keys(definition).forEach((key) => {
-          let methods = state.methods;
+          let methods = this[METHODS];
           if (methods[key]) { throw new Error(`Method '${ key }' already exists.`); }
 
           let value = definition[key];
@@ -133,11 +111,15 @@ export default {
           }
 
           // Store the values.
-          state.methods[key] = methodSet;
+          this[METHODS][key] = methodSet;
       });
     }
 
     // Read.
-    return state.methods;
+    return this[METHODS];
   }
-};
+}
+
+
+
+export default (options) => { return new Server(options); };

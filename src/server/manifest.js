@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import state from './state';
 import pageJS from '../page-js';
+import { METHODS } from '../const';
 
 
 /**
@@ -8,10 +8,12 @@ import pageJS from '../page-js';
   * for delivery over the wire to clients.
   * @return {object}.
   */
-export const getMethods = () => {
+export const getMethods = (server) => {
+  if (!server) { throw new Error('getMethods: [server] not sepcified.'); }
   let result = {};
-  Object.keys(state.methods).forEach(key => {
-      let method = state.methods[key];
+  let methods = server[METHODS];
+  Object.keys(methods).forEach(key => {
+      let method = methods[key];
       let methodDefinition = { url:undefined };
       result[key] = methodDefinition;
       ['get', 'put', 'post', 'delete'].map((verb) => {
@@ -28,10 +30,10 @@ export const getMethods = () => {
 
 
 
-export default () => {
+export default (server) => {
   return {
-    version: state.version || '0.0.0',
-    basePath: state.basePath,
-    methods: getMethods()
+    version: server.version || '0.0.0',
+    basePath: server.basePath,
+    methods: getMethods(server)
   };
 };

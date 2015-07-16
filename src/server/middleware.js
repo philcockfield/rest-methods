@@ -2,10 +2,9 @@ import fs from 'fs';
 import fsPath from 'path';
 import _ from 'lodash';
 import Promise from 'bluebird';
-import state from './state';
-import getManifest from './manifest';
+import manifest from './manifest';
 import pageJS from '../page-js';
-import { BASE_MODULE_PATH } from '../const';
+import { BASE_MODULE_PATH, METHODS } from '../const';
 
 
 
@@ -34,19 +33,21 @@ const sendJson = (res, obj) => {
 /**
   * Determines whether the given URL path matches any of
   * the method routes.
-  * @param url:  {string} The URL path to match.
-  * @param verb: {string} The HTTP verb to match (GET|PUT|POST|DELETE).
+  * @param server:  {Server} instance to examine.
+  * @param url:     {string} The URL path to match.
+  * @param verb:    {string} The HTTP verb to match (GET|PUT|POST|DELETE).
   * @return {ServerMethod}
   */
-export const matchMethodUrl = (url, verb) => {
+export const matchMethodUrl = (server, url, verb) => {
     verb = verb.toLowerCase();
     let context = new pageJS.Context(url);
-    let methodName = _.keys(state.methods).find((key) => {
-        let methodVerb = state.methods[key][verb];
+    let methods = server[METHODS];
+    let methodName = _.keys(methods).find((key) => {
+        let methodVerb = methods[key][verb];
         let isMatch =  (methodVerb && methodVerb.route.match(context.path, context.params))
         return isMatch
     });
-    let method = state.methods[methodName];
+    let method = methods[methodName];
     return method ? method[verb] : undefined;
 };
 
@@ -54,16 +55,17 @@ export const matchMethodUrl = (url, verb) => {
 
 /**
 * The connect middleware for managing API calls to the server.
+* @param server:  {Server} instance the middleware is handling.
 * @return the connect middleware function.
 */
-export default () => {
+export default (server) => {
   // Middleware.
   return (req, res, next) => {
       switch (req.url) {
         // GET: The manifest of methods.
         case `/${ BASE_MODULE_PATH }.json`:
             if (req.method === 'GET') {
-              sendJson(res, getManifest());
+              sendJson(res, manifest(server));
 
               break;
             }
@@ -84,7 +86,7 @@ export default () => {
 
         default:
             // Attempt to match the URL for a method.
-            let methodVerb = manifest.matchMethodUrl(req.url, req.method);
+            let methodVerb = matchMethodUrl(server, req.url, req.method);
             if (methodVerb) {
               // Invoke the method.
               methodVerb.invoke(req.body.args, req.url)

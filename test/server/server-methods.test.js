@@ -1,21 +1,24 @@
 import { expect } from 'chai';
 import _ from 'lodash';
-import server from '../../server';
 import ServerMethod from '../../src/server/ServerMethod';
-import state from '../../src/server/state';
+import Server from '../../server';
+import { METHODS } from '../../src/const';
+
+const fakeConnect = { use: () => {} };
+
 
 
 
 describe('Server:methods', () => {
-  let fakeConnect = { use: () => {} };
+  let server;
   beforeEach(() => {
-      server.reset();
-      server.init(fakeConnect);
+      server = Server({ connect:fakeConnect });
   });
 
 
   it('has no methods by default', () => {
     expect(server.methods()).to.eql({});
+    expect(server[METHODS]).to.eql({});
   });
 
 
@@ -47,18 +50,6 @@ describe('Server:methods', () => {
     expect(method.put.func).to.equal(fnPUT);
     expect(method.post.func).to.equal(fnPOST);
     expect(method.delete.func).to.equal(fnDELETE);
-  });
-
-
-  it('queues definitions until initialized', () => {
-    server.reset();
-    let methods = server.methods({
-      'my-method':{ get: () => {} }
-    });
-
-    expect(server.methods()).to.eql({});
-    server.init(fakeConnect);
-    expect(server.methods()['my-method'].get.name).to.eql('my-method');
   });
 
 
@@ -96,7 +87,7 @@ describe('Server:methods', () => {
   });
 
 
-  describe('url', () => {
+  describe('method URLs', () => {
     it('has a default URL', () => {
       let methods = server.methods({
         'method':{ get: () => {} }
@@ -105,7 +96,7 @@ describe('Server:methods', () => {
     });
 
     it('has a default URL with basePath prefix', () => {
-      state.basePath = '/api'
+      server.basePath = '/api'
       let methods = server.methods({
         'method':{ get: () => {} }
       });

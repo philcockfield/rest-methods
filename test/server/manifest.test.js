@@ -1,22 +1,19 @@
 import { expect } from 'chai';
-import server from '../../server';
-import state from '../../src/server/state';
+import Server from '../../server';
 import manifest from '../../src/server/manifest';
 import { getMethods } from '../../src/server/manifest';
+
+const fakeConnect = { use: () => {} };
 
 
 
 describe('Server:manifest', () => {
-  let fakeConnect = { use: () => {} };
-  beforeEach(() => { server.reset(); });
-
-
-  describe('getMethods()', () => {
-    beforeEach(() => { server.init(fakeConnect); });
-
+  describe('getMethods(server)', () => {
+    let server;
+    beforeEach(() => { server = Server(); });
 
     it('returns an empty object (no methods registered)', () => {
-      expect(getMethods()).to.eql({});
+      expect(getMethods(server)).to.eql({});
     });
 
 
@@ -24,7 +21,7 @@ describe('Server:manifest', () => {
       server.methods({
         'foo': { get: () => {} }
       });
-      expect(getMethods()).to.eql({
+      expect(getMethods(server)).to.eql({
         'foo': {
           url: '/foo',
           get: {}
@@ -37,7 +34,7 @@ describe('Server:manifest', () => {
       server.methods({
         'foo': { put: (text, number) => {} }
       });
-      expect(getMethods()).to.eql({
+      expect(getMethods(server)).to.eql({
         'foo': {
           url: '/foo',
           put: {
@@ -50,7 +47,7 @@ describe('Server:manifest', () => {
 
     it('retrieves methods for each HTTP verb from a single method registration', () => {
       server.methods({ 'foo': (text) => {} });
-      let methods = getMethods();
+      let methods = getMethods(server);
       expect(methods.foo.url).to.equal('/foo');
       expect(methods.foo.get).to.eql({}); // No params.
       expect(methods.foo.put).to.eql({ params:['text'] });
@@ -60,10 +57,9 @@ describe('Server:manifest', () => {
 
 
     it('prefixes the base-url to the methods route', () => {
-      server.reset();
-      server.init(fakeConnect, { basePath:'//v1///' });
+      server = Server({ basePath:'//v1///' })
       server.methods({ 'foo': (text) => {} });
-      expect(getMethods().foo.url).to.equal('/v1/foo');
+      expect(getMethods(server).foo.url).to.equal('/v1/foo');
     });
 
 
@@ -71,42 +67,41 @@ describe('Server:manifest', () => {
       server.methods({
         'foo': { url: '/thing/:id', get:(id) => {} }
       });
-      expect(getMethods().foo.url).to.equal('/thing/:id');
+      expect(getMethods(server).foo.url).to.equal('/thing/:id');
     });
   });
 
 
   describe('manifest (default)', () => {
     it('has default version', () => {
-      server.init(fakeConnect);
-      expect(manifest().version).to.eql('0.0.0');
+      let server = Server();
+      expect(manifest(server).version).to.eql('0.0.0');
     });
 
 
     it('has specified version', () => {
-      server.init(fakeConnect, { version: '1.2.3' });
-      expect(manifest().version).to.eql('1.2.3');
+      let server = Server({ version: '1.2.3' });
+      expect(manifest(server).version).to.eql('1.2.3');
     });
 
 
     it('has basePath', () => {
-      server.init(fakeConnect, { basePath: '//api///' });
-      expect(manifest().basePath).to.eql('/api');
+      let server = Server({ basePath: '//api///' });
+      expect(manifest(server).basePath).to.eql('/api');
     });
 
 
     it('has no methods', () => {
-      expect(manifest().methods).to.eql({});
-      server.init(fakeConnect);
-      expect(manifest().methods).to.eql({});
+      let server = Server();
+      expect(manifest(server).methods).to.eql({});
     });
 
 
     it('has methods', () => {
-      server.init(fakeConnect);
+      let server = Server();
       server.methods({ 'foo': (text) => {} });
-      expect(manifest().methods).not.to.equal(undefined);
-      expect(manifest().methods).to.eql(getMethods());
+      expect(manifest(server).methods).not.to.equal(undefined);
+      expect(manifest(server).methods).to.eql(getMethods(server));
     });
   });
 });

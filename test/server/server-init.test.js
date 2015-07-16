@@ -1,33 +1,39 @@
 import { expect } from 'chai';
-import server from '../../server';
-import state from '../../src/server/state';
-
+import Server from '../../server';
+const fakeConnect = { use: () => {} };
 
 
 describe('Server', () => {
-  beforeEach(() => { server.reset(); });
-  const fakeConnect = { use: () => {} };
+  it('has the given connect server', () => {
+    let server = Server({ connect:fakeConnect });
+    expect(server.connect).to.equal(fakeConnect);
+  });
 
-  it('throws if initialized more than once', () => {
-    server.init(fakeConnect);
-    let fn = () => { server.init(fakeConnect); };
-    expect(fn).to.throw(/Already initialized./);
+
+  it('constructs a default connect server', () => {
+    let server = Server();
+    expect(server.connect.use).to.be.an.instanceof(Function);
   });
 
 
   it('has no base path by default', () => {
-    expect(state.basePath).to.equal('/');
+    let server = Server();
+    expect(server.basePath).to.equal('/');
   });
 
+
   it('initializes with a base URL path', () => {
-    server.init(fakeConnect, { basePath: '////api/////' });
-    expect(state.basePath).to.equal('/api');
+    let server = Server({ basePath: '////api/////' });
+    expect(server.basePath).to.equal('/api');
   });
 
 
   it('initializes with a version', () => {
-    server.init(fakeConnect, { version:'1.2.3' })
-    expect(state.version).to.equal('1.2.3');
+    let server = Server();
+    expect(server.version).to.equal('0.0.0');
+
+    server = Server({ version:'1.2.3' });
+    expect(server.version).to.equal('1.2.3');
   });
 
 });

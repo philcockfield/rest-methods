@@ -1,31 +1,26 @@
 import { expect } from 'chai';
-import _ from 'lodash';
-import server from '../../server';
-import state from '../../src/server/state';
+import Server from '../../server';
 import { matchMethodUrl } from '../../src/server/middleware';
-import ServerMethod from '../../src/server/ServerMethod';
-
-const fakeConnect = { use: () => {} };
 
 
 describe('Server:middleware', () => {
+  let server;
   describe('matchMethodUrl()', () => {
     beforeEach(() => {
-        server.reset();
-        server.init(fakeConnect);
+        server = Server();
     });
 
 
     it('matches nothing when no methods have been registered', () => {
-      expect(matchMethodUrl('/foo', 'GET')).to.equal(undefined);
+      expect(matchMethodUrl(server, '/foo', 'GET')).to.equal(undefined);
     });
 
 
     it('matches a simple URL', () => {
       server.methods({ 'foo': () => {}});
       ['GET', 'PUT', 'POST', 'DELETE'].map(verb => {
-          expect(matchMethodUrl('/foo', verb).name).to.equal('foo');
-          expect(matchMethodUrl('/foo', verb).verb).to.equal(verb);
+          expect(matchMethodUrl(server, '/foo', verb).name).to.equal('foo');
+          expect(matchMethodUrl(server, '/foo', verb).verb).to.equal(verb);
       });
     });
 
@@ -36,8 +31,8 @@ describe('Server:middleware', () => {
           get: () => {}
         }
       });
-      expect(matchMethodUrl('/foo', 'GET').name).to.equal('foo');
-      expect(matchMethodUrl('/foo', 'PUT')).to.equal(undefined);
+      expect(matchMethodUrl(server, '/foo', 'GET').name).to.equal('foo');
+      expect(matchMethodUrl(server, '/foo', 'PUT')).to.equal(undefined);
     });
 
 
@@ -48,8 +43,8 @@ describe('Server:middleware', () => {
           get: (id) => {}
         }
       });
-      expect(matchMethodUrl('/foo/123', 'GET').name).to.equal('foo');
-      expect(matchMethodUrl('/foo', 'GET')).to.equal(undefined);
+      expect(matchMethodUrl(server, '/foo/123', 'GET').name).to.equal('foo');
+      expect(matchMethodUrl(server, '/foo', 'GET')).to.equal(undefined);
     });
   });
 });
