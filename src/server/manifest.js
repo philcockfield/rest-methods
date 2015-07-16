@@ -12,7 +12,7 @@ export const getMethods = () => {
   let result = {};
   Object.keys(state.methods).forEach(key => {
       let method = state.methods[key];
-      let methodDefinition = {};
+      let methodDefinition = { url:undefined };
       result[key] = methodDefinition;
       ['get', 'put', 'post', 'delete'].map((verb) => {
           let methodVerb = method[verb];
