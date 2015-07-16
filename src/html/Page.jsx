@@ -2,8 +2,8 @@ import React from 'react';
 
 
 /**
-  * A root HTML page.
-  */
+ * A root HTML page.
+ */
 export default class Page extends React.Component {
   render() {
     return (

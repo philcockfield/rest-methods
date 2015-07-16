@@ -73,6 +73,14 @@ describe('Server:manifest', () => {
 
 
   describe('manifest (default)', () => {
+    it('has the service name', () => {
+      let server = Server();
+      expect(manifest(server).name).to.eql(server.name);
+      server = Server({ name:'Foo' });
+      expect(manifest(server).name).to.eql('Foo');
+    });
+
+
     it('has default version', () => {
       let server = Server();
       expect(manifest(server).version).to.eql('0.0.0');

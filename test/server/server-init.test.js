@@ -36,4 +36,15 @@ describe('Server', () => {
     expect(server.version).to.equal('1.2.3');
   });
 
+
+  it('has a default name', () => {
+    let server = Server();
+    expect(server.name).to.equal('Server Methods');
+  });
+
+
+  it('has the specified name', () => {
+    let server = Server({ name:'My API' });
+    expect(server.name).to.equal('My API');
+  });
 });

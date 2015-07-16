@@ -6,12 +6,16 @@ import React from 'react';
   */
 export default class Api extends React.Component {
   render() {
-
     let { manifest } = this.props;
-    console.log('manifest', manifest);
+    let listItems = Object.keys(manifest.methods).map(key => {
+        return <li>{ key }</li>
+    });
 
     return (
-      <div>API Manifest: { this.props.pageTitle }</div>
+      <div>
+        <h1>{ manifest.name }</h1>
+        <ul>{ listItems }</ul>
+      </div>
     );
   }
 }

@@ -32,6 +32,7 @@ export const getMethods = (server) => {
 
 export default (server) => {
   return {
+    name: server.name,
     version: server.version || '0.0.0',
     basePath: server.basePath,
     methods: getMethods(server)

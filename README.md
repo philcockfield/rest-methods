@@ -11,7 +11,6 @@ Publish javascript functions as a REST/resource-oriented endpoint with a simple 
 - [ ] Generate HTML documentation page (/server-methods)
 - [ ] Server => Server communications.
 - [ ] Pass query string into method
-- [ ] Remove singlton (make init the server creation state factory).
 
 Server examples
 - [ ] Success

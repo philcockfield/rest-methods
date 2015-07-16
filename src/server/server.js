@@ -33,13 +33,15 @@ class Server {
     *
     * @param connect: The connect app to apply the middleware to.
     * @param options:
+    *           - name:     The name of the service.
     *           - connect:  The connect app to use.
-    *                       If not specified default connect middleware is created.
+    *                       If not specified a default Connect server is created.
     *           - basePath: The base path to prepend URL's with.
     *           - version:  The version number of the service.
     */
   constructor(options = {}) {
     // Store state.
+    this.name = options.name || 'Server Methods';
     this.version = options.version || '0.0.0';
     this[METHODS] = {};
 

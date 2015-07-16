@@ -68,7 +68,7 @@ export default (server) => {
         case `/${ BASE_MODULE_PATH }`:
             if (req.method === 'GET') {
               res.send(html.toHtml(html.Api, {
-                pageTitle:'Server Methods',
+                pageTitle: server.name,
                 manifest: manifest(server)
               }));
               break;
