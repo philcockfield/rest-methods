@@ -1,30 +1,29 @@
 # server-methods
-Publish javascript functions as REST endpoints with promise-based remote invocation.
+Isomorphic RESTful APIs.
 
+[![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 
-## Alt
-Name: rest-methods
+Publish javascript functions as a REST/resource-oriented endpoint with a simple promise-based RPC style invocation on the client.
 
-Model your resource-oriented API as server methods.  These are exposed as a RESTful end-point.  Invoke these on the client with a promise-based API.
 
 
 ## TODO
-- Generate HTML documentation page (/server-methods)
-- Server => Server communications.
-- Pass query string into method
-- Remove Immutable lib.
+- [ ] Generate HTML documentation page (/server-methods)
+- [ ] Server => Server communications.
+- [ ] Pass query string into method
+- [ ] Remove Immutable lib.
+- [ ] Remove singlton (make init the server creation state factory).
 
 Server examples
-- Success
-- throwing simple Error (500)
-- using this.throw(status, message)
-- Promise
-  - success / error
-- Differently crafted URL
-- URL params (/:id => (id))
+- [ ] Success
+- [ ] throwing simple Error (500)
+- [ ] using this.throw(status, message)
+- [ ] Promise
+  - [ ] success / error
+- [ ] Differently crafted URL
+- [ ] URL params (/:id => (id))
 
 
-[![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 
 
 
