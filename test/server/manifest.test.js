@@ -6,7 +6,7 @@ import { getMethods } from '../../src/server/manifest';
 
 
 
-describe.only('Server:manifest', () => {
+describe('Server:manifest', () => {
   let fakeConnect = { use: () => {} };
   beforeEach(() => { server.reset(); });
 

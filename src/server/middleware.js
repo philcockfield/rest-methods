@@ -3,25 +3,12 @@ import fsPath from 'path';
 import _ from 'lodash';
 import Promise from 'bluebird';
 import state from './state';
+import getManifest from './manifest';
 import pageJS from '../page-js';
 import { BASE_MODULE_PATH } from '../const';
 
 
 
-const getMethods = () => {
-  return state.methods.map((method) => {
-      let result = {};
-      ['get', 'put', 'post', 'delete'].map((verb) => {
-          let item = method[verb];
-          if (item) {
-            if (item.route.path) { result.url = item.route.path; }
-            let verbDefiniton = result[verb] = {}
-            if (item.params) { verbDefiniton.params = item.params; }
-          }
-      });
-      return result;
-  });
-};
 
 
 const jsCache = {};
@@ -46,11 +33,13 @@ const sendJson = (res, obj) => {
 const matchMethodUrl = (url, verb) => {
     verb = verb.toLowerCase();
     let context = new pageJS.Context(url);
-    let result = state.methods.find((method) => {
-        let methodVerb = method[verb];
-        return (methodVerb && methodVerb.route.match(context.path, context.params))
+    let methodName = _.keys(state.methods).find((key) => {
+        let methodVerb = state.methods[key][verb];
+        let isMatch =  (methodVerb && methodVerb.route.match(context.path, context.params))
+        return isMatch
     });
-    return result ? result[verb] : undefined;
+    let method = state.methods[methodName];
+    return method ? method[verb] : undefined;
 };
 
 
@@ -66,11 +55,8 @@ export default () => {
         // GET: The manifest of methods.
         case `/${ BASE_MODULE_PATH }.json`:
             if (req.method === 'GET') {
-              sendJson(res, {
-                version: state.version || '0.0.0',
-                basePath: state.basePath,
-                methods: getMethods()
-              });
+              sendJson(res, getManifest());
+
               break;
             }
 
@@ -89,7 +75,7 @@ export default () => {
             }
 
         default:
-            // Attempt to match the URL of a method.
+            // Attempt to match the URL for a method.
             let methodVerb = matchMethodUrl(req.url, req.method);
             if (methodVerb) {
               // Invoke the method.
@@ -101,7 +87,7 @@ export default () => {
                 });
 
             } else {
-              // No match - next middleware method.
+              // No match - continue to [next] middleware method.
               next();
             }
       }

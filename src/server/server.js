@@ -103,19 +103,21 @@ export default {
 
       _.keys(definition).forEach((key) => {
           let methods = state.methods;
-          if (methods.get(key)) { throw new Error(`Method '${ key }' already exists.`); }
+          if (methods[key]) { throw new Error(`Method '${ key }' already exists.`); }
 
           let value = definition[key];
           let url = createUrl(key, value);
           let methodSet;
           if (_.isFunction(value)) {
             // A single function was provided.
-            // It will be used for all REST verbs.
+            // Use it for all the HTTP verbs.
+            let func = value;
+            let funcNoParams = function() { return func.call(this); };
             methodSet = {
-              get: new Method(key, value, url, 'GET'),
-              put: new Method(key, value, url, 'PUT'),
-              post: new Method(key, value, url, 'POST'),
-              delete: new Method(key, value, url, 'DELETE')
+              get: new Method(key, funcNoParams, url, 'GET'),
+              put: new Method(key, func, url, 'PUT'),
+              post: new Method(key, func, url, 'POST'),
+              delete: new Method(key, funcNoParams, url, 'DELETE')
             }
           } else if(_.isObject(value)) {
 
@@ -131,11 +133,11 @@ export default {
           }
 
           // Store the values.
-          state.methods = methods.set(key, methodSet);
+          state.methods[key] = methodSet;
       });
     }
 
     // Read.
-    return state.methods.toObject();
+    return state.methods;
   }
 };

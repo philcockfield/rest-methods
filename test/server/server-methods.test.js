@@ -26,8 +26,6 @@ describe('Server:methods', () => {
     expect(methods['my-method'].put).to.be.an.instanceof(ServerMethod);
     expect(methods['my-method'].post).to.be.an.instanceof(ServerMethod);
     expect(methods['my-method'].delete).to.be.an.instanceof(ServerMethod);
-    expect(methods['my-method'].get.func).to.equal(fn);
-    expect(server.methods()['my-method'].get.func).to.equal(fn);
   });
 
 

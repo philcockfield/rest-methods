@@ -60,7 +60,6 @@ describe('Client:ClientMethod', () => {
       let fn = () => { method.url(); };
       expect(fn).to.throw();
     });
-
   });
 
 
