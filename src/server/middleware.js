@@ -30,7 +30,15 @@ const sendJson = (res, obj) => {
 };
 
 
-const matchMethodUrl = (url, verb) => {
+
+/**
+  * Determines whether the given URL path matches any of
+  * the method routes.
+  * @param url:  {string} The URL path to match.
+  * @param verb: {string} The HTTP verb to match (GET|PUT|POST|DELETE).
+  * @return {ServerMethod}
+  */
+export const matchMethodUrl = (url, verb) => {
     verb = verb.toLowerCase();
     let context = new pageJS.Context(url);
     let methodName = _.keys(state.methods).find((key) => {
@@ -76,7 +84,7 @@ export default () => {
 
         default:
             // Attempt to match the URL for a method.
-            let methodVerb = matchMethodUrl(req.url, req.method);
+            let methodVerb = manifest.matchMethodUrl(req.url, req.method);
             if (methodVerb) {
               // Invoke the method.
               methodVerb.invoke(req.body.args, req.url)

@@ -27,6 +27,7 @@ export const getMethods = () => {
 };
 
 
+
 export default () => {
   return {
     version: state.version || '0.0.0',

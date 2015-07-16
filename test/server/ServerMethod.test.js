@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import Method from '../../src/server/ServerMethod';
+import ServerMethod from '../../src/server/ServerMethod';
 
 
 describe('Server:ServerMethod', () => {
   it('stores constructor state', () => {
     let fn = () => {};
-    let method = new Method('my-method', fn, '/my-method', 'GET');
+    let method = new ServerMethod('my-method', fn, '/my-method', 'GET');
     expect(method.name).to.equal('my-method');
     expect(method.func).to.equal(fn);
     expect(method.route.path).to.equal('/my-method');
@@ -13,7 +13,7 @@ describe('Server:ServerMethod', () => {
   });
 
   it('has route keys', () => {
-    let method = new Method('foo', (id, query) => 0, '/foo/:id/edit/:query', 'PUT');
+    let method = new ServerMethod('foo', (id, query) => 0, '/foo/:id/edit/:query', 'PUT');
     expect(method.route.keys[0].name).to.equal('id');
     expect(method.route.keys[1].name).to.equal('query');
   });
@@ -21,27 +21,27 @@ describe('Server:ServerMethod', () => {
 
   describe('function parameters', () => {
     it('has no function parameters', () => {
-      let method = new Method('foo', () => 0, '/foo', 'PUT');
+      let method = new ServerMethod('foo', () => 0, '/foo', 'PUT');
       expect(method.params).to.eql(undefined);
     });
 
 
     it('has function parameters', () => {
-      let method = new Method('foo', (p1, p2) => 0, '/foo', 'PUT');
+      let method = new ServerMethod('foo', (p1, p2) => 0, '/foo', 'PUT');
       expect(method.params).to.eql(['p1', 'p2']);
     });
 
 
     it('throws if URL contains params that are not in the function definition', () => {
       let fn = () => {
-        let method = new Method('foo', (p1, p2) => 0, '/foo/:id', 'PUT');
+        let method = new ServerMethod('foo', (p1, p2) => 0, '/foo/:id', 'PUT');
       };
       expect(fn).to.throw();
     });
 
     it('throws if there are not enough parameters for the URL', () => {
       let fn = () => {
-        let method = new Method('foo', () => 0, '/foo/:id', 'PUT');
+        let method = new ServerMethod('foo', () => 0, '/foo/:id', 'PUT');
       };
       expect(fn).to.throw();
     });
@@ -51,7 +51,7 @@ describe('Server:ServerMethod', () => {
   describe('invoke()', () => {
     it('passes parameters and returns promise', (done) => {
       let fn = (num1, num2) => { return num1 + num2; };
-      let method = new Method('foo', fn, '/foo', 'PUT');
+      let method = new ServerMethod('foo', fn, '/foo', 'PUT');
       method.invoke([1, 2])
       .then((result) => {
           expect(result).to.equal(3);
@@ -66,7 +66,7 @@ describe('Server:ServerMethod', () => {
         params.query = query;
         return num1 + num2;
       };
-      let method = new Method('foo', fn, '/foo/:id/:query', 'PUT');
+      let method = new ServerMethod('foo', fn, '/foo/:id/:query', 'PUT');
 
       method.invoke([1, 2], '/foo/my-id/my-query?foo=123')
       .then((result) => {
@@ -83,7 +83,7 @@ describe('Server:ServerMethod', () => {
     it('it has the HTTP verb', (done) => {
       let self;
       let fn = function () { self = this; }
-      new Method('foo', fn, '/foo', 'PUT').invoke()
+      new ServerMethod('foo', fn, '/foo', 'PUT').invoke()
       .then(function() {
           expect(self.verb).to.equal('PUT');
           done();
@@ -93,7 +93,7 @@ describe('Server:ServerMethod', () => {
     it('has the url', (done) => {
       let self;
       let fn = function () { self = this; }
-      new Method('foo', fn, '/foo', 'PUT').invoke(null, '/foo')
+      new ServerMethod('foo', fn, '/foo', 'PUT').invoke(null, '/foo')
       .then(function() {
           expect(self.url.path).to.equal('/foo');
           done();
@@ -103,7 +103,7 @@ describe('Server:ServerMethod', () => {
     it('has no URL parameters', (done) => {
       let self;
       let fn = function () { self = this; }
-      new Method('foo', fn, '/foo', 'PUT').invoke(null, '/foo')
+      new ServerMethod('foo', fn, '/foo', 'PUT').invoke(null, '/foo')
       .then(function() {
           expect(self.url.params).to.eql([]);
           done();
@@ -113,7 +113,7 @@ describe('Server:ServerMethod', () => {
     it('has URL parameters', (done) => {
       let self;
       let fn = function(id, query) { self = this; }
-      let method = new Method('foo', fn, '/foo/:id/edit/:query', 'PUT')
+      let method = new ServerMethod('foo', fn, '/foo/:id/edit/:query', 'PUT')
       method.invoke(null, '/foo/123/edit/cow')
       .then(function() {
           let params = self.url.params;
