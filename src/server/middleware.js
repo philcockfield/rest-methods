@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 import manifest from './manifest';
 import pageJS from '../page-js';
+import html from '../html';
 import { BASE_MODULE_PATH, METHODS } from '../const';
 
 
@@ -27,6 +28,7 @@ const sendJson = (res, obj) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(obj));
 };
+
 
 
 
@@ -62,11 +64,20 @@ export default (server) => {
   // Middleware.
   return (req, res, next) => {
       switch (req.url) {
+        // GET: An HTML representation of the API.
+        case `/${ BASE_MODULE_PATH }`:
+            if (req.method === 'GET') {
+              res.send(html.toHtml(html.Api, {
+                pageTitle:'Server Methods',
+                manifest: manifest(server)
+              }));
+              break;
+            }
+
         // GET: The manifest of methods.
         case `/${ BASE_MODULE_PATH }.json`:
             if (req.method === 'GET') {
               sendJson(res, manifest(server));
-
               break;
             }
 
