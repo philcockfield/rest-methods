@@ -4,7 +4,8 @@ import Method from './ServerMethod';
 import middleware from './middleware';
 import ConnectModule from 'connect';
 import { METHODS } from '../const';
-
+import http from 'http';
+import chalk from 'chalk';
 
 
 /**
@@ -119,6 +120,36 @@ class Server {
 
     // Read.
     return this[METHODS];
+  }
+
+
+  /**
+    * Starts the server.
+    * Only use this if you're not passing in a connect server that
+    * you are otherwise starting/managing independely for other purposes.
+    * @param options:
+    *             - port: The HTTP port to use.
+    * @return
+    */
+  start(options = {}) {
+    const PORT = options.port || 3030;
+
+    // Start the server.
+    http.createServer(this.connect).listen(PORT);
+
+    // Output some helpful details to the console.
+    const BASE_URL = `localhost:${ PORT }`;
+    const HR = chalk.cyan(_.repeat('-', 80));
+    console.log('');
+    console.log(HR);
+    const serviceName = `${ this.name } (v${ this.version })`;
+    console.log(`${ chalk.grey('Running') } ${ chalk.black(serviceName) } ${ chalk.grey('on') } ${ chalk.cyan(BASE_URL) }`);
+    console.log(HR);
+    console.log('');
+
+    // Finish up.
+    this.startedLocally = true;
+    return this;
   }
 }
 
