@@ -3,7 +3,7 @@ import ClientMethod from './ClientMethod';
 import util from 'js-util';
 import Promise from 'bluebird';
 import { Handlers } from 'js-util';
-import { BASE_MODULE_PATH } from '../const';
+import { MANIFEST_PATH } from '../const';
 
 export const state = {
   methods: {},
@@ -35,7 +35,7 @@ const api = {
   */
   init() {
     return new Promise((resolve, reject) => {
-        util.xhr.get(`/${ BASE_MODULE_PATH }.json`)
+        util.xhr.get(MANIFEST_PATH)
         .then((result) => {
             registerMethods(result.methods);
             resolve();

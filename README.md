@@ -1,5 +1,5 @@
 # server-methods
-Isomorphic RESTful APIs.
+Promise-based, self-documenting isomorphic RESTful APIs.
 
 [![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 

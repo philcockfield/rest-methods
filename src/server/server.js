@@ -148,7 +148,6 @@ class Server {
     console.log('');
 
     // Finish up.
-    this.startedLocally = true;
     return this;
   }
 }

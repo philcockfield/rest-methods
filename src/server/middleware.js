@@ -5,7 +5,7 @@ import Promise from 'bluebird';
 import manifest from './manifest';
 import pageJS from '../page-js';
 import web from '../web';
-import { BASE_MODULE_PATH, METHODS } from '../const';
+import { MANIFEST_PATH, METHODS } from '../const';
 import stylus from 'stylus';
 import nib from 'nib';
 
@@ -79,42 +79,30 @@ export default (server) => {
             });
       };
 
-      const sendApiHtml = () => {
-        let html = web.toHtml(web.Api, {
-            pageTitle: `${ server.name } (v${ server.version })`,
-            manifest: manifest(server)
-        });
-        sendHtml(html)
-      };
 
-
-
+      // Match the route.
+      let basePath = server.basePath.replace(/\/$/, '');
       switch (req.url) {
         // GET: An HTML representation of the API.
-        case `/`:
-            // Send the API documentation from the root URL if we know
-            // that the server was started locally by this module.
-            // ie. that the consumer is not likely to be using their own paths
-            //     for other purposes.
-            if (req.method === 'GET' && server.startedLocally) {
-              sendApiHtml();
-              break;
-            }
-
-        case `/${ BASE_MODULE_PATH }`:
+        case `${ basePath }/`:
             if (req.method === 'GET') {
-              sendApiHtml();
+              let html = web.toHtml(web.Api, {
+                  basePath: basePath,
+                  pageTitle: `${ server.name } (v${ server.version })`,
+                  manifest: manifest(server)
+              });
+              sendHtml(html)
               break;
             }
 
-        case `/${ BASE_MODULE_PATH }.css`:
+        case `${ basePath }/style.css`:
             if (req.method === 'GET') {
               sendStylus('../web/index.styl');
               break;
             }
 
         // GET: The manifest of methods.
-        case `/${ BASE_MODULE_PATH }.json`:
+        case MANIFEST_PATH:
             if (req.method === 'GET') {
               sendJson(manifest(server));
               break;
@@ -122,15 +110,15 @@ export default (server) => {
 
         // GET: Serve the client JS.
         //      NB: Only required if not using WebPack.
-        case `/${ BASE_MODULE_PATH }.client.js`:
+        case `${ basePath }/browser.js`:
             if (req.method === 'GET') {
-              sendJs('client.js');
+              sendJs('browser.js');
               break;
             }
 
-        case `/${ BASE_MODULE_PATH }.client.min.js`:
+        case `${ basePath }/browser.min.js`:
             if (req.method === 'GET') {
-              sendJs('client.min.js');
+              sendJs('browser.min.js');
               break;
             }
 

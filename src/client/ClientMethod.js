@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { BASE_MODULE_PATH } from '../const';
 import Promise from 'bluebird';
 import { xhr } from 'js-util';
 import { ServerMethodError } from '../errors';
