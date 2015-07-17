@@ -7,7 +7,7 @@ import pageJS from '../page-js';
 import web from '../web';
 import { BASE_MODULE_PATH, METHODS } from '../const';
 import stylus from 'stylus';
-
+import nib from 'nib';
 
 
 /**
@@ -48,7 +48,6 @@ export default (server) => {
           res.end(content);
       };
 
-
       const getFile = (fileName) => {
           let path = fsPath.join(__dirname, fileName);
           if (!cache[path]) {
@@ -68,6 +67,18 @@ export default (server) => {
       const sendJson = (obj) => { send(JSON.stringify(obj), 'application/json'); };
       const sendHtml = (html) => { send(html, 'text/html') };
 
+      const sendStylus = (fileName) => {
+          let file = getFile(fileName);
+          stylus(file.text)
+            .set('filename', file.path)
+            .include(require('nib').path)
+            .include(fsPath.join(__dirname, '../web'))
+            .render((err, css) => {
+                if (err) { throw err; }
+                send(css, 'text/css');
+            });
+      };
+
       const sendApiHtml = () => {
         let html = web.toHtml(web.Api, {
             pageTitle: `${ server.name } (v${ server.version })`,
@@ -77,17 +88,14 @@ export default (server) => {
       };
 
 
-      const sendStylus = (fileName) => {
-          stylus.render(getFile(fileName).text, { filename: fileName }, function(err, css){
-            if (err) { throw err; }
-            send(css, 'text/css');
-          });
-      };
-
 
       switch (req.url) {
         // GET: An HTML representation of the API.
         case `/`:
+            // Send the API documentation from the root URL if we know
+            // that the server was started locally by this module.
+            // ie. that the consumer is not likely to be using their own paths
+            //     for other purposes.
             if (req.method === 'GET' && server.startedLocally) {
               sendApiHtml();
               break;
@@ -101,7 +109,7 @@ export default (server) => {
 
         case `/${ BASE_MODULE_PATH }.css`:
             if (req.method === 'GET') {
-              sendStylus('../web/css.styl');
+              sendStylus('../web/index.styl');
               break;
             }
 
