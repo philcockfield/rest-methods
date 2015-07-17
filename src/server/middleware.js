@@ -6,12 +6,7 @@ import manifest from './manifest';
 import pageJS from '../page-js';
 import web from '../web';
 import { BASE_MODULE_PATH, METHODS } from '../const';
-
-
-
-
-
-
+import stylus from 'stylus';
 
 
 
@@ -46,46 +41,67 @@ export const matchMethodUrl = (server, url, verb) => {
 export default (server) => {
   // Middleware.
   return (req, res, next) => {
-      const jsCache = {};
-      const sendJs = (fileName) => {
-          let js = jsCache[fileName];
-          if (!js) {
-            // NB: Loaded from file only once.
-            js = fs.readFileSync(fsPath.join(__dirname, `../../dist/${ fileName }`)).toString();
-            jsCache[fileName] = js;
+      const cache = {};
+
+      const send = (content, contentType) => {
+          res.setHeader('Content-Type', contentType);
+          res.end(content);
+      };
+
+
+      const getFile = (fileName) => {
+          let path = fsPath.join(__dirname, fileName);
+          if (!cache[path]) {
+            // NB: Only load from file if not in the cache.
+            let text = fs.readFileSync(path).toString();
+            cache[path] = { text:text, path:path };
           }
-          res.setHeader('Content-Type', 'application/javascript');
-          res.end(js);
+          return cache[path];
       };
 
 
-      const sendJson = (obj) => {
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(obj));
+      const sendJs = (fileName) => {
+          let js = getFile(`../../dist/${ fileName }`).text;
+          send(js, 'application/javascript');
       };
 
-
-      const sendHtml = (html) => {
-          res.setHeader('Content-Type', 'text/html');
-          res.end(html);
-      };
-
+      const sendJson = (obj) => { send(JSON.stringify(obj), 'application/json'); };
+      const sendHtml = (html) => { send(html, 'text/html') };
 
       const sendApiHtml = () => {
         let html = web.toHtml(web.Api, {
-          pageTitle: `${ server.name } (v${ server.version })`,
-          manifest: manifest(server)
+            pageTitle: `${ server.name } (v${ server.version })`,
+            manifest: manifest(server)
         });
         sendHtml(html)
+      };
 
+
+      const sendStylus = (fileName) => {
+          stylus.render(getFile(fileName).text, { filename: fileName }, function(err, css){
+            if (err) { throw err; }
+            send(css, 'text/css');
+          });
       };
 
 
       switch (req.url) {
         // GET: An HTML representation of the API.
+        case `/`:
+            if (req.method === 'GET' && server.startedLocally) {
+              sendApiHtml();
+              break;
+            }
+
         case `/${ BASE_MODULE_PATH }`:
             if (req.method === 'GET') {
               sendApiHtml();
+              break;
+            }
+
+        case `/${ BASE_MODULE_PATH }.css`:
+            if (req.method === 'GET') {
+              sendStylus('../web/css.styl');
               break;
             }
 
