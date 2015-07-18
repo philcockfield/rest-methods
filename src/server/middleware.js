@@ -4,7 +4,7 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 import manifest from './manifest';
 import pageJS from '../page-js';
-import web from '../web';
+import docs from '../docs';
 import { MANIFEST_PATH, METHODS } from '../const';
 import stylus from 'stylus';
 import nib from 'nib';
@@ -66,16 +66,17 @@ export default (server) => {
 
       const sendJson = (obj) => { send(JSON.stringify(obj), 'application/json'); };
       const sendHtml = (html) => { send(html, 'text/html') };
+      const sendCss = (css) => { send(css, 'text/css'); };
 
       const sendStylus = (fileName) => {
           let file = getFile(fileName);
           stylus(file.text)
             .set('filename', file.path)
             .include(require('nib').path)
-            .include(fsPath.join(__dirname, '../web'))
+            .include(fsPath.join(__dirname, '../docs'))
             .render((err, css) => {
                 if (err) { throw err; }
-                send(css, 'text/css');
+                sendCss(css);
             });
       };
 
@@ -86,9 +87,9 @@ export default (server) => {
         // GET: An HTML representation of the API.
         case `${ basePath }/`:
             if (req.method === 'GET') {
-              let html = web.toHtml(web.Api, {
+              let html = docs.toHtml(docs.Shell, {
                   basePath: basePath,
-                  pageTitle: `${ server.name } (v${ server.version })`,
+                  pageTitle: `${ server.name } (API)`,
                   manifest: manifest(server)
               });
               sendHtml(html)
@@ -97,7 +98,7 @@ export default (server) => {
 
         case `${ basePath }/style.css`:
             if (req.method === 'GET') {
-              sendStylus('../web/index.styl');
+              sendStylus('../docs/css/index.styl');
               break;
             }
 

@@ -1,11 +1,11 @@
 import React from 'react';
-import Page from './Page';
-import Api from './Api';
+import Page from './components/Page';
+import Shell from './components/Shell';
 
 
 export default {
   Page: Page,
-  Api: Api,
+  Shell: Shell,
 
   toHtml: (component, props = {}) => {
     let page = React.createFactory(Page);

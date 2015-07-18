@@ -142,8 +142,7 @@ class Server {
     const HR = chalk.cyan(_.repeat('-', 80));
     console.log('');
     console.log(HR);
-    const serviceName = `${ this.name } (v${ this.version })`;
-    console.log(`${ chalk.grey('Running') } ${ chalk.black(serviceName) } ${ chalk.grey('on') } ${ chalk.cyan(BASE_URL) }`);
+    console.log(`${ chalk.grey('Running') } ${ chalk.black(this.name) } ${ chalk.grey(`(${ this.version }) on`) } ${ chalk.cyan(BASE_URL) }`);
     console.log(HR);
     console.log('');
 
