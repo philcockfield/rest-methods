@@ -1,0 +1,45 @@
+@import 'shared.mixin'
+
+
+.arguments
+  > .title
+    text-transform uppercase
+    color darken(white, 30%)
+    font-size 13px
+    font-weight 700
+    line-height 36px
+
+  > table
+    position relative
+    width 100%
+    border-top solid 1px darken(white, 20%)
+
+
+// ---------------------------------------------------
+
+tr.argument
+  font-size 14px
+  border-bottom solid 1px darken(white, 6%)
+  &:last-child
+    border-bottom none
+
+  td
+    padding 15px 10px
+    vertical-align top
+
+  .label-outer
+    width 160px
+    text-align right
+    > .name
+      color black
+    > .details
+      color darken(white, 30%)
+      font-size 12px
+
+  @media NARROW
+    .label-outer
+      width 80px
+
+  .value-outer
+    color darken(white, 65%)
+    line-height 22px

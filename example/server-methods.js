@@ -26,7 +26,7 @@ server.methods({
   },
 
   'baz': {
-    put: (id) => {}
+    put: () => {}
   }
 
 
