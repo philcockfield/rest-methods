@@ -23,6 +23,11 @@ server.methods({
   'bar': {
     url: '/user/:id',
     get: (id) => {}
+  },
+
+  'baz': {
+    put: (id) => {}
   }
+
 
 });
