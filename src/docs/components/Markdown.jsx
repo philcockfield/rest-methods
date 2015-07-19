@@ -12,7 +12,7 @@ export default class Markdown extends React.Component {
       var html = marked(this.props.children);
     }
     return html
-        ? <span dangerouslySetInnerHTML={{ __html:html }}/>
+        ? <span className='markdown' dangerouslySetInnerHTML={{ __html:html }}/>
         : this.props.children;
   }
 }
