@@ -4,6 +4,7 @@ import { METHODS } from '../const';
 
 
 const mergeParameterDocs = (paramsArray, methodDocs) => {
+    paramsArray = _.clone(paramsArray, true);
     for (let item of paramsArray) {
       let details = methodDocs.params[item.name];
       if (details) {
@@ -38,18 +39,9 @@ export const getMethods = (server, options = {}) => {
 
             if (methodVerb.params) {
               verbDefiniton.params = _.clone(methodVerb.params);
-
-              // const withDocs = options.withDocs || false;
-              // console.log('options.withDocs', options.withDocs);
-
               if (options.withDocs && methodVerb.docs) {
-                // console.log('method.docs', methodVerb.docs);
                 verbDefiniton.params = mergeParameterDocs(verbDefiniton.params, methodVerb.docs);
-
-
               }
-
-
             }
           }
       });
