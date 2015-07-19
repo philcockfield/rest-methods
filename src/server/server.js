@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import bodyParser from 'body-parser';
-import Method from './ServerMethod';
+import ServerMethod from './ServerMethod';
 import middleware from './middleware';
 import ConnectModule from 'connect';
 import { METHODS } from '../const';
@@ -95,19 +95,18 @@ class Server {
             let func = value;
             let funcNoParams = function() { return func.call(this); };
             methodSet = {
-              get: new Method(key, funcNoParams, url, 'GET'),
-              put: new Method(key, func, url, 'PUT'),
-              post: new Method(key, func, url, 'POST'),
-              delete: new Method(key, funcNoParams, url, 'DELETE')
+              get: new ServerMethod(key, funcNoParams, url, 'GET'),
+              put: new ServerMethod(key, func, url, 'PUT'),
+              post: new ServerMethod(key, func, url, 'POST'),
+              delete: new ServerMethod(key, funcNoParams, url, 'DELETE')
             }
           } else if(_.isObject(value)) {
-
             // Create individual methods for each verb.
             methodSet = {};
-            if (value.get) { methodSet.get = new Method(key, value.get, url, 'GET'); }
-            if (value.put) { methodSet.put = new Method(key, value.put, url, 'PUT'); }
-            if (value.post) { methodSet.post = new Method(key, value.post, url, 'POST'); }
-            if (value.delete) { methodSet.delete = new Method(key, value.delete, url, 'DELETE'); }
+            if (value.get) { methodSet.get = new ServerMethod(key, value.get, url, 'GET', value.docs); }
+            if (value.put) { methodSet.put = new ServerMethod(key, value.put, url, 'PUT', value.docs); }
+            if (value.post) { methodSet.post = new ServerMethod(key, value.post, url, 'POST', value.docs); }
+            if (value.delete) { methodSet.delete = new ServerMethod(key, value.delete, url, 'DELETE', value.docs); }
 
           } else {
             throw new Error(`Type of value for method '${ key }' not supported. Must be function or object.`);

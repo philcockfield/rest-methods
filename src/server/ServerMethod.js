@@ -2,14 +2,14 @@ import _ from 'lodash';
 import util from 'js-util';
 import pageJS from '../page-js';
 import { ServerMethodError } from '../errors';
-
+import MethodDocs from './MethodDocs';
 
 
 /**
 * Represents a method.
 */
 export default class ServerMethod {
-  constructor(name, func, routePattern, verb) {
+  constructor(name, func, routePattern, verb, docs) {
     // Setup initial conditions.
     if (_.isEmpty(name)) { throw new Error(`Method name not specified.`); }
     if (!_.isFunction(func)) { throw new Error(`Function not specified for the method '${ name }'.`); }
@@ -22,12 +22,13 @@ export default class ServerMethod {
     this.verb = verb;
     this.route = new pageJS.Route(routePattern);
     let routeKeys = this.route.keys;
+    if (docs) { this.docs = new MethodDocs(docs); }
 
     // Calculate parameters.
     let params = util.functionParameters(func);
     if (params.length > 0) {
       this.params = params.map(name => {
-        return { name: name }
+        return { name: name };
       });
     }
 

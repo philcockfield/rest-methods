@@ -2,6 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import VerbBadges from './VerbBadges';
 import Arguments from './Arguments';
+import Markdown from './Markdown';
+
 
 
 /**
@@ -23,7 +25,10 @@ export default class Method extends React.Component {
       <div className='method'>
         <div className='content-outer'>
           <h1>{ name }</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+          { method.description
+              ? <p><Markdown>{ method.description }</Markdown></p>
+              : null
+          }
           <VerbBadges method={ method }/>
           <pre>{ url }</pre>
           { params ? <Arguments method={method} params={params}/> : null }

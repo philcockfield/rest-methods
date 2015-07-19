@@ -3,12 +3,25 @@ import pageJS from '../page-js';
 import { METHODS } from '../const';
 
 
+const mergeParameterDocs = (paramsArray, methodDocs) => {
+    for (let item of paramsArray) {
+      let details = methodDocs.params[item.name];
+      if (details) {
+        item.description = details.description;
+        item.type = details.type;
+      }
+    }
+    return paramsArray;
+};
+
+
+
 /**
   * Generates the manifest of currently registered methods
   * for delivery over the wire to clients.
   * @return {object}.
   */
-export const getMethods = (server) => {
+export const getMethods = (server, options = {}) => {
   if (!server) { throw new Error('getMethods: [server] not sepcified.'); }
   let result = {};
   let methods = server[METHODS];
@@ -20,8 +33,24 @@ export const getMethods = (server) => {
           let methodVerb = method[verb];
           if (methodVerb) {
             let verbDefiniton = methodDefinition[verb] = {};
+            if (options.withDocs && methodVerb.docs && methodVerb.docs.description ) { methodDefinition.description = methodVerb.docs.description }
             if (methodVerb.route.path) { methodDefinition.url = methodVerb.route.path; }
-            if (methodVerb.params) { verbDefiniton.params = methodVerb.params; }
+
+            if (methodVerb.params) {
+              verbDefiniton.params = _.clone(methodVerb.params);
+
+              // const withDocs = options.withDocs || false;
+              // console.log('options.withDocs', options.withDocs);
+
+              if (options.withDocs && methodVerb.docs) {
+                // console.log('method.docs', methodVerb.docs);
+                verbDefiniton.params = mergeParameterDocs(verbDefiniton.params, methodVerb.docs);
+
+
+              }
+
+
+            }
           }
       });
   });
@@ -30,11 +59,11 @@ export const getMethods = (server) => {
 
 
 
-export default (server) => {
+export default (server, options = {}) => {
   return {
     name: server.name,
     version: server.version || '0.0.0',
     basePath: server.basePath,
-    methods: getMethods(server)
+    methods: getMethods(server, options)
   };
 };

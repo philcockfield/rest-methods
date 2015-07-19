@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Markdown from './Markdown';
 
 
 /**
@@ -7,28 +7,16 @@ import React from 'react';
  */
 export default class Arguments extends React.Component {
   render() {
-
     let { method, params } = this.props;
-
-    console.log('params', params);
-
-
+    let rows = params.map((param, i) => { return <ArgumentRow key={i} {...param}/> });
     return (
       <div className='arguments'>
         <div className='title'>{ this.props.title }</div>
-
-        <table>
-          <ArgumentRow/>
-          <ArgumentRow/>
-          <ArgumentRow/>
-
-        </table>
-
+        <table>{ rows }</table>
       </div>
     );
   }
 }
-
 Arguments.defaultProps = { title: 'Arguments' };
 
 
@@ -38,16 +26,20 @@ Arguments.defaultProps = { title: 'Arguments' };
  */
 class ArgumentRow extends React.Component {
   render() {
+    let { name, type, description } = this.props;
+
     return (
-      <tr className='argument'>
+      <tr className='argument-row'>
         <td className='label-outer'>
-          <div className='name'>name</div>
-          <div className='details'>name</div>
+          <div className='name'>{ name }</div>
+          { type ? <div className='details'>{ type }</div> : null }
         </td>
         <td className='value-outer'>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          { description
+              ? <Markdown>{ description }</Markdown>
+              : <span className='no-description'>—</span>
+          }
         </td>
-
       </tr>
     );
   }

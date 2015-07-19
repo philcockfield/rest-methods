@@ -90,7 +90,7 @@ export default (server) => {
               let html = docs.toHtml(docs.Shell, {
                   basePath: basePath,
                   pageTitle: `${ server.name } (API)`,
-                  manifest: manifest(server)
+                  manifest: manifest(server, { withDocs:true })
               });
               sendHtml(html)
               break;
@@ -105,7 +105,7 @@ export default (server) => {
         // GET: The manifest of methods.
         case MANIFEST_PATH:
             if (req.method === 'GET') {
-              sendJson(manifest(server));
+              sendJson(manifest(server, { withDocs:false }));
               break;
             }
 

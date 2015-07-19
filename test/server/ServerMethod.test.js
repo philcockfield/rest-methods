@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import ServerMethod from '../../src/server/ServerMethod';
+import MethodDocs from '../../src/server/MethodDocs';
 
 
 describe('Server:ServerMethod', () => {
@@ -12,10 +13,24 @@ describe('Server:ServerMethod', () => {
     expect(method.verb).to.equal('GET');
   });
 
+
   it('has route keys', () => {
     let method = new ServerMethod('foo', (id, query) => 0, '/foo/:id/edit/:query', 'PUT');
     expect(method.route.keys[0].name).to.equal('id');
     expect(method.route.keys[1].name).to.equal('query');
+  });
+
+
+  it('has no documentation', () => {
+    let method = new ServerMethod('foo', (id, query) => 0, '/foo/:id/edit/:query', 'PUT');
+    expect(method.docs).to.equal(undefined);
+  });
+
+
+  it('has documentation', () => {
+    let method = new ServerMethod('foo', (id, query) => 0, '/foo/:id/edit/:query', 'PUT', 'My Docs');
+    expect(method.docs).to.be.an.instanceof(MethodDocs);
+    expect(method.docs.description).to.equal('My Docs');
   });
 
 
