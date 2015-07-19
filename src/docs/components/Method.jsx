@@ -30,6 +30,7 @@ export default class Method extends React.Component {
           }
           <VerbBadges method={ method }/>
           <pre>{ url }</pre>
+          <pre>server.methods.{ name }.get()</pre>
           { params ? <Arguments method={method} params={params}/> : null }
         </div>
       </div>
