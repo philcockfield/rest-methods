@@ -10,7 +10,6 @@ import Markdown from './Markdown';
  * The documentation for a single method.
  */
 export default class Method extends React.Component {
-
   render() {
     let { name, method } = this.props;
     let params;

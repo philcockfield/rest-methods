@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './Header';
-
+import SidebarList from './SidebarList';
 
 
 /**
@@ -9,16 +9,17 @@ import Header from './Header';
 export default class Sidebar extends React.Component {
   render() {
     let { manifest } = this.props;
-    let listItems = Object.keys(manifest.methods).map(key => {
-        return <li key={key}>{ key }</li>
+    let methodItems = Object.keys(manifest.methods).map(key => {
+        return {
+          label: key,
+          url: `${ manifest.basePath }/#${ key }`
+        };
     });
 
     return (
       <div className='sidebar'>
-        <Header manifest={manifest}/>
-        <ul>
-          { listItems }
-        </ul>
+        <Header manifest={ manifest }/>
+        <SidebarList title='API' items={ methodItems }/>
       </div>
     );
   }

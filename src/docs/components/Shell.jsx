@@ -13,7 +13,9 @@ export default class Shell extends React.Component {
     let methodItems = Object.keys(manifest.methods).map((key, i) => {
         let value = manifest.methods[key];
         return <li key={i}>
-                 <Method name={ key } method={value}/>
+                  <a name={ key } id={ key } className='section-anchor'>
+                    <Method name={ key } method={ value }/>
+                  </a>
                </li>
     });
 
