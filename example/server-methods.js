@@ -4,7 +4,7 @@ import Server from '../server';
 var server = Server({
   name:'My Service',
   version: '1.0.1',
-  // basePath: '/v1'
+  basePath: '/v1'
 }).start();
 
 
@@ -20,6 +20,9 @@ server.methods({
       }
   },
 
-  'bar': () => {}
+  'bar': {
+    url: '/user/:id',
+    get: (id) => {}
+  }
 
 });

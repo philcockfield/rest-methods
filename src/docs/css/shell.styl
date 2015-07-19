@@ -23,26 +23,20 @@
     @media NARROW
       display none
 
+  // ---------------------------------
 
-  > .main-outer
-    padding-top 30px
-    padding-left SIDEBAR_WIDTH + 1
+  > ul.main-outer
+    margin 0
+    padding 0
+    list-style-type none
+    margin-left SIDEBAR_WIDTH + 1
     @media NARROW
-      padding-left 0
-      padding-top 50px // Account for narrow header.
+      margin-left 0
+      margin-top 40px // Account for narrow header.
 
-    color darken(white, 65%)
-    font-weight 400
-    font-size 16px
-    line-height 28px
-
-    h1
-      color darken(white, 100%)
-      font-weight 200
-      font-size 32px
-
-    .main-centered
-      position relative
-      max-width 760px
-      margin 0 auto
-      padding 0 40px
+    > li
+      border-bottom solid 1px darken($SIDEBAR_BG_COLOR, 5%)
+      padding-top 35px
+      padding-bottom 50px
+      &:last-child
+        border-bottom none
