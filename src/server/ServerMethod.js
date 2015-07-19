@@ -25,7 +25,11 @@ export default class ServerMethod {
 
     // Calculate parameters.
     let params = util.functionParameters(func);
-    if (params.length > 0) { this.params = params; }
+    if (params.length > 0) {
+      this.params = params.map(name => {
+        return { name: name }
+      });
+    }
 
     // If the URL route has parameters, ensure the function has enough parameters.
     if (routeKeys.length > 0 && params.length < routeKeys.length) {

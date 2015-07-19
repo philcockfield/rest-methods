@@ -28,7 +28,7 @@ describe('Server:ServerMethod', () => {
 
     it('has function parameters', () => {
       let method = new ServerMethod('foo', (p1, p2) => 0, '/foo', 'PUT');
-      expect(method.params).to.eql(['p1', 'p2']);
+      expect(method.params).to.eql([{ name: 'p1' }, { name: 'p2' }]);
     });
 
 

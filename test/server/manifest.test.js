@@ -38,7 +38,7 @@ describe('Server:manifest', () => {
         'foo': {
           url: '/foo',
           put: {
-            params: ['text', 'number']
+            params: [{ name:'text' }, { name:'number' }]
           }
         }
       });
@@ -50,8 +50,8 @@ describe('Server:manifest', () => {
       let methods = getMethods(server);
       expect(methods.foo.url).to.equal('/foo');
       expect(methods.foo.get).to.eql({}); // No params.
-      expect(methods.foo.put).to.eql({ params:['text'] });
-      expect(methods.foo.post).to.eql({ params:['text'] });
+      expect(methods.foo.put).to.eql({ params:[{ name: 'text' }] });
+      expect(methods.foo.post).to.eql({ params:[{ name: 'text' }] });
       expect(methods.foo.delete).to.eql({}); // No params.
     });
 
