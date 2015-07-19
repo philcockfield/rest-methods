@@ -1,4 +1,6 @@
 import React from 'react';
+import Header from './Header';
+
 
 
 /**
@@ -13,15 +15,11 @@ export default class Sidebar extends React.Component {
 
     return (
       <div className='sidebar'>
-        <div className='title-outer'>
-          <h1>{ manifest.name }</h1>
-          <span className='version'>{ manifest.version }</span>
-        </div>
+        <Header manifest={manifest}/>
 
         <ul>
           { listItems }
         </ul>
-
       </div>
     );
   }

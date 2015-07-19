@@ -138,11 +138,12 @@ class Server {
     http.createServer(this.connect).listen(PORT);
 
     // Output some helpful details to the console.
-    const BASE_URL = `localhost:${ PORT }`;
     const HR = chalk.cyan(_.repeat('-', 80));
+    let ADDRESS = `localhost:${ PORT }`;
+    if (!this.basePath !== '/') { ADDRESS += this.basePath; }
     console.log('');
     console.log(HR);
-    console.log(`${ chalk.grey('Running') } ${ chalk.black(this.name) } ${ chalk.grey(`(${ this.version }) on`) } ${ chalk.cyan(BASE_URL) }`);
+    console.log(`${ chalk.grey('Running') } ${ chalk.black(this.name) } ${ chalk.grey(`(${ this.version }) on`) } ${ chalk.cyan(ADDRESS) }`);
     console.log(HR);
     console.log('');
 
