@@ -1,5 +1,5 @@
 # server-methods
-Promise-based, self-documenting isomorphic RESTful APIs.
+Promise-based, self-documenting isomorphic REST APIs.
 
 [![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
 
@@ -12,7 +12,6 @@ Publish javascript functions as a REST/resource-oriented endpoint with a simple 
 - [ ] Server => Server communications.
 - [ ] Pass query string into method.
 - [ ] Before/After hooks for logging, value manipulation.
-- [ ] Start server directly.
 
 Server examples
 - [ ] Success
