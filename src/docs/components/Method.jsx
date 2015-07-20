@@ -10,6 +10,13 @@ import Markdown from './Markdown';
  * The documentation for a single method.
  */
 export default class Method extends React.Component {
+  handleClick() {
+    console.log('click', this); // TEMP
+
+  }
+
+
+
   render() {
     let { name, method } = this.props;
     let params;
@@ -23,7 +30,7 @@ export default class Method extends React.Component {
     return (
       <div className='method'>
         <div className='content-outer'>
-          <h1>{ name }</h1>
+          <h1 onClick={ this.handleClick.bind(this) }>{ name }</h1>
           { method.description
               ? <p><Markdown>{ method.description }</Markdown></p>
               : null

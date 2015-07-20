@@ -4,7 +4,7 @@ import urlUtil from 'url';
 import _ from 'lodash';
 import util from 'js-util';
 import Promise from 'bluebird';
-import manifest from './manifest';
+import getManifest from './manifest';
 import pageJS from '../page-js';
 import docs from '../docs';
 import { MANIFEST_PATH, METHODS } from '../const';
@@ -83,20 +83,23 @@ export default (server) => {
             });
       };
 
-
       // Match the route.
       let basePath = server.basePath.replace(/\/$/, '');
       let url = urlUtil.parse(req.url, true);
 
       switch (url.pathname) {
-        // GET: An HTML representation of the API.
+        // GET: An HTML representation of the API (docs).
         case `${ basePath }/`:
             if (req.method === 'GET') {
-              let html = docs.toHtml(docs.Shell, {
-                  basePath: basePath,
-                  pageTitle: `${ server.name } (API)`,
-                  manifest: manifest(server, { docs:true })
-              });
+              let manifest = getManifest(server, { docs:true });
+              let html = getFile('../docs/page.html').text;
+              html = html
+                  .replace('{TITLE}', `${ server.name } (API)`)
+                  .replace('{MANIFEST}', JSON.stringify(manifest))
+                  .replace('{STYLE_PATH}', `${ basePath }/style.css`)
+                  .replace('{SCRIPT_PATH}', `${ basePath }/docs.js`)
+                  .replace('{CONTENT}', docs.toHtml(docs.Shell, { manifest:manifest }))
+
               sendHtml(html)
               break;
             }
@@ -111,7 +114,7 @@ export default (server) => {
         case MANIFEST_PATH:
             if (req.method === 'GET') {
               const withDocs = url.query.docs === 'true';
-              sendJson(manifest(server, { docs:withDocs }));
+              sendJson(getManifest(server, { docs:withDocs }));
               break;
             }
 

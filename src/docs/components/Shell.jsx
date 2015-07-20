@@ -20,8 +20,8 @@ export default class Shell extends React.Component {
     });
 
     return (
-      <div className='root'>
-        {/* NOTE: Header is hidden unless so narrow that the sidebar is hidden */}
+      <div className='shell'>
+        {/* NOTE: Header is hidden unless the screen is so narrow that the sidebar is hidden */}
         <Header manifest={ manifest }/>
         <Sidebar manifest={ manifest }/>
         <ul className='main-outer'>{ methodItems }</ul>
