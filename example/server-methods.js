@@ -33,7 +33,7 @@ server.methods({
   },
 
 
-  'foo': function(id, text) {
+  'foo/bar': function(id, text) {
       // console.log('invoking foo', id);
       // throw new Error('ouch')
       return {

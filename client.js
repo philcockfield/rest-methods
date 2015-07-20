@@ -1,2 +1,2 @@
-import client from './src/client/client';
-export default client;
+import Client from './src/client/Client';
+export default Client;
