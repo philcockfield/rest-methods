@@ -1,13 +1,24 @@
 import { expect } from 'chai';
-import client from '../../src/client/client';
-import { registerMethods } from '../../src/client/client';
+import { registerMethods } from '../../src/client/Client';
 import { xhr } from 'js-util';
 import { FakeXMLHttpRequest } from 'sinon';
+import ClientMethod from '../../src/client/ClientMethod';
+import Client from '../../src/client/Client';
+import { STATE } from '../../src/client/Client';
 
 
 
 describe('Client:methods (proxy-stubs)', () => {
-  beforeEach(() => { client.reset(); });
+  let client, fakeXhr;
+  beforeEach(() => {
+    // Inject a fake XHR object.
+    xhr.createXhr = () => {
+        fakeXhr = new FakeXMLHttpRequest();
+        return fakeXhr;
+    };
+    client = Client();
+  });
+
 
   it('does not have any methods prior to loading', () => {
     expect(client.isReady).to.equal(false);
@@ -15,8 +26,36 @@ describe('Client:methods (proxy-stubs)', () => {
   });
 
 
+  it('registers methods upon receiving manifest from server', (done) => {
+    client.onReady(() => {
+        expect(client.isReady).to.equal(true);
+        expect(client.methods['foo']).not.to.equal(undefined);
+        done();
+    });
+
+    fakeXhr.responseText = JSON.stringify({
+      methods: {
+        foo: { params: [] }
+      }
+    });
+    fakeXhr.status = 200;
+    fakeXhr.readyState = 4;
+    fakeXhr.onreadystatechange();
+  });
+
+
+  it('stores methods in state', () => {
+    registerMethods(client, {
+      'foo': {},
+      'foo/bar': { get:{ params:['p1'] } }
+    });
+    expect(client[STATE].methods['foo']).to.be.an.instanceof(ClientMethod);
+    expect(client[STATE].methods['foo/bar']).to.be.an.instanceof(ClientMethod);
+  });
+
+
   it('has a proxy-stub for each method', () => {
-    registerMethods({
+    registerMethods(client, {
       'foo': { get: {}, put:{}, post:{}, delete:{} }
     });
     expect(client.methods.foo).to.be.an.instanceof(Object);
@@ -28,7 +67,7 @@ describe('Client:methods (proxy-stubs)', () => {
 
 
   it('has no proxy-stubs', () => {
-    registerMethods({
+    registerMethods(client, {
       'foo': {}
     });
     expect(client.methods.foo).to.be.an.instanceof(Object);
@@ -40,7 +79,7 @@ describe('Client:methods (proxy-stubs)', () => {
 
 
   it('nests methods within a namespace', () => {
-    registerMethods({
+    registerMethods(client, {
       'foo': { get: {} },
       'foo/bar': { get: {} },
       'foo/bar/baz': { get: {} }
@@ -56,7 +95,7 @@ describe('Client:methods (proxy-stubs)', () => {
 
 
   it('invokes the helper method for each HTTP verb returning a promise', (done) => {
-    registerMethods({
+    registerMethods(client, {
       'foo': { get: {}, put:{}, post:{}, delete:{} }
     });
     ['get', 'put', 'post', 'delete'].forEach(verb => {
@@ -86,7 +125,7 @@ describe('Client:methods (proxy-stubs)', () => {
 
 
   it('invokes the proxy-stub within a nested namespace', (done) => {
-    registerMethods({
+    registerMethods(client, {
       'foo/bar/baz': { put: {} }
     });
     let fakeXhr, sent;

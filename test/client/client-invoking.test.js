@@ -2,19 +2,20 @@ import { expect } from 'chai';
 import util from 'js-util';
 import { xhr } from 'js-util';
 import { FakeXMLHttpRequest } from 'sinon';
-import client from '../../src/client/client';
-import { registerMethods, state } from '../../src/client/client';
+import Client from '../../src/client/Client';
+import { registerMethods, STATE } from '../../src/client/Client';
 
 
 
 describe('Client (Invoking)', () => {
-  beforeEach(() => { client.reset(); });
+  let client;
+  beforeEach(() => { client = Client() });
 
   describe('.invoke() with HTTP verb', () => {
     let method, invoked;
     beforeEach(() => {
       invoked = { count: 0 };
-      registerMethods({
+      registerMethods(client, {
         foo: {
           get: {},
           put: {},
@@ -22,7 +23,7 @@ describe('Client (Invoking)', () => {
           delete: {},
         }
       });
-      method = state.methods['foo'];
+      method = client[STATE].methods['foo'];
       method.invoke = (verb, args) => {
           invoked.count += 1;
           invoked.args = args
@@ -52,8 +53,8 @@ describe('Client (Invoking)', () => {
   describe('verb specific invoke functions (get | put | post | delete)', () => {
     let fakeXhr;
     beforeEach(() => {
-      client.reset();
-      registerMethods({
+      client = Client();
+      registerMethods(client, {
         'foo': { get:{}, put:{}, post:{}, delete:{} }
       });
       xhr.createXhr = () => {
