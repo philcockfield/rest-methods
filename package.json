@@ -25,6 +25,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-eslint": "^0.15.0",
     "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.6",
     "mocha": "^2.2.1",
     "node-libs-browser": "^0.5.2",
     "sinon": "^1.15.4",
@@ -32,7 +33,6 @@
   },
   "scripts": {
     "example": "node ./example",
-    "build": "webpack; gulp minify",
     "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
     "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch"
   },
