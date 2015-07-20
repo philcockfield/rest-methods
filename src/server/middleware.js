@@ -89,17 +89,16 @@ export default (server) => {
 
       switch (url.pathname) {
         // GET: An HTML representation of the API (docs).
+        case basePath:
         case `${ basePath }/`:
             if (req.method === 'GET') {
               let manifest = getManifest(server, { docs:true });
-              let html = getFile('../docs/page.html').text;
-              html = html
-                  .replace('{TITLE}', `${ server.name } (API)`)
-                  .replace('{MANIFEST}', JSON.stringify(manifest))
-                  .replace('{STYLE_PATH}', `${ basePath }/style.css`)
-                  .replace('{SCRIPT_PATH}', `${ basePath }/docs.js`)
-                  .replace('{CONTENT}', docs.toHtml(docs.Shell, { manifest:manifest }))
-
+              let html = getFile('../docs/page.html').text
+                    .replace('{TITLE}', `${ server.name } (API)`)
+                    .replace('{MANIFEST}', JSON.stringify(manifest))
+                    .replace('{STYLE_PATH}', `${ basePath }/style.css`)
+                    .replace('{SCRIPT_PATH}', `${ basePath }/docs.js`)
+                    .replace('{CONTENT}', docs.toHtml(docs.Shell, { manifest:manifest }))
               sendHtml(html)
               break;
             }
