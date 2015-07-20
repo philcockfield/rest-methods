@@ -34,12 +34,12 @@ export const getMethods = (server, options = {}) => {
           let methodVerb = method[verb];
           if (methodVerb) {
             let verbDefiniton = methodDefinition[verb] = {};
-            if (options.withDocs && methodVerb.docs && methodVerb.docs.description ) { methodDefinition.description = methodVerb.docs.description }
+            if (options.docs && methodVerb.docs && methodVerb.docs.description ) { methodDefinition.description = methodVerb.docs.description }
             if (methodVerb.route.path) { methodDefinition.url = methodVerb.route.path; }
 
             if (methodVerb.params) {
               verbDefiniton.params = _.clone(methodVerb.params);
-              if (options.withDocs && methodVerb.docs) {
+              if (options.docs && methodVerb.docs) {
                 verbDefiniton.params = mergeParameterDocs(verbDefiniton.params, methodVerb.docs);
               }
             }

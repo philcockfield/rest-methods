@@ -1,6 +1,8 @@
 import fs from 'fs';
 import fsPath from 'path';
+import urlUtil from 'url';
 import _ from 'lodash';
+import util from 'js-util';
 import Promise from 'bluebird';
 import manifest from './manifest';
 import pageJS from '../page-js';
@@ -30,6 +32,7 @@ export const matchMethodUrl = (server, url, verb) => {
     let method = methods[methodName];
     return method ? method[verb] : undefined;
 };
+
 
 
 
@@ -83,14 +86,16 @@ export default (server) => {
 
       // Match the route.
       let basePath = server.basePath.replace(/\/$/, '');
-      switch (req.url) {
+      let url = urlUtil.parse(req.url, true);
+
+      switch (url.pathname) {
         // GET: An HTML representation of the API.
         case `${ basePath }/`:
             if (req.method === 'GET') {
               let html = docs.toHtml(docs.Shell, {
                   basePath: basePath,
                   pageTitle: `${ server.name } (API)`,
-                  manifest: manifest(server, { withDocs:true })
+                  manifest: manifest(server, { docs:true })
               });
               sendHtml(html)
               break;
@@ -105,12 +110,12 @@ export default (server) => {
         // GET: The manifest of methods.
         case MANIFEST_PATH:
             if (req.method === 'GET') {
-              sendJson(manifest(server, { withDocs:false }));
+              const withDocs = url.query.docs === 'true';
+              sendJson(manifest(server, { docs:withDocs }));
               break;
             }
 
         // GET: Serve the client JS.
-        //      NB: Only required if not using WebPack.
         case `${ basePath }/browser.js`:
             if (req.method === 'GET') {
               sendJs('browser.js');
@@ -122,6 +127,20 @@ export default (server) => {
               sendJs('browser.min.js');
               break;
             }
+
+        case `${ basePath }/docs.js`:
+            if (req.method === 'GET') {
+              sendJs('docs.js');
+              break;
+            }
+
+        case `${ basePath }/docs.min.js`:
+            if (req.method === 'GET') {
+              sendJs('docs.min.js');
+              break;
+            }
+
+
 
         default:
             // Attempt to match the URL for a method.
