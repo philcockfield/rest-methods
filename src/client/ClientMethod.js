@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
-import { xhr } from 'js-util';
+import http from 'http-promises/browser';
 import { ServerMethodError } from '../errors';
 import pageJS from '../page-js';
 
@@ -113,7 +113,7 @@ export default class ClientMethod {
 
 
         // Send to the server.
-        let xhrMethod = xhr[verb.toLowerCase()];
+        let xhrMethod = http[verb.toLowerCase()];
         xhrMethod(url, payload)
             .then((result) => { resolve(result); })
             .catch((err) => {

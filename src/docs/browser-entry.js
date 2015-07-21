@@ -1,6 +1,5 @@
 import React from 'react';
 import { Shell } from './index';
-import Client from '../../client';
 
 
 // Render the live React components over the
@@ -14,12 +13,14 @@ React.render(
 );
 
 
-let server = Client();
-server.onReady(() => {
 
-  console.log('server', server);
-  server.methods.foo.bar.put('my-id', 'lorem').then((result) => {
-    console.log('result', result);
-  })
-
-});
+import Client from '../../client';
+// let server = Client();
+// server.onReady(() => {
+//
+//   console.log('server', server);
+//   server.methods.foo.bar.put('my-id', 'lorem').then((result) => {
+//     console.log('result', result);
+//   })
+//
+// });

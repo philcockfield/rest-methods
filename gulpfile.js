@@ -49,4 +49,4 @@ gulp.task('lint', function() {
     .pipe(eslint())
     .pipe(eslint.format());
 });
-gulp.task('default', ['lint']);
+gulp.task('default', ['bundle', 'watch']);

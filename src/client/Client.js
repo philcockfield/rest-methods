@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import ClientMethod from './ClientMethod';
 import util from 'js-util';
+import http from 'http-promises/browser';
 import Promise from 'bluebird';
 import { Handlers } from 'js-util';
 import { MANIFEST_PATH } from '../const';
 
-
 export const STATE = Symbol('state');
+
 
 
 /**
@@ -39,7 +40,7 @@ class Client {
     };
 
     // Connect to the server.
-    util.xhr.get(MANIFEST_PATH)
+    http.get(MANIFEST_PATH)
       .then((result) => { registerMethods(this, result.methods); })
       .catch((err) => { throw err });
   }

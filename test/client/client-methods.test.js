@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { registerMethods } from '../../src/client/Client';
-import { xhr } from 'js-util';
+import http from 'http-promises/browser';
 import { FakeXMLHttpRequest } from 'sinon';
 import ClientMethod from '../../src/client/ClientMethod';
 import Client from '../../src/client/Client';
@@ -12,7 +12,7 @@ describe('Client:methods (proxy-stubs)', () => {
   let client, fakeXhr;
   beforeEach(() => {
     // Inject a fake XHR object.
-    xhr.createXhr = () => {
+    http.createXhr = () => {
         fakeXhr = new FakeXMLHttpRequest();
         return fakeXhr;
     };
@@ -100,7 +100,7 @@ describe('Client:methods (proxy-stubs)', () => {
     });
     ['get', 'put', 'post', 'delete'].forEach(verb => {
         let fakeXhr, sent;
-        xhr.createXhr = () => {
+        http.createXhr = () => {
             sent = [];
             fakeXhr = new FakeXMLHttpRequest();
             fakeXhr.send = (data) => { sent.push(data); };
@@ -129,7 +129,7 @@ describe('Client:methods (proxy-stubs)', () => {
       'foo/bar/baz': { put: {} }
     });
     let fakeXhr, sent;
-    xhr.createXhr = () => {
+    http.createXhr = () => {
         sent = [];
         fakeXhr = new FakeXMLHttpRequest();
         fakeXhr.send = (data) => { sent.push(data); };

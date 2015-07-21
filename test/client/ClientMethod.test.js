@@ -1,12 +1,10 @@
 import { expect } from 'chai';
 import ClientMethod from '../../src/client/ClientMethod';
 import { ServerMethodError } from '../../src/errors';
-import { xhr } from 'js-util';
 import { FakeXMLHttpRequest } from 'sinon';
 import Promise from 'bluebird';
 import sinon from 'sinon';
-
-const { XhrError, XhrParseError } = xhr;
+import http from 'http-promises/browser';
 
 
 describe('Client:ClientMethod', () => {
@@ -67,7 +65,7 @@ describe('Client:ClientMethod', () => {
     let fakeXhr, sent;
     beforeEach(() => {
       sent = [];
-      xhr.createXhr = () => {
+      http.createXhr = () => {
           fakeXhr = new FakeXMLHttpRequest();
           fakeXhr.send = (data) => {
               if (data) { data = JSON.parse(data); }

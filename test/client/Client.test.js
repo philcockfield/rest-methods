@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import util from 'js-util';
-import { xhr } from 'js-util';
+import http from 'http-promises/browser';
 import { FakeXMLHttpRequest } from 'sinon';
 import { registerMethods, STATE } from '../../src/client/Client';
 import Client from '../../src/client/Client';
@@ -12,7 +12,7 @@ describe('Client:init (constructor)', () => {
 
   beforeEach(() => {
     // Inject a fake XHR object.
-    xhr.createXhr = () => {
+    http.createXhr = () => {
         fakeXhr = new FakeXMLHttpRequest();
         return fakeXhr;
     };
