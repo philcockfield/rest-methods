@@ -4,7 +4,7 @@ var server = Server({
   name:'My Service',
   version: '1.0.1',
   basePath: '/v1'
-}).start();
+}).start({ port:3030 });
 
 
 
@@ -26,10 +26,12 @@ server.methods({
 
        @param {string} id: The ID Lorem ipsum dolor sit amet, consectetur \`adipisicing\` elit, sed do eiusmod tempor incididunt ut
                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.
+       @param {number} count: The thing that is a number.
        @return {object}
       `,
 
-    get: (id) => {}
+    get: (id) => {},
+    put: (id, count) => {}
   },
 
 

@@ -12,7 +12,7 @@ export default class Header extends React.Component {
       <div className='header'>
         <h1>{ manifest.name }</h1>
         <a
-          href='/server-methods.manifest.json'
+          href='/server-methods.manifest.json?docs=true'
           className='version'
           target='_blank'>
             { manifest.version }
