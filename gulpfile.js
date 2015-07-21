@@ -31,7 +31,7 @@ gulp.task('bundle', ['bundle:browser', 'bundle:docs']);
 gulp.task('bundle:browser', function(callback) { bundle(webpackConfig.browser, callback); });
 gulp.task('bundle:docs', function(callback) { bundle(webpackConfig.docs, callback); });
 
-gulp.task('bundle:docs:watch', function(callback) { gulp.watch('./src/**/*', ['bundle:docs']) });
+gulp.task('bundle:watch', function(callback) { gulp.watch('./src/**/*', ['bundle:docs', 'bundle:browser']) });
 
 
 
