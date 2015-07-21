@@ -10,11 +10,10 @@ const settings = {
   resolve: {
     fallback: NODE_MODULES_PATH,
     extensions: ['', '.js', '.jsx'],
-  },
-
-  alias: {
-    'react': modulePath('react'),
-    'lodash': modulePath('lodash')
+    alias: {
+      'react': modulePath('react'),
+      'lodash': modulePath('lodash')
+    }
   },
 
   module: {

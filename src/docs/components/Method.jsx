@@ -1,22 +1,14 @@
 import _ from 'lodash';
 import React from 'react';
-import VerbBadges from './VerbBadges';
+import VerbTabs from './VerbTabs';
 import Arguments from './Arguments';
 import Markdown from './Markdown';
-
 
 
 /**
  * The documentation for a single method.
  */
 export default class Method extends React.Component {
-  handleClick() {
-    console.log('click', this); // TEMP
-
-  }
-
-
-
   render() {
     let { name, method } = this.props;
     let params;
@@ -27,20 +19,24 @@ export default class Method extends React.Component {
                 ? <a href={ method.url } target='_blank'>{ method.url }</a>
                 : method.url
 
+    let description = method.description
+                ? <p><Markdown>{ method.description }</Markdown></p>
+                : null
+
     return (
       <div className='method'>
         <div className='content-outer'>
-          <h1 onClick={ this.handleClick.bind(this) }>{ name }</h1>
-          { method.description
-              ? <p><Markdown>{ method.description }</Markdown></p>
-              : null
-          }
-          <VerbBadges method={ method }/>
+          <a name={ name } id={ name } className='section-anchor'>
+            <h1>{ name }</h1>
+          </a>
+          { description }
+          <VerbTabs method={ method }/>
           <pre>{ url }</pre>
           <pre>server.methods.{ name }.get()</pre>
           { params ? <Arguments method={method} params={params}/> : null }
         </div>
       </div>
+
     );
   }
 }

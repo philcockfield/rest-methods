@@ -1,13 +1,13 @@
 @import 'shared.mixin'
 
 
-.verb-badges
+.verb-tabs
   display inline-block
-  cursor default
 
-  .verb
+  .verb-tab
+    cursor pointer
     display inline-block
-    background-color rgba(0, 0, 0, 0.5)
+    background-color rgba(0, 0, 0, 0.2)
     border-radius 3px
     width 56px
     color white
@@ -17,8 +17,6 @@
     text-align center
     padding 3px 0
     margin-right 3px
-    opacity 0.1 // Not supported
-
-    &.is-supported
+    &.is-selected
       background-color #6B9DE3 // Blue
-      opacity 1
+      cursor default
