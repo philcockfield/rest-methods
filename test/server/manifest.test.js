@@ -17,6 +17,14 @@ describe('Server:manifest', () => {
     });
 
 
+    it('does not add method definitions that are empty', () => {
+      server.methods({
+        'foo': {}
+      });
+      expect(getMethods(server)).to.eql({});
+    });
+
+
     it('retrieves a single method with a GET verb', () => {
       server.methods({
         'foo': { get: () => {} }

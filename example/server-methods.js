@@ -9,6 +9,9 @@ var server = Server({
 
 
 server.methods({
+  'empty-1': {}, // Won't show.
+  'empty-2': { docs:'foo' }, // Won't show.
+
   'bar': {
     url: '/user/:id',
     docs:
@@ -48,7 +51,7 @@ server.methods({
 
 
   'baz': {
-    put: () => {}
+    put: (value) => {}
   },
 
 

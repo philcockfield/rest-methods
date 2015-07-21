@@ -26,8 +26,9 @@ export const getMethods = (server, options = {}) => {
   if (!server) { throw new Error('getMethods: [server] not sepcified.'); }
   let result = {};
   let methods = server[METHODS];
-  Object.keys(methods).forEach(key => {
-      let method = methods[key];
+
+  const formatMethod = (key, method) => {
+      if (_.isEmpty(method)) { return; }
       let methodDefinition = {
         url: undefined,
         name: key.replace(/\//g, '.')
@@ -48,7 +49,9 @@ export const getMethods = (server, options = {}) => {
             }
           }
       });
-  });
+  };
+
+  Object.keys(methods).forEach(key => { formatMethod(key, methods[key]); });
   return result;
 };
 
