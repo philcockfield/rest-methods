@@ -7,17 +7,17 @@ import Client from '../../src/client/Client';
 
 
 
+
 describe('Client:init (constructor)', () => {
   let fakeXhr, client;
-
-  beforeEach(() => {
-    // Inject a fake XHR object.
-    http.createXhr = () => {
-        fakeXhr = new FakeXMLHttpRequest();
-        return fakeXhr;
-    };
-    client = Client();
+  before(() => {
+      // Inject a fake XHR object.
+      http.createXhr = () => {
+          fakeXhr = new FakeXMLHttpRequest();
+          return fakeXhr;
+      };
   });
+  beforeEach(() => { client = Client(); });
 
 
   it('is not ready by default', () => {

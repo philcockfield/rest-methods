@@ -9,16 +9,22 @@ import { registerMethods, STATE } from '../../src/client/Client';
 
 describe('Client (Invoking)', () => {
   let client, fakeXhr;
-  beforeEach(() => { client = Client() });
 
-  describe('.invoke() with HTTP verb', () => {
-    let method, invoked;
-    beforeEach(() => {
+  before(() => {
       // Inject a fake XHR object.
       http.createXhr = () => {
           fakeXhr = new FakeXMLHttpRequest();
           return fakeXhr;
       };
+  });
+
+  beforeEach(() => { client = Client() });
+
+
+
+  describe('.invoke() with HTTP verb', () => {
+    let method, invoked;
+    beforeEach(() => {
 
       invoked = { count: 0 };
       registerMethods(client, {

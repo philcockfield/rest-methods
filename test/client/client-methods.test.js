@@ -10,14 +10,14 @@ import { STATE } from '../../src/client/Client';
 
 describe('Client:methods (proxy-stubs)', () => {
   let client, fakeXhr;
-  beforeEach(() => {
-    // Inject a fake XHR object.
-    http.createXhr = () => {
-        fakeXhr = new FakeXMLHttpRequest();
-        return fakeXhr;
-    };
-    client = Client();
+  before(() => {
+      // Inject a fake XHR object.
+      http.createXhr = () => {
+          fakeXhr = new FakeXMLHttpRequest();
+          return fakeXhr;
+      };
   });
+  beforeEach(() => { client = Client(); });
 
 
   it('does not have any methods prior to loading', () => {
