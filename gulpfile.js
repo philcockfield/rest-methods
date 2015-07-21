@@ -14,11 +14,13 @@ function minify(file) {
     .pipe(uglify())
     .pipe(gulp.dest('dist'));
 };
+gulp.task('minify:browser', function() { return minify('browser'); });
+gulp.task('minify:docs', function() { return minify('docs'); });
 gulp.task('minify', ['minify:browser', 'minify:docs']);
-gulp.task('minify:browser', function () { return minify('browser'); });
-gulp.task('minify:docs', function () { return minify('docs'); });
+
 
 // ----------------------------------------------------------------------------
+
 
 function bundle(config, callback) {
   return webpack(config, function(err, stats) {
@@ -31,15 +33,16 @@ gulp.task('bundle', ['bundle:browser', 'bundle:docs']);
 gulp.task('bundle:browser', function(callback) { bundle(webpackConfig.browser, callback); });
 gulp.task('bundle:docs', function(callback) { bundle(webpackConfig.docs, callback); });
 
-gulp.task('bundle:watch', function(callback) { gulp.watch('./src/**/*', ['bundle:docs', 'bundle:browser']) });
+
+// ----------------------------------------------------------------------------
 
 
-
-
+gulp.task('watch', function(callback) { gulp.watch('./src/**/*', ['bundle:docs', 'bundle:browser']) });
 gulp.task('build', ['bundle', 'minify']);
 
 
 // ----------------------------------------------------------------------------
+
 
 gulp.task('lint', function() {
   return gulp.src('./src/**/*.js')
