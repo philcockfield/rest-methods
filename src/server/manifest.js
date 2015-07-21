@@ -28,7 +28,10 @@ export const getMethods = (server, options = {}) => {
   let methods = server[METHODS];
   Object.keys(methods).forEach(key => {
       let method = methods[key];
-      let methodDefinition = { url:undefined };
+      let methodDefinition = {
+        url: undefined,
+        name: key.replace(/\//g, '.')
+      };
       result[key] = methodDefinition;
       ['get', 'put', 'post', 'delete'].map((verb) => {
           let methodVerb = method[verb];

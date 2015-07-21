@@ -23,6 +23,7 @@ describe('Server:manifest', () => {
       });
       expect(getMethods(server)).to.eql({
         'foo': {
+          name: 'foo',
           url: '/foo',
           get: {}
         }
@@ -36,12 +37,35 @@ describe('Server:manifest', () => {
       });
       expect(getMethods(server)).to.eql({
         'foo': {
+          name: 'foo',
           url: '/foo',
           put: {
             params: [{ name:'text' }, { name:'number' }]
           }
         }
       });
+    });
+
+
+    it('retrieves a single method with a GET verb', () => {
+      server.methods({
+        'foo': { get: () => {} }
+      });
+      expect(getMethods(server)).to.eql({
+        'foo': {
+          name: 'foo',
+          url: '/foo',
+          get: {}
+        }
+      });
+    });
+
+
+    it('stores the full code-path in the method name', () => {
+      server.methods({
+        'foo/bar/user': { get: () => {} }
+      });
+      expect(getMethods(server)['foo/bar/user'].name).to.equal('foo.bar.user');
     });
 
 

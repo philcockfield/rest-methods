@@ -10,10 +10,11 @@ export default class Sidebar extends React.Component {
   render() {
     let { manifest } = this.props;
     let methodItems = Object.keys(manifest.methods).map(key => {
-        return {
-          label: key,
-          url: `${ manifest.basePath }/#${ key }`
-        };
+          let method = manifest.methods[key];
+          return {
+            label: method.name,
+            url: `${ manifest.basePath }/#${ key }`
+          };
     });
 
     return (

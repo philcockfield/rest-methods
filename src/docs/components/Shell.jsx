@@ -13,7 +13,7 @@ export default class Shell extends React.Component {
     let methodItems = Object.keys(manifest.methods).map((key, i) => {
         let value = manifest.methods[key];
         return <li key={i}>
-                 <Method name={ key } method={ value }/>
+                 <Method method={ value }/>
                </li>
     });
 

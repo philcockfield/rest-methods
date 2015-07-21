@@ -24,7 +24,8 @@ export default class Method extends React.Component {
 
   render() {
     let { selectedVerb } = this.state;
-    let { name, method } = this.props;
+    let { method } = this.props;
+    let name = method.name;
     let params = method[selectedVerb].params;
 
     // Only provide a link if the method has a GET verb.
@@ -46,7 +47,7 @@ export default class Method extends React.Component {
       <div className='method'>
         <div className='content-outer'>
           <a name={ name } id={ name } className='section-anchor'>
-            <h1>{ name }</h1>
+            <h1>{ method.name }</h1>
           </a>
           { description }
 
