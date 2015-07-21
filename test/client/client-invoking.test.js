@@ -8,12 +8,18 @@ import { registerMethods, STATE } from '../../src/client/Client';
 
 
 describe('Client (Invoking)', () => {
-  let client;
+  let client, fakeXhr;
   beforeEach(() => { client = Client() });
 
   describe('.invoke() with HTTP verb', () => {
     let method, invoked;
     beforeEach(() => {
+      // Inject a fake XHR object.
+      xhr.createXhr = () => {
+          fakeXhr = new FakeXMLHttpRequest();
+          return fakeXhr;
+      };
+
       invoked = { count: 0 };
       registerMethods(client, {
         foo: {
@@ -51,16 +57,11 @@ describe('Client (Invoking)', () => {
 
 
   describe('verb specific invoke functions (get | put | post | delete)', () => {
-    let fakeXhr;
     beforeEach(() => {
       client = Client();
       registerMethods(client, {
         'foo': { get:{}, put:{}, post:{}, delete:{} }
       });
-      xhr.createXhr = () => {
-          fakeXhr = new FakeXMLHttpRequest();
-          return fakeXhr;
-      };
     });
 
     let serverCallback = () => {
