@@ -10,6 +10,12 @@ h1, h2
   font-weight 300
 
 
+a
+  text-decoration none
+  &:hover
+    text-decoration underline
+
+
 code, pre
   box-sizing  border-box
   color $CODE_COLOR
@@ -24,7 +30,10 @@ code
   border 1px solid #f0f4f7
   border-radius 4px
 
-a
-  text-decoration none
-  &:hover
-    text-decoration underline
+pre
+  background $SIDEBAR_BG_COLOR
+  border solid 1px darken($SIDEBAR_BG_COLOR, 5%)
+  border-radius 4px
+  padding 15px 20px
+  a
+    color $CODE_COLOR

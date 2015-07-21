@@ -32,10 +32,14 @@ class VerbTab extends React.Component {
 export default class VerbTabs extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { selectedVerb: 'get' };
+    this.state = { selectedVerb: (props.selectedVerb || 'get') };
   }
 
-  handleTabClick(e) { this.setState({ selectedVerb:e.verb }); }
+  handleTabClick(e) {
+    this.setState({ selectedVerb:e.verb });
+    const handler = this.props.onChanged;
+    if (_.isFunction(handler)) { handler(e); }
+  }
 
   render() {
     let { method } = this.props;
@@ -51,7 +55,6 @@ export default class VerbTabs extends React.Component {
                     onClick={ this.handleTabClick.bind(this) }/>
         }
     });
-
 
     return (
       <div className='verb-tabs'>

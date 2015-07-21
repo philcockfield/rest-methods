@@ -9,10 +9,23 @@ import Markdown from './Markdown';
  * The documentation for a single method.
  */
 export default class Method extends React.Component {
+  constructor(props) {
+    super(props);
+    let { method } = this.props;
+    let verb = _.find(['get', 'post', 'put', 'delete'], (verb) => { return method[verb] !== undefined });
+    this.state = { selectedVerb:verb };
+  }
+
+
+  handleVerbChanged(e) {
+    this.setState({ selectedVerb:e.verb });
+  }
+
+
   render() {
+    let { selectedVerb } = this.state;
     let { name, method } = this.props;
-    let params;
-    _.forIn(method, (value, key) => { if (value.params) { params = value.params; }});
+    let params = method[selectedVerb].params;
 
     // Only provide a link if the method has a GET verb.
     let url = method.get
@@ -23,6 +36,12 @@ export default class Method extends React.Component {
                 ? <p><Markdown>{ method.description }</Markdown></p>
                 : null
 
+
+    let codeSample = '';
+    if (params) { codeSample = params.map(item => { return item.name }).join(', '); }
+    codeSample = `server.methods.${ name }.${ selectedVerb }(${ codeSample });`
+
+
     return (
       <div className='method'>
         <div className='content-outer'>
@@ -30,9 +49,15 @@ export default class Method extends React.Component {
             <h1>{ name }</h1>
           </a>
           { description }
-          <VerbTabs method={ method }/>
-          <pre>{ url }</pre>
-          <pre>server.methods.{ name }.get()</pre>
+
+          <VerbTabs
+              method={ method }
+              selectedVerb={ selectedVerb }
+              onChanged={ this.handleVerbChanged.bind(this) }/>
+
+          <pre>{ selectedVerb.toUpperCase() }: { url }</pre>
+          <pre>{ codeSample }</pre>
+
           { params ? <Arguments method={method} params={params}/> : null }
         </div>
       </div>
