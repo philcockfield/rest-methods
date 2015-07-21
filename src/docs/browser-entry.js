@@ -1,5 +1,7 @@
 import React from 'react';
 import { Shell } from './index';
+import Client from '../../client';
+
 
 // Render the live React components over the
 // statically server-rendered HTML.
@@ -10,3 +12,14 @@ React.render(
   React.createElement(Shell, { manifest:manifest }),
   document.getElementById('page-root')
 );
+
+
+let server = Client();
+server.onReady(() => {
+
+  console.log('server', server);
+  server.methods.foo.bar.put('my-id', 'lorem').then((result) => {
+    console.log('result', result);
+  })
+
+});

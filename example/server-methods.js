@@ -41,6 +41,10 @@ server.methods({
   'foo/bar': function(id, text) {
       // console.log('invoking foo', id);
       // throw new Error('ouch')
+      console.log('id', id);
+      console.log('text', text);
+      console.log('');
+
       return {
         // id: id,
         text: text,
@@ -51,7 +55,11 @@ server.methods({
 
 
   'baz': {
-    put: (value) => {}
+    docs: `
+      @param {object} value: The value to use.
+      `,
+    put: (value) => {
+    }
   },
 
 
