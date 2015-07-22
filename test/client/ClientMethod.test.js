@@ -45,6 +45,11 @@ describe('Client:ClientMethod', () => {
       expect(method.url()).to.equal('/foo');
     });
 
+    it('prepends the host-name', () => {
+      let method = new ClientMethod('foo', http, { url:'/foo', host:'http://localhost:3030' });
+      expect(method.url()).to.equal('http://localhost:3030/foo');
+    });
+
 
     it('constructs URL with parameters', () => {
       let method = new ClientMethod('foo', http, { url:'/foo/:org/:org/:id/edit?q=abc' });

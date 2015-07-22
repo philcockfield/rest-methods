@@ -33,7 +33,7 @@ server.methods({
        @return {object}
       `,
 
-    get: (id) => {},
+    get: (id) => { return {id:id, date:new Date()} },
     put: (id, count) => {}
   },
 

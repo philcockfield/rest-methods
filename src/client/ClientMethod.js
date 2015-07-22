@@ -3,8 +3,6 @@ import Promise from 'bluebird';
 import { ServerMethodError } from '../errors';
 import pageJS from '../page-js';
 
-const HTTP = Symbol('state');
-
 
 
 /**
@@ -16,6 +14,7 @@ export default class ClientMethod {
     * @param name: The unique name of the method.
     * @param http: The HTTP object to use for making requests.
     * @param options:
+    *           - host: The host-name of the remote server.
     *           - url: The method's URL path/route-pattern.
     *           - get: Definition of the GET function, eg. { params:['text', 'number'] }
     *           - put:     ..
@@ -37,7 +36,8 @@ export default class ClientMethod {
     this.verbs = {};
     this.urlPattern = url;
     this.route = new pageJS.Route(this.urlPattern);
-    this[HTTP] = http;
+    this.http = http;
+    this.host = options.host;
 
     // Store individual invoker methods for each HTTP verb.
     ['get', 'put', 'post', 'delete'].forEach(verb => {
@@ -74,6 +74,10 @@ export default class ClientMethod {
           i += 1;
       });
     }
+
+    // Prepend the host (if one exists).
+    // NOTE: THis is only required when doing server-to-server communications.
+    if (this.host) { url = this.host + url; }
 
     // Finish up.
     return url
@@ -117,7 +121,7 @@ export default class ClientMethod {
         };
 
         // Send to the server.
-        let httpMethod = this[HTTP][verb.toLowerCase()];
+        let httpMethod = this.http[verb.toLowerCase()];
         httpMethod(url, payload)
             .then((result) => { resolve(result); })
             .catch((err) => {

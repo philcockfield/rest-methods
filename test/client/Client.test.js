@@ -16,7 +16,7 @@ describe('Client:init (constructor)', () => {
           return fakeXhr;
       };
   });
-  beforeEach(() => { client = Client({ http:http }); });
+  beforeEach(() => { client = Client({ http:http, host:'localhost' }); });
 
 
   it('is not ready by default', () => {

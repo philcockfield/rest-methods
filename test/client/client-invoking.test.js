@@ -18,7 +18,7 @@ describe('Client (Invoking)', () => {
       };
   });
 
-  beforeEach(() => { client = Client({ http:http }) });
+  beforeEach(() => { client = Client({ http:http, host:'localhost' }) });
 
 
 

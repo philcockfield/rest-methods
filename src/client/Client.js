@@ -8,7 +8,6 @@ import { Handlers } from 'js-util';
 import { MANIFEST_PATH } from '../const';
 
 export const STATE = Symbol('state');
-const HTTP = Symbol('state');
 const isBrowser = (typeof window !== "undefined" && window !== null);
 
 
@@ -22,18 +21,31 @@ class Client {
    * manifest of methods from the server.
    * @param options
    *          - http: The HTTP object to use for making requests.
+   *          - host: The host-name of the remote server,
+   *                  For example:
+   *                      - http://domain.com
+   *                      - localhost:3030
    */
   constructor(options = {}) {
     // Private field: HTTP.
     let http = options.http;
     if (isBrowser && !http) { http = xhr; }
     if (!http) { throw new Error('An [http] gateway was not given to the [Client].'); }
-    this[HTTP] = http;
+
+    // Private field: Host.
+    let host = options.host;
+    if (!isBrowser && !host) { throw new Error('A [host] name must be given when connecting a server to a remove server (eg. https://domain.com, or localhost:3030) '); }
+    if (host) {
+      if (!host.startsWith('http')) { host = `http://${ host }`; }
+      host = host.replace(/\/*$/, '');
+    }
 
     // Private field: State.
     this[STATE] = {
       methods: {},
-      readyHandlers: new Handlers()
+      readyHandlers: new Handlers(),
+      http: http,
+      host: host
     };
 
     /**
@@ -48,9 +60,10 @@ class Client {
     */
     this.methods = {};
 
-
     // Connect to the server.
-    http.get(MANIFEST_PATH)
+    let url = MANIFEST_PATH;
+    if (!isBrowser && host) { url = `${ host }${ url }`; }
+    http.get(url)
       .then((result) => { registerMethods(this, result.methods); })
       .catch((err) => { throw err });
   }
@@ -116,7 +129,8 @@ export const registerMethods = (client, methods = {}) => {
   // Store methods.
   _.keys(methods).forEach((key) => {
       let options = methods[key];
-      let method = new ClientMethod(key, client[HTTP], options);
+      options.host = client[STATE].host;
+      let method = new ClientMethod(key, client[STATE].http, options);
       client[STATE].methods[key] = method;
 
       // Create proxy-stubs to the method.
