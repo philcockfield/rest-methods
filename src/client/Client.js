@@ -1,13 +1,15 @@
+/* global window */
 import _ from 'lodash';
 import ClientMethod from './ClientMethod';
 import util from 'js-util';
-import http from 'http-promises/browser';
+import xhr from 'http-promises/browser'
 import Promise from 'bluebird';
 import { Handlers } from 'js-util';
 import { MANIFEST_PATH } from '../const';
 
 export const STATE = Symbol('state');
-
+const HTTP = Symbol('state');
+const isBrowser = (typeof window !== "undefined" && window !== null);
 
 
 /**
@@ -19,8 +21,21 @@ class Client {
    * Initializes the module client-side, pulling the
    * manifest of methods from the server.
    * @param options
+   *          - http: The HTTP object to use for making requests.
    */
   constructor(options = {}) {
+    // Private field: HTTP.
+    let http = options.http;
+    if (isBrowser && !http) { http = xhr; }
+    if (!http) { throw new Error('An [http] gateway was not given to the [Client].'); }
+    this[HTTP] = http;
+
+    // Private field: State.
+    this[STATE] = {
+      methods: {},
+      readyHandlers: new Handlers()
+    };
+
     /**
     * Flag indicating the ready state of the client.
     * Is true after `init` has retrieved methods from the server.
@@ -33,11 +48,6 @@ class Client {
     */
     this.methods = {};
 
-    // Private fields.
-    this[STATE] = {
-      methods: {},
-      readyHandlers: new Handlers()
-    };
 
     // Connect to the server.
     http.get(MANIFEST_PATH)
@@ -105,7 +115,8 @@ class Client {
 export const registerMethods = (client, methods = {}) => {
   // Store methods.
   _.keys(methods).forEach((key) => {
-      let method = new ClientMethod(key, methods[key]);
+      let options = methods[key];
+      let method = new ClientMethod(key, client[HTTP], options);
       client[STATE].methods[key] = method;
 
       // Create proxy-stubs to the method.

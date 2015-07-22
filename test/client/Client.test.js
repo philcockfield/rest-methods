@@ -7,7 +7,6 @@ import Client from '../../src/client/Client';
 
 
 
-
 describe('Client:init (constructor)', () => {
   let fakeXhr, client;
   before(() => {
@@ -17,7 +16,7 @@ describe('Client:init (constructor)', () => {
           return fakeXhr;
       };
   });
-  beforeEach(() => { client = Client(); });
+  beforeEach(() => { client = Client({ http:http }); });
 
 
   it('is not ready by default', () => {

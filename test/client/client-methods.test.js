@@ -17,7 +17,7 @@ describe('Client:methods (proxy-stubs)', () => {
           return fakeXhr;
       };
   });
-  beforeEach(() => { client = Client(); });
+  beforeEach(() => { client = Client({ http:http }); });
 
 
   it('does not have any methods prior to loading', () => {

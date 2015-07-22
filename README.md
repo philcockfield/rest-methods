@@ -8,9 +8,7 @@ Publish javascript functions as a REST/resource-oriented endpoint with a simple 
 
 
 ## TODO
-- [ ] Generate HTML documentation page (/server-methods)
 - [ ] Server => Server communications.
-- [ ] Pass query string into method.
 - [ ] Before/After hooks for logging, value manipulation.
 
 Server examples

@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
-import http from 'http-promises/browser';
 import { ServerMethodError } from '../errors';
 import pageJS from '../page-js';
+
+const HTTP = Symbol('state');
 
 
 
@@ -13,6 +14,7 @@ export default class ClientMethod {
   /**
     * Constructor.
     * @param name: The unique name of the method.
+    * @param http: The HTTP object to use for making requests.
     * @param options:
     *           - url: The method's URL path/route-pattern.
     *           - get: Definition of the GET function, eg. { params:['text', 'number'] }
@@ -20,7 +22,9 @@ export default class ClientMethod {
     *           - post:    ..
     *           - delete:  ..
     */
-  constructor(name, options = {}) {
+  constructor(name, http, options = {}) {
+    if (!http) { throw new Error('An [http] gateway was not given to the [ClientMethod].'); }
+
     // Prepare the URL.
     let url = options.url;
     if (!url) {
@@ -33,6 +37,7 @@ export default class ClientMethod {
     this.verbs = {};
     this.urlPattern = url;
     this.route = new pageJS.Route(this.urlPattern);
+    this[HTTP] = http;
 
     // Store individual invoker methods for each HTTP verb.
     ['get', 'put', 'post', 'delete'].forEach(verb => {
@@ -111,10 +116,9 @@ export default class ClientMethod {
           args: args
         };
 
-
         // Send to the server.
-        let xhrMethod = http[verb.toLowerCase()];
-        xhrMethod(url, payload)
+        let httpMethod = this[HTTP][verb.toLowerCase()];
+        httpMethod(url, payload)
             .then((result) => { resolve(result); })
             .catch((err) => {
                 // Convert the [HttpError] into a [ServerMethodError].

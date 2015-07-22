@@ -18,7 +18,7 @@ describe('Client (Invoking)', () => {
       };
   });
 
-  beforeEach(() => { client = Client() });
+  beforeEach(() => { client = Client({ http:http }) });
 
 
 
@@ -64,7 +64,6 @@ describe('Client (Invoking)', () => {
 
   describe('verb specific invoke functions (get | put | post | delete)', () => {
     beforeEach(() => {
-      client = Client();
       registerMethods(client, {
         'foo': { get:{}, put:{}, post:{}, delete:{} }
       });

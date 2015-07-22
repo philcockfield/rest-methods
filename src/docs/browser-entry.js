@@ -15,12 +15,12 @@ React.render(
 
 
 import Client from '../../client';
-// let server = Client();
-// server.onReady(() => {
-//
-//   console.log('server', server);
-//   server.methods.foo.bar.put('my-id', 'lorem').then((result) => {
-//     console.log('result', result);
-//   })
-//
-// });
+let server = Client();
+server.onReady(() => {
+
+  console.log('server', server);
+  server.methods.foo.bar.put('my-id', 'lorem').then((result) => {
+    console.log('result', result);
+  })
+
+});
