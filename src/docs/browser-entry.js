@@ -14,7 +14,7 @@ React.render(
 
 
 
-import Client from '../../client';
+import Client from '../../client-browser';
 let server = Client();
 server.onReady(() => {
 
