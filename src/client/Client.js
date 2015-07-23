@@ -123,14 +123,17 @@ class Client {
 /**
 * Initalizes the proxy with the server methods.
 * @param {Client} client:  The Client proxy to the server.
-* @param {object} methods: An object containing the method definitions from the server.
+* @param {object} methodsManifest: An object containing the method definitions from the server.
+*                                  NB: The the [methods] object form the manifest.
 */
-export const registerMethods = (client, methods = {}) => {
+export const registerMethods = (client, methodsManifest = {}) => {
+  const { host, http } = client[STATE];
+
   // Store methods.
-  _.keys(methods).forEach((key) => {
-      let options = methods[key];
-      options.host = client[STATE].host;
-      let method = new ClientMethod(key, client[STATE].http, options);
+  _.keys(methodsManifest).forEach((key) => {
+      let options = methodsManifest[key];
+      options.host = host;
+      let method = new ClientMethod(key, http, options);
       client[STATE].methods[key] = method;
 
       // Create proxy-stubs to the method.
@@ -143,11 +146,9 @@ export const registerMethods = (client, methods = {}) => {
   // Invoke ready handlers.
   client.isReady = true;
   client[STATE].readyHandlers.invoke();
-  client[STATE].readyHandlers = new Handlers();
-
-  // Finish up.
-  return this;
+  client[STATE].readyHandlers = new Handlers(); // Reset.
 };
+
 
 
 export default (options) => { return new Client(options) };
