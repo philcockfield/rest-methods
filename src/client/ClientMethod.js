@@ -2,25 +2,26 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 import { ServerMethodError } from '../errors';
 import pageJS from '../page-js';
+import { getMethodUrl } from '../url';
 
 
 
 /**
-  * Represents a proxy to a single method on the server.
-  */
+ * Represents a proxy to a single method on the server.
+ */
 export default class ClientMethod {
   /**
-    * Constructor.
-    * @param name: The unique name of the method.
-    * @param http: The HTTP object to use for making requests.
-    * @param options:
-    *           - host: The host-name of the remote server.
-    *           - url: The method's URL path/route-pattern.
-    *           - get: Definition of the GET function, eg. { params:['text', 'number'] }
-    *           - put:     ..
-    *           - post:    ..
-    *           - delete:  ..
-    */
+   * Constructor.
+   * @param name: The unique name of the method.
+   * @param http: The HTTP object to use for making requests.
+   * @param options:
+   *           - host: The host-name of the remote server.
+   *           - url: The method's URL path/route-pattern.
+   *           - get: Definition of the GET function, eg. { params:['text', 'number'] }
+   *           - put:     ..
+   *           - post:    ..
+   *           - delete:  ..
+   */
   constructor(name, http, options = {}) {
     if (!http) { throw new Error('An [http] gateway was not given to the [ClientMethod].'); }
 
@@ -49,47 +50,20 @@ export default class ClientMethod {
 
 
   /**
-    * The URL to the method's resource.
-    * @param args: Optional. An array of arguments.
-    */
+   * The URL to the method's resource.
+   * @param args: Optional. An array of arguments.
+   */
   url(...args) {
-    args = _.flatten(args);
-    let url = this.urlPattern;
-
-    // Convert arguments into URL.
-    const urlParams = this.route.keys.map(item => item.name);
-    if (urlParams.length > 0) {
-
-      // Ensure enough arguments were passed.
-      if (args.length < urlParams.length) {
-        throw new Error(`Not enough arguments. The URL (${ url }) requires ${ urlParams.length }.`)
-      }
-
-      // Construct the string.
-      let i = 0;
-      urlParams.forEach(key => {
-          key = `:${ key }`;
-          let index = url.indexOf(key)
-          url = `${ url.substr(0, index) }${ args[i] }${ url.substring(index + key.length, url.length) }`;
-          i += 1;
-      });
-    }
-
-    // Prepend the host (if one exists).
-    // NOTE: THis is only required when doing server-to-server communications.
-    if (this.host) { url = this.host + url; }
-
-    // Finish up.
-    return url
+    return getMethodUrl(this.host, this.route, args);
   }
 
 
   /**
-    * Invokes the method on the server.
-    * @param verb: The HTTP verb (GET | PUT | POST | DELETE)
-    * @param args: An array of arguments.
-    * @return promise.
-    */
+   * Invokes the method on the server.
+   * @param verb: The HTTP verb (GET | PUT | POST | DELETE)
+   * @param args: An array of arguments.
+   * @return promise.
+   */
   invoke(verb = 'GET', ...args) {
     // Setup initial conditions.
     verb = verb.toUpperCase();

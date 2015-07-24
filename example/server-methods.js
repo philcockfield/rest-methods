@@ -52,8 +52,6 @@ server.methods({
       }
   },
 
-
-
   'baz': {
     docs: `
       @param {object} value: The value to use.
@@ -61,6 +59,11 @@ server.methods({
     put: (value) => {
     }
   },
-
-
 });
+
+
+// Invoke directly from the server.
+// server.methods.bar.get(123)
+// .then((result) => {
+//   console.log('result - bar:', result);
+// })

@@ -41,7 +41,8 @@ export const getMethods = (server, options = {}) => {
             if (options.docs && methodVerb.docs && methodVerb.docs.description ) { methodDefinition.description = methodVerb.docs.description }
             if (methodVerb.route.path) { methodDefinition.url = methodVerb.route.path; }
 
-            if (methodVerb.params) {
+            // Params.
+            if (methodVerb.params && (verb === 'put' || verb === 'post')) {
               verbDefiniton.params = _.clone(methodVerb.params);
               if (options.docs && methodVerb.docs) {
                 verbDefiniton.params = mergeParameterDocs(verbDefiniton.params, methodVerb.docs);

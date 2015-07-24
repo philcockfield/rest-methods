@@ -6,6 +6,8 @@ import ConnectModule from 'connect';
 import { METHODS } from '../const';
 import http from 'http';
 import chalk from 'chalk';
+import util from 'js-util';
+import { getMethodUrl } from '../url';
 
 
 /**
@@ -64,61 +66,86 @@ class Server {
     connect.use(middleware(this));
     this.connect = connect;
 
-    // Finish up.
-    return this;
-  }
+    /**
+    * Registers or retrieves the complete set of methods.
+    *
+    * @param definition: An object containing the method definitions.
+    * @return an object containing the set of method definitions.
+    */
+    this.methods = (definition) =>  {
+      // Write: store method definitions if passed.
+      if (definition) {
+        const createUrl = (path, methodDef) => {
+            return methodUrl(this.basePath, (methodDef.url || path));
+        };
 
+        Object.keys(definition).forEach((key) => {
+            let methods = this[METHODS];
+            if (methods[key]) { throw new Error(`Method '${ key }' already exists.`); }
 
-  /**
-  * Registers or retrieves the complete set of methods.
-  *
-  * @param definition: An object containing the method definitions.
-  * @return an object containing the set of method definitions.
-  */
-  methods(definition) {
-    // Write: store method definitions if passed.
-    if (definition) {
-      const createUrl = (path, methodDef) => {
-          return methodUrl(this.basePath, (methodDef.url || path));
-      };
+            let value = definition[key];
+            let url = createUrl(key, value);
+            let methodSet;
+            if (_.isFunction(value)) {
+              // A single function was provided.
+              // Use it for all the HTTP verbs.
+              let func = value;
+              methodSet = {
+                get: new ServerMethod(key, func, url, 'GET'),
+                put: new ServerMethod(key, func, url, 'PUT'),
+                post: new ServerMethod(key, func, url, 'POST'),
+                delete: new ServerMethod(key, func, url, 'DELETE')
+              }
+            } else if(_.isObject(value)) {
+              // Create individual methods for each verb.
+              methodSet = {};
+              if (value.get) { methodSet.get = new ServerMethod(key, value.get, url, 'GET', value.docs); }
+              if (value.put) { methodSet.put = new ServerMethod(key, value.put, url, 'PUT', value.docs); }
+              if (value.post) { methodSet.post = new ServerMethod(key, value.post, url, 'POST', value.docs); }
+              if (value.delete) { methodSet.delete = new ServerMethod(key, value.delete, url, 'DELETE', value.docs); }
 
-      _.keys(definition).forEach((key) => {
-          let methods = this[METHODS];
-          if (methods[key]) { throw new Error(`Method '${ key }' already exists.`); }
-
-          let value = definition[key];
-          let url = createUrl(key, value);
-          let methodSet;
-          if (_.isFunction(value)) {
-            // A single function was provided.
-            // Use it for all the HTTP verbs.
-            let func = value;
-            let funcNoParams = function() { return func.call(this); };
-            methodSet = {
-              get: new ServerMethod(key, funcNoParams, url, 'GET'),
-              put: new ServerMethod(key, func, url, 'PUT'),
-              post: new ServerMethod(key, func, url, 'POST'),
-              delete: new ServerMethod(key, funcNoParams, url, 'DELETE')
+            } else {
+              throw new Error(`Type of value for method '${ key }' not supported. Must be function or object.`);
             }
-          } else if(_.isObject(value)) {
-            // Create individual methods for each verb.
-            methodSet = {};
-            if (value.get) { methodSet.get = new ServerMethod(key, value.get, url, 'GET', value.docs); }
-            if (value.put) { methodSet.put = new ServerMethod(key, value.put, url, 'PUT', value.docs); }
-            if (value.post) { methodSet.post = new ServerMethod(key, value.post, url, 'POST', value.docs); }
-            if (value.delete) { methodSet.delete = new ServerMethod(key, value.delete, url, 'DELETE', value.docs); }
 
-          } else {
-            throw new Error(`Type of value for method '${ key }' not supported. Must be function or object.`);
-          }
+            // Store an pointer to the method.
+            // NOTE:  This allows the server and client to behave isomorphically.
+            //        Server code can call the methods (directly) using the same
+            //        pathing/namespace object that the client uses, for example:
+            //
+            //              server.methods.foo.put(123, 'hello');
+            //
+            let stub = util.ns(this.methods, key, { delimiter:'/' });
+            ['get', 'put', 'post', 'delete'].forEach((verb) => {
+                    const method = methodSet[verb];
+                    if (method) {
+                      stub[verb] = function(...args) {
 
-          // Store the values.
-          this[METHODS][key] = methodSet;
-      });
+                        // Prepare the URL for the method.
+                        const route = method.route;
+                        const url = getMethodUrl(null, route, args);
+                        const totalUrlParams = route.keys.length;
+                        if (totalUrlParams > 0) {
+                          args = _.clone(args);
+                          args.splice(0, totalUrlParams);
+                        }
+
+                        // Invoke the method.
+                        return method.invoke(args, url);
+                      };
+                    }
+            });
+
+            // Store the values.
+            this[METHODS][key] = methodSet;
+        });
+      }
+      // Read.
+      return this[METHODS];
     }
 
-    // Read.
-    return this[METHODS];
+    // Finish up (Constructor).
+    return this;
   }
 
 

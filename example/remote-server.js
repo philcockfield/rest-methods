@@ -1,5 +1,5 @@
 var ClientServer = require('../client-server');
-var server = ClientServer({ host:'localhost:3030///' });
+var server = ClientServer({ host:'localhost:3030' });
 
 server.onReady(function(){
 
@@ -8,9 +8,11 @@ server.onReady(function(){
   console.log('server.methods', server.methods);
   console.log('');
 
+  console.log('Invoking: server.methods.bar.get(123)');
   server.methods.bar.get(123)
   .then(function(result) {
     console.log('result', result);
+    console.log('');
   });
 
 });
