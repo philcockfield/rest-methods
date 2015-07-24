@@ -16,8 +16,7 @@
     "stylus": "^0.51.1"
   },
   "devDependencies": {
-    "babel": "^5.6.14",
-    "babel-core": "^5.6.18",
+    "babel": "^5.8.3",
     "babel-eslint": "^3.1.20",
     "babel-loader": "^5.3.1",
     "chai": "^2.2.0",
@@ -33,7 +32,6 @@
     "webpack": "^1.10.1"
   },
   "scripts": {
-    "example": "node ./example",
     "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
     "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch"
   },

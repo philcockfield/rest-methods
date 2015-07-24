@@ -1,5 +1,7 @@
 import Server from '../server';
 
+console.log('server');
+
 var server = Server({
   name:'My Service',
   version: '1.0.1',
