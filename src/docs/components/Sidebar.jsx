@@ -1,6 +1,6 @@
-import React from 'react';
-import Header from './Header';
-import SidebarList from './SidebarList';
+import React from "react";
+import Header from "./Header";
+import SidebarList from "./SidebarList";
 
 
 /**
@@ -18,9 +18,9 @@ export default class Sidebar extends React.Component {
     });
 
     return (
-      <div className='sidebar'>
+      <div className="sidebar">
         <Header manifest={ manifest }/>
-        <SidebarList title='API' items={ methodItems }/>
+        <SidebarList title="API" items={ methodItems }/>
       </div>
     );
   }

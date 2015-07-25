@@ -1,7 +1,7 @@
-import React from 'react';
-import Sidebar from './Sidebar';
-import Header from './Header';
-import Method from './Method';
+import React from "react";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import Method from "./Method";
 
 
 /**
@@ -14,15 +14,15 @@ export default class Shell extends React.Component {
         let value = manifest.methods[key];
         return <li key={i}>
                  <Method method={ value }/>
-               </li>
+               </li>;
     });
 
     return (
-      <div className='shell'>
+      <div className="shell">
         {/* NOTE: Header is hidden unless the screen is so narrow that the sidebar is hidden */}
         <Header manifest={ manifest }/>
         <Sidebar manifest={ manifest }/>
-        <ul className='main-outer'>{ methodItems }</ul>
+        <ul className="main-outer">{ methodItems }</ul>
         <script id="manifestJson" data-manifest={ JSON.stringify(manifest) }></script>
       </div>
     );

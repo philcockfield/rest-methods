@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from "lodash";
 
 
 /**
@@ -17,14 +17,14 @@ export const getMethodUrl = (host, route, args) => {
 
     // Ensure enough arguments were passed.
     if (args.length < urlParams.length) {
-      throw new Error(`Not enough arguments. The URL (${ url }) requires ${ urlParams.length }.`)
+      throw new Error(`Not enough arguments. The URL (${ url }) requires ${ urlParams.length }.`);
     }
 
     // Construct the string.
     let i = 0;
     urlParams.forEach(key => {
         key = `:${ key }`;
-        let index = url.indexOf(key)
+        let index = url.indexOf(key);
         url = `${ url.substr(0, index) }${ args[i] }${ url.substring(index + key.length, url.length) }`;
         i += 1;
     });
@@ -35,5 +35,5 @@ export const getMethodUrl = (host, route, args) => {
   if (host) { url = host + url; }
 
   // Finish up.
-  return url
+  return url;
 };

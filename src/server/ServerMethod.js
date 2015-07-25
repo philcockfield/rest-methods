@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import util from 'js-util';
-import pageJS from '../page-js';
-import { ServerMethodError } from '../errors';
-import MethodDocs from './MethodDocs';
+import _ from "lodash";
+import util from "js-util";
+import pageJS from "../page-js";
+import { ServerMethodError } from "../errors";
+import MethodDocs from "./MethodDocs";
 
 
 /**
@@ -12,9 +12,9 @@ export default class ServerMethod {
   constructor(name, func, routePattern, verb, docs) {
     // Setup initial conditions.
     if (_.isEmpty(name)) { throw new Error(`Method name not specified.`); }
-    if (!_.isFunction(func)) { throw new Error(`Function not specified for the method '${ name }'.`); }
-    if (_.isEmpty(routePattern)) { throw new Error(`URL pattern not specified for the method '${ name }'.`); }
-    if (_.isEmpty(verb)) { throw new Error(`HTTP verb not specified for the method '${ name }'.`); }
+    if (!_.isFunction(func)) { throw new Error(`Function not specified for the method "${ name }".`); }
+    if (_.isEmpty(routePattern)) { throw new Error(`URL pattern not specified for the method "${ name }".`); }
+    if (_.isEmpty(verb)) { throw new Error(`HTTP verb not specified for the method "${ name }".`); }
 
     // Store state.
     this.name = name;
@@ -27,14 +27,15 @@ export default class ServerMethod {
     // Calculate parameters.
     let params = util.functionParameters(func);
     if (params.length > 0) {
-      this.params = params.map(name => {
-        return { name: name };
+      this.params = params.map(paramName => {
+        return { name: paramName };
       });
     }
 
     // If the URL route has parameters, ensure the function has enough parameters.
     if (routeKeys.length > 0 && params.length < routeKeys.length) {
-      throw new Error(`The ${ verb } method '${ name }' does not have enough parameters based on the URL route '${ routePattern }'. Should be: ${ name }(${ routeKeys.map(item => item.name).join(',') })`)
+      const routeParams = routeKeys.map(item => item.name).join(",");
+      throw new Error(`The ${ verb } method "${ name }" does not have enough parameters based on the URL route "${ routePattern }". Should be: ${ name }(${ routeParams })`);
     }
 
     // Ensure URL params are represented within the function.
@@ -42,7 +43,7 @@ export default class ServerMethod {
       let index = 0;
       routeKeys.forEach(item => {
         if (params[index] !== item.name) {
-          throw new Error(`The '${ name }' method has a function parameter ('${ params[index] }') at index ${ index } that does not match the URL pattern. URL parameters come first.  The parameter should be '${ item.name }'.`);
+          throw new Error(`The "${ name }" method has a function parameter ("${ params[index] }") at index ${ index } that does not match the URL pattern. URL parameters come first.  The parameter should be "${ item.name }".`);
         }
         index += 1;
       });
@@ -66,13 +67,13 @@ export default class ServerMethod {
 
         // Determine the URL parameters.
         // These are parameters passed in via the URL pattern, eg:
-        //        For a URL pattern of '/foo/:id/edit'
-        //        the URL of '/foo/123/edit'
-        //        would produce an id of '123'.
+        //        For a URL pattern of "/foo/:id/edit"
+        //        the URL of "/foo/123/edit"
+        //        would produce an id of "123".
         let urlParams = [];
         if (_.isString(url)) {
           let context = new pageJS.Context(url);
-          this.route.match(context.path, context.params)
+          this.route.match(context.path, context.params);
           _.keys(context.params).forEach(key => {
                 let value = context.params[key];
                 if (util.isNumeric(value)) { value = parseFloat(value); }
@@ -90,7 +91,7 @@ export default class ServerMethod {
           verb: this.verb,
           url: {
             path: url,
-            params: urlParams,
+            params: urlParams
           },
           throw: (status, message) => { throw new ServerMethodError(status, this.name, args, message); }
         };

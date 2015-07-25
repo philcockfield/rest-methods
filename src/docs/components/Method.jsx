@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import React from 'react';
-import VerbTabs from './VerbTabs';
-import Arguments from './Arguments';
-import Markdown from './Markdown';
+import _ from "lodash";
+import React from "react";
+import VerbTabs from "./VerbTabs";
+import Arguments from "./Arguments";
+import Markdown from "./Markdown";
 
 
 /**
@@ -12,13 +12,13 @@ export default class Method extends React.Component {
   constructor(props) {
     super(props);
     let { method } = this.props;
-    let verb = _.find(['get', 'post', 'put', 'delete'], (verb) => { return method[verb] !== undefined });
-    this.state = { selectedVerb:verb };
+    let verb = _.find(["get", "post", "put", "delete"], (item) => { return method[item] !== undefined; });
+    this.state = { selectedVerb: verb };
   }
 
 
   handleVerbChanged(e) {
-    this.setState({ selectedVerb:e.verb });
+    this.setState({ selectedVerb: e.verb });
   }
 
 
@@ -30,23 +30,23 @@ export default class Method extends React.Component {
 
     // Only provide a link if the method has a GET verb.
     let url = method.get
-                ? <a href={ method.url } target='_blank'>{ method.url }</a>
-                : method.url
+                ? <a href={ method.url } target="_blank">{ method.url }</a>
+                : method.url;
 
     let description = method.description
                 ? <p><Markdown>{ method.description }</Markdown></p>
-                : null
+                : null;
 
 
-    let codeSample = '';
-    if (params) { codeSample = params.map(item => { return item.name }).join(', '); }
-    codeSample = `server.methods.${ name }.${ selectedVerb }(${ codeSample });`
+    let codeSample = "";
+    if (params) { codeSample = params.map(item => { return item.name; }).join(", "); }
+    codeSample = `server.methods.${ name }.${ selectedVerb }(${ codeSample });`;
 
 
     return (
-      <div className='method'>
-        <div className='content-outer'>
-          <a name={ name } id={ name } className='section-anchor'>
+      <div className="method">
+        <div className="content-outer">
+          <a name={ name } id={ name } className="section-anchor">
             <h1>{ method.name }</h1>
           </a>
           { description }

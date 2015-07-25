@@ -1,17 +1,15 @@
-import fs from 'fs';
-import fsPath from 'path';
-import urlUtil from 'url';
-import _ from 'lodash';
-import util from 'js-util';
-import Promise from 'bluebird';
-import getManifest from './manifest';
-import pageJS from '../page-js';
-import docs from '../docs';
-import { MANIFEST_PATH, METHODS } from '../const';
-import stylus from 'stylus';
-import nib from 'nib';
+import fs from "fs";
+import fsPath from "path";
+import urlUtil from "url";
+import _ from "lodash";
+import getManifest from "./manifest";
+import pageJS from "../page-js";
+import docs from "../docs";
+import { MANIFEST_PATH, METHODS } from "../const";
+import stylus from "stylus";
+import nib from "nib";
 
-const ROOT_PATH = fsPath.resolve('.');
+const ROOT_PATH = fsPath.resolve(".");
 
 
 
@@ -29,8 +27,8 @@ export const matchMethodUrl = (server, url, verb) => {
     let methods = server[METHODS];
     let methodName = _.keys(methods).find((key) => {
         let methodVerb = methods[key][verb];
-        let isMatch =  (methodVerb && methodVerb.route.match(context.path, context.params))
-        return isMatch
+        let isMatch = (methodVerb && methodVerb.route.match(context.path, context.params));
+        return isMatch;
     });
     let method = methods[methodName];
     return method ? method[verb] : undefined;
@@ -50,90 +48,87 @@ export default (server) => {
       const cache = {};
 
       const send = (content, contentType) => {
-          res.setHeader('Content-Type', contentType);
+          res.setHeader("Content-Type", contentType);
           res.end(content);
       };
 
       const getFile = (fileName) => {
-          let basePath = fileName.startsWith('/') ? ROOT_PATH : __dirname;
+          let basePath = fileName.startsWith("/") ? ROOT_PATH : __dirname;
           let path = fsPath.join(basePath, fileName);
           if (!cache[path]) {
             // NB: Only load from file if not in the cache.
             let text = fs.readFileSync(path).toString();
-            cache[path] = { text:text, path:path };
+            cache[path] = { text: text, path: path };
           }
           return cache[path];
       };
 
-
       const sendJs = (fileName) => {
           let js = getFile(`../../.build/${ fileName }`).text;
-          send(js, 'application/javascript');
+          send(js, "application/javascript");
       };
 
-      const sendJson = (obj) => { send(JSON.stringify(obj), 'application/json'); };
-      const sendHtml = (html) => { send(html, 'text/html') };
-      const sendCss = (css) => { send(css, 'text/css'); };
+      const sendJson = (obj) => { send(JSON.stringify(obj), "application/json"); };
+      const sendHtml = (html) => { send(html, "text/html"); };
+      const sendCss = (css) => { send(css, "text/css"); };
 
       const sendStylus = (fileName) => {
           let file = getFile(fileName);
           stylus(file.text)
-            .set('filename', file.path)
-            .include(require('nib').path)
-            // .include(fsPath.join(__dirname, '../docs'))
+            .set("filename", file.path)
+            .include(nib.path)
             .render((err, css) => {
                 if (err) { throw err; }
                 sendCss(css);
             });
       };
 
+      const sendDocsHtml = () => {
+        if (req.method === "GET") {
+          let manifest = getManifest(server, { docs: true });
+          const page = {
+            title: `${ server.name } (API)`,
+            manifest: manifest,
+            stylePath: `${ basePath }/style.css`,
+            scriptPath: `${ basePath }/docs.js`,
+            bodyHtml: docs.toHtml(docs.Shell, { manifest: manifest })
+          };
+          sendHtml(docs.pageHtml(page));
+        }
+      };
+
       // Match the route.
-      let basePath = server.basePath.replace(/\/$/, '');
+      let basePath = server.basePath.replace(/\/$/, "");
       let url = urlUtil.parse(req.url, true);
 
       switch (url.pathname) {
         // GET: An HTML representation of the API (docs).
         case basePath:
+            sendDocsHtml();
+            break;
+
         case `${ basePath }/`:
-            if (req.method === 'GET') {
-              let manifest = getManifest(server, { docs:true });
-              const page = {
-                title: `${ server.name } (API)`,
-                manifest: manifest,
-                stylePath: `${ basePath }/style.css`,
-                scriptPath: `${ basePath }/docs.js`,
-                bodyHtml: docs.toHtml(docs.Shell, { manifest:manifest })
-              };
-              sendHtml(docs.pageHtml(page));
-              break;
-            }
+            sendDocsHtml();
+            break;
 
         case `${ basePath }/style.css`:
-            if (req.method === 'GET') {
-              sendStylus('/src/docs/css/index.styl');
-              break;
-            }
+            sendStylus("/src/docs/css/index.styl");
+            break;
 
         // GET: The manifest of methods.
         case MANIFEST_PATH:
-            if (req.method === 'GET') {
-              const withDocs = url.query.docs === 'true';
-              sendJson(getManifest(server, { docs:withDocs }));
-              break;
-            }
+            const withDocs = url.query.docs === "true";
+            sendJson(getManifest(server, { docs: withDocs }));
+            break;
 
         // GET: Serve the client JS.
         case `${ basePath }/browser.js`:
-            if (req.method === 'GET') {
-              sendJs('browser.js');
-              break;
-            }
+            sendJs("browser.js");
+            break;
 
         case `${ basePath }/docs.js`:
-            if (req.method === 'GET') {
-              sendJs('docs.js');
-              break;
-            }
+            sendJs("docs.js");
+            break;
 
 
         default:

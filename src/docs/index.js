@@ -1,21 +1,14 @@
-import React from 'react';
-import Shell from './components/Shell';
+import React from "react";
+import Shell from "./components/Shell";
+import Page from "./components/Page";
 
 
 export default {
   Shell: Shell,
 
   pageHtml(props = {}) {
-    // renderToStaticMarkup
-
-    var htmlComponent = React.createFactory(require("./components/Page"));
-
-    // props
-    // markup: React.renderToString(bodyElement)
-
-    var html = React.renderToStaticMarkup(htmlComponent(props));
-    return html;
-
+    const htmlComponent = React.createFactory(Page);
+    return React.renderToStaticMarkup(htmlComponent(props));
   },
 
   toHtml(componentType, props = {}) {

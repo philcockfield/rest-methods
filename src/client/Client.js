@@ -1,14 +1,50 @@
-/* global window */
-import _ from 'lodash';
-import ClientMethod from './ClientMethod';
-import util from 'js-util';
-import xhr from 'http-promises/browser'
-import Promise from 'bluebird';
-import { Handlers } from 'js-util';
-import { MANIFEST_PATH } from '../const';
+import _ from "lodash";
+import ClientMethod from "./ClientMethod";
+import util from "js-util";
+import xhr from "http-promises/browser";
+import { Handlers } from "js-util";
+import { MANIFEST_PATH } from "../const";
 
-export const STATE = Symbol('state');
+export const STATE = Symbol("state");
 const isBrowser = (typeof window !== "undefined" && window !== null);
+
+
+
+
+
+/**
+* Initalizes the proxy with the server methods.
+* @param {Client} client:  The Client proxy to the server.
+* @param {object} methodsManifest: An object containing the method definitions from the server.
+*                                  NB: The the [methods] object form the manifest.
+*/
+export const registerMethods = (client, methodsManifest = {}) => {
+  const { host, http } = client[STATE];
+
+  // Store methods.
+  _.keys(methodsManifest).forEach((key) => {
+      let options = methodsManifest[key];
+      options.host = host;
+      let method = new ClientMethod(key, http, options);
+      client[STATE].methods[key] = method;
+
+      // Create proxy-stubs to the method.
+      let stub = util.ns(client.methods, key, { delimiter: "/" });
+      _.keys(method.verbs).forEach(verb => {
+          stub[verb] = (...args) => { return method.invoke(verb, args); };
+      });
+  });
+
+  // Invoke ready handlers.
+  client.isReady = true;
+  client[STATE].readyHandlers.invoke();
+  client[STATE].readyHandlers = new Handlers(); // Reset.
+};
+
+
+
+
+
 
 
 /**
@@ -30,14 +66,14 @@ class Client {
     // Private field: HTTP.
     let http = options.http;
     if (isBrowser && !http) { http = xhr; }
-    if (!http) { throw new Error('An [http] gateway was not given to the [Client].'); }
+    if (!http) { throw new Error("An [http] gateway was not given to the [Client]."); }
 
     // Private field: Host.
     let host = options.host;
-    if (!isBrowser && !host) { throw new Error('A [host] name must be given when connecting a server to a remove server (eg. https://domain.com, or localhost:3030) '); }
+    if (!isBrowser && !host) { throw new Error("A [host] name must be given when connecting a server to a remove server (eg. https://domain.com, or localhost:3030) "); }
     if (host) {
-      if (!host.startsWith('http')) { host = `http://${ host }`; }
-      host = host.replace(/\/*$/, '');
+      if (!host.startsWith("http")) { host = `http://${ host }`; }
+      host = host.replace(/\/*$/, "");
     }
 
     // Private field: State.
@@ -55,7 +91,7 @@ class Client {
     this.isReady = false;
 
     /**
-    * An object containing proxy's to server methods.
+    * An object containing proxy"s to server methods.
     * This object is populated after initialization completes.
     */
     this.methods = {};
@@ -65,7 +101,7 @@ class Client {
     if (!isBrowser && host) { url = `${ host }${ url }`; }
     http.get(url)
       .then((result) => { registerMethods(this, result.methods); })
-      .catch((err) => { throw err });
+      .catch((err) => { throw err; });
   }
 
 
@@ -100,55 +136,25 @@ class Client {
     // Setup initial conditions.
     if (!_.isArray(args)) { args = [args]; }
     if (!this.isReady) {
-      throw new Error(`Initializion must be complete before invoking methods.  See 'isReady' flag.`)
+      throw new Error(`Initializion must be complete before invoking methods.  See "isReady" flag.`);
     }
 
     // Invoke the method.
     let method = this[STATE].methods[methodName];
     if (!method || !method.verbs[verb.toLowerCase()]) {
-      throw new Error(`Failed to invoke. A ${ verb } method '${ methodName }' does not exist.`);
+      throw new Error(`Failed to invoke. A ${ verb } method "${ methodName }" does not exist.`);
     }
     return method.invoke(verb, args);
   }
 
   // HTTP verb specific invoker methods.
-  get(methodName, ...args) { return this.invoke('GET', methodName, args); }
-  put(methodName, ...args) { return this.invoke('PUT', methodName, args); }
-  post(methodName, ...args) { return this.invoke('POST', methodName, args); }
-  delete(methodName, ...args) { return this.invoke('DELETE', methodName, args); }
+  get(methodName, ...args) { return this.invoke("GET", methodName, args); }
+  put(methodName, ...args) { return this.invoke("PUT", methodName, args); }
+  post(methodName, ...args) { return this.invoke("POST", methodName, args); }
+  delete(methodName, ...args) { return this.invoke("DELETE", methodName, args); }
 }
 
 
 
-/**
-* Initalizes the proxy with the server methods.
-* @param {Client} client:  The Client proxy to the server.
-* @param {object} methodsManifest: An object containing the method definitions from the server.
-*                                  NB: The the [methods] object form the manifest.
-*/
-export const registerMethods = (client, methodsManifest = {}) => {
-  const { host, http } = client[STATE];
 
-  // Store methods.
-  _.keys(methodsManifest).forEach((key) => {
-      let options = methodsManifest[key];
-      options.host = host;
-      let method = new ClientMethod(key, http, options);
-      client[STATE].methods[key] = method;
-
-      // Create proxy-stubs to the method.
-      let stub = util.ns(client.methods, key, { delimiter:'/' });
-      _.keys(method.verbs).forEach(verb => {
-          stub[verb] = (...args) => { return method.invoke(verb, args); };
-      });
-  });
-
-  // Invoke ready handlers.
-  client.isReady = true;
-  client[STATE].readyHandlers.invoke();
-  client[STATE].readyHandlers = new Handlers(); // Reset.
-};
-
-
-
-export default (options) => { return new Client(options) };
+export default (options) => { return new Client(options); };

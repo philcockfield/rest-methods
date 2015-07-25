@@ -1,49 +1,49 @@
-import _ from 'lodash';
+import _ from "lodash";
 
 
 const extractDescription = (lines) => {
     let description = [];
     for (let line of _.clone(lines)) {
       line = line.trim();
-      if (line.startsWith('@param') || line.startsWith('@return')) { break; }
+      if (line.startsWith("@param") || line.startsWith("@return")) { break; }
       description.push(line);
       lines.shift();
     }
-    return description.join('\n').replace(/\n*$/, '');
+    return description.join("\n").replace(/\n*$/, "");
 };
 
 
 
 const extractParameters = (lines) => {
     let current;
-    let params = {}
+    let params = {};
 
     for (let line of _.clone(lines)) {
       line = line.trim();
-      if (line.startsWith('@return')) { break; }
+      if (line.startsWith("@return")) { break; }
 
       // Is this the start of a new parameter?
-      if (line.startsWith('@param')) {
-        line = line.replace(/^\@param/, '').trim();
+      if (line.startsWith("@param")) {
+        line = line.replace(/^\@param/, "").trim();
 
         // Get the type details.
         let match = line.match(/\{.*\}/);
         let type;
         if (match) {
-          type = match[0].replace('{', '').replace('}', '').trim();
+          type = match[0].replace("{", "").replace("}", "").trim();
           line = line.substring(match[0].length, line.length).trim();
         }
 
         // Get the parameter name.
-        let index = line.indexOf(' ');
-        let name = line.substring(0, index).replace(/\:$/, '').trim();
-        line = line.substring(index, line.length).trim().replace('-', '').trim();
+        let index = line.indexOf(" ");
+        let name = line.substring(0, index).replace(/\:$/, "").trim();
+        line = line.substring(index, line.length).trim().replace("-", "").trim();
 
         // Store state.
         current = undefined;
         if (name) {
           current = name;
-          params[current] = { name: name, description: '' };
+          params[current] = { name: name, description: "" };
           if (type) { params[current].type = type; }
         }
       }
@@ -74,7 +74,7 @@ export default class MethodDocs {
   constructor(raw) {
     this.params = {};
     if (!_.isEmpty(raw)) {
-      const lines = raw.split('\n')
+      const lines = raw.split("\n");
       this.description = extractDescription(lines);
       this.params = extractParameters(lines);
     }

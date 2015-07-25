@@ -1,6 +1,6 @@
-import _ from 'lodash';
-import React from 'react';
-import marked from 'marked';
+import _ from "lodash";
+import React from "react";
+import marked from "marked";
 
 
 /**
@@ -12,7 +12,7 @@ export default class Markdown extends React.Component {
       var html = marked(this.props.children);
     }
     return html
-        ? <span className='markdown' dangerouslySetInnerHTML={{ __html:html }}/>
+        ? <span className="markdown" dangerouslySetInnerHTML={{ __html: html }}/>
         : this.props.children;
   }
 }

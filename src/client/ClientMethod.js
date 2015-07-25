@@ -1,8 +1,21 @@
-import _ from 'lodash';
-import Promise from 'bluebird';
-import { ServerMethodError } from '../errors';
-import pageJS from '../page-js';
-import { getMethodUrl } from '../url';
+import _ from "lodash";
+import Promise from "bluebird";
+import { ServerMethodError } from "../errors";
+import pageJS from "../page-js";
+import { getMethodUrl } from "../url";
+
+
+const parseError = (err) => {
+  // Convert the [HttpError] into a [ServerMethodError].
+  try {
+    var { status, method, args, message } = JSON.parse(err.message);
+  } catch (e) {
+    // The server did not return JSON details about the method error.
+    message = err.message;
+  }
+  return new ServerMethodError(status, method, args, message);
+};
+
 
 
 
@@ -16,20 +29,20 @@ export default class ClientMethod {
    * @param http: The HTTP object to use for making requests.
    * @param options:
    *           - host: The host-name of the remote server.
-   *           - url: The method's URL path/route-pattern.
-   *           - get: Definition of the GET function, eg. { params:['text', 'number'] }
+   *           - url: The method"s URL path/route-pattern.
+   *           - get: Definition of the GET function, eg. { params:["text", "number"] }
    *           - put:     ..
    *           - post:    ..
    *           - delete:  ..
    */
   constructor(name, http, options = {}) {
-    if (!http) { throw new Error('An [http] gateway was not given to the [ClientMethod].'); }
+    if (!http) { throw new Error("An [http] gateway was not given to the [ClientMethod]."); }
 
     // Prepare the URL.
     let url = options.url;
     if (!url) {
       // If a URL was not specified use the method name.
-      url = `/${ name.replace(/^\/*/, '') }`;
+      url = `/${ name.replace(/^\/*/, "") }`;
     }
 
     // Store values.
@@ -41,7 +54,7 @@ export default class ClientMethod {
     this.host = options.host;
 
     // Store individual invoker methods for each HTTP verb.
-    ['get', 'put', 'post', 'delete'].forEach(verb => {
+    ["get", "put", "post", "delete"].forEach(verb => {
         if (options[verb]) {
           this.verbs[verb] = options[verb];
         }
@@ -50,7 +63,7 @@ export default class ClientMethod {
 
 
   /**
-   * The URL to the method's resource.
+   * The URL to the method"s resource.
    * @param args: Optional. An array of arguments.
    */
   url(...args) {
@@ -64,7 +77,7 @@ export default class ClientMethod {
    * @param args: An array of arguments.
    * @return promise.
    */
-  invoke(verb = 'GET', ...args) {
+  invoke(verb = "GET", ...args) {
     // Setup initial conditions.
     verb = verb.toUpperCase();
     args = _.flatten(args);
@@ -81,9 +94,9 @@ export default class ClientMethod {
           args = args.splice(urlParamsTotal, args.length);
         }
 
-        if ((verb === 'GET' || verb === 'DELETE') && args.length > 0) {
-          let msg = `Cannot send arguments to the '${ this.name }', REST does not allow you to submit data to a ${ verb } method.  Instead use the PUT or POST verbs.`;
-          if (urlParamsTotal > 0) { msg += ` This method's URL does, however, take parameters (${ this.urlPattern }).`; }
+        if ((verb === "GET" || verb === "DELETE") && args.length > 0) {
+          let msg = `Cannot send arguments to the "${ this.name }", REST does not allow you to submit data to a ${ verb } method.  Instead use the PUT or POST verbs.`;
+          if (urlParamsTotal > 0) { msg += ` This method"s URL does, however, take parameters (${ this.urlPattern }).`; }
           throw new Error(msg);
         }
 
@@ -99,14 +112,8 @@ export default class ClientMethod {
         httpMethod(url, payload)
             .then((result) => { resolve(result); })
             .catch((err) => {
-                // Convert the [HttpError] into a [ServerMethodError].
-                try {
-                  var { status, method, args, message } = JSON.parse(err.message);
-                } catch (e) {
-                  // The server did not return JSON details about the method error.
-                  message = err.message;
-                }
-                reject(new ServerMethodError(status, method, args, message));
+                err = parseError(err);
+                reject(err);
             });
     });
   }

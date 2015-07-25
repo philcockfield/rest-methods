@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 
 /**
@@ -15,14 +15,14 @@ export default class SidebarList extends React.Component {
     items = items.map((item, i) => {
         return <li key={i}>
                  <a href={ item.url }>{ item.label }</a>
-               </li>
+               </li>;
     });
 
     return (
-      <div className='sidebar-list'>
+      <div className="sidebar-list">
         {
           title
-            ? <div className='title'>{ title }</div>
+            ? <div className="title">{ title }</div>
             : null
         }
         <ul>{ items }</ul>
@@ -38,9 +38,9 @@ const ItemPropType = React.PropTypes.shape({
 
 SidebarList.propTypes = {
   title: React.PropTypes.string,
-  items: React.PropTypes.arrayOf(ItemPropType),
+  items: React.PropTypes.arrayOf(ItemPropType)
 };
 SidebarList.defaultProps = {
-  title: 'Untitled',
+  title: "Untitled",
   items: []
 };
