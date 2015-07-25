@@ -1,5 +1,5 @@
 /**
- * The client for connecting to a remote server on a server.
+ * The client for connecting a server to a remote server's API.
  */
 var client = require('./lib/client/Client').default;
 var http = require('http-promises/server');
