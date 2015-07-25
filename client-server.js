@@ -2,10 +2,8 @@
  * The client for connecting to a remote server on a server.
  */
 
-// Note: Register [babel] only if another module hasn't already done so.
-if (!global._babelPolyfill) { require('babel/register'); }
 
-var Client = require('./src/client/Client').default;
+var Client = require('./lib/client/Client').default;
 var http = require('http-promises/server');
 var _ = require('lodash');
 
