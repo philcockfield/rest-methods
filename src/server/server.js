@@ -51,7 +51,7 @@ class Server {
     // Store base path.
     let path = options.basePath;
     if (_.isString(path)) {
-      path = path.replace(/^\/*/, ").replace(/\/*$/, ");
+      path = path.replace(/^\/*/, "").replace(/\/*$/, "");
     } else {
       path = "";
     }
@@ -125,13 +125,15 @@ class Server {
                         // Prepare the URL for the method.
                         const route = method.route;
                         const totalUrlParams = route.keys.length;
+                        const invokeUrl = getMethodUrl(null, route, args);
                         if (totalUrlParams > 0) {
                           args = _.clone(args);
+                          // args.splice((args.length - totalUrlParams) , totalUrlParams);
                           args.splice(0, totalUrlParams);
                         }
 
                         // Invoke the method.
-                        return method.invoke(args, getMethodUrl(null, route, args));
+                        return method.invoke(args, invokeUrl);
                       };
                     }
             });

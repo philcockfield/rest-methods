@@ -9,7 +9,7 @@ const fakeConnect = { use: () => {} };
 describe('Server:stub-methods (executing on the server)', () => {
   let server;
   beforeEach(() => {
-      server = Server({ connect:fakeConnect });
+    server = Server({ connect:fakeConnect });
   });
 
 
@@ -62,7 +62,7 @@ describe('Server:stub-methods (executing on the server)', () => {
       server.methods({
         'foo':{
           url: '/foo/:id',
-          get: function(id) {
+          get: function(id, thisWillBeStripped) {
             invoked.push(id);
             self = this;
           }

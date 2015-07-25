@@ -77,7 +77,7 @@ describe('Server:methods', () => {
   it('throws if the method has already been defined', () => {
     server.methods({ 'my-method':() => {} });
     let fn = () => { server.methods({ 'my-method':() => {} }); };
-    expect(fn).to.throw(/Method 'my-method' already exists./);
+    expect(fn).to.throw(/Method "my-method" already exists./);
   });
 
 
