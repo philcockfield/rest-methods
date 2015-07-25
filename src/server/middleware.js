@@ -23,14 +23,17 @@ const ROOT_PATH = fsPath.resolve(".");
   */
 export const matchMethodUrl = (server, url, verb) => {
     verb = verb.toLowerCase();
-    let context = new pageJS.Context(url);
-    let methods = server[METHODS];
-    let methodName = _.find(Object.keys(methods), (key) => {
-        let methodVerb = methods[key][verb];
-        let isMatch = (methodVerb && methodVerb.route.match(context.path, context.params));
-        return isMatch;
-    });
-    let method = methods[methodName];
+    const context = new pageJS.Context(url);
+    const methods = server[METHODS];
+    const methodNames = Object.keys(methods);
+    if (!_.isEmpty(methodNames)) {
+      let methodName = _.find(Object.keys(methods), (key) => {
+          let methodVerb = methods[key][verb];
+          let isMatch = (methodVerb && methodVerb.route.match(context.path, context.params));
+          return isMatch;
+      });
+      var method = methods[methodName];
+    }
     return method ? method[verb] : undefined;
 };
 
