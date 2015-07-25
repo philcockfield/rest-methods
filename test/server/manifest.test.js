@@ -27,13 +27,31 @@ describe('Server:manifest', () => {
 
     it('retrieves a single method with a GET verb', () => {
       server.methods({
-        'foo': { get: () => {} }
+        'foo': { get: (id) => {} } // NB: The parameter is stripped off and ignored.
       });
       expect(getMethods(server)).to.eql({
         'foo': {
           name: 'foo',
           url: '/foo',
           get: {}
+        }
+      });
+    });
+
+    it('retrieves a single method with a GET verb with a URL parameter', () => {
+      server.methods({
+        'foo': {
+          url: 'foo/:id',
+          get: (id, ignored) => {}
+        }
+      });
+      expect(getMethods(server)).to.eql({
+        'foo': {
+          name: 'foo',
+          url: '/foo/:id',
+          get: {
+            params: [{ name:'id' }]
+          }
         }
       });
     });

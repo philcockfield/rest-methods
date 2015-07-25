@@ -42,8 +42,17 @@ export const getMethods = (server, options = {}) => {
             if (methodVerb.route.path) { methodDefinition.url = methodVerb.route.path; }
 
             // Params.
-            if (methodVerb.params && (verb === 'put' || verb === 'post')) {
-              verbDefiniton.params = _.clone(methodVerb.params);
+            let params = _.clone(methodVerb.params);
+            if (verb === 'get' || verb === 'delete') {
+              // Prune of parameters that are not on the URL for GET|DELETE verbs.
+              params = _.filter(params, (param) => {
+                  return _.any(methodVerb.route.keys, (routeKey) => {
+                    return param.name === routeKey.name
+                  });
+              });
+            }
+            if (!_.isEmpty(params)) {
+              verbDefiniton.params = params;
               if (options.docs && methodVerb.docs) {
                 verbDefiniton.params = mergeParameterDocs(verbDefiniton.params, methodVerb.docs);
               }
