@@ -1,7 +1,7 @@
-# server-methods
-Promise-based, self-documenting isomorphic REST APIs.
+# Rest Methods
+Isomorphic, promise-based REST API's.
 
-[![Build Status](https://travis-ci.org/philcockfield/server-methods.svg)](https://travis-ci.org/philcockfield/server-methods)
+[![Build Status](https://travis-ci.org/philcockfield/rest-methods.svg)](https://travis-ci.org/philcockfield/rest-methods)
 
 Publish javascript functions as a REST/resource-oriented endpoint with a simple promise-based RPC style invocation on the client.
 
@@ -25,14 +25,14 @@ Server examples
 
 ## Quick Start
 
-    npm install --save server-methods
+    npm install --save rest-methods
 
 ### Server
-Initialize the `server-methods` middleware with a [connect](https://github.com/senchalabs/connect) based web-server, for instance [Express](http://expressjs.com/):
+Initialize the `rest-methods` middleware with a [connect](https://github.com/senchalabs/connect) based web-server, for instance [Express](http://expressjs.com/):
 
 
     import express from 'express';
-    import Server from 'server-methods';
+    import Server from 'rest-methods';
 
     const app = express();
     Server.init(app);
@@ -54,11 +54,11 @@ Declare your server methods:
     });
 
 
-### Client
+### Client (Browser)
 On the client get a reference to the server proxy, and be sure to include this
 file in your [WebPack](http://webpack.github.io/) build:
 
-      import Server from 'server-methods/client'
+      import Server from 'rest-methods/client-browser'
 
 Invoke the methods asynchronously with promises:
 
