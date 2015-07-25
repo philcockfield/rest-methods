@@ -1,5 +1,5 @@
 {
-  "name": "server-methods",
+  "name": "rest-methods",
   "version": "0.0.2",
   "description": "Declaratively publish functions for remote invocation.",
   "main": "./server.js",
@@ -38,10 +38,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/philcockfield/server-methods.git"
+    "url": "https://github.com/philcockfield/rest-methods.git"
   },
   "keywords": [],
   "author": "Phil Cockfield",
   "license": "MIT",
-  "homepage": "https://github.com/philcockfield/server-methods"
+  "homepage": "https://github.com/philcockfield/rest-methods"
 }
