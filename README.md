@@ -8,7 +8,6 @@ Publish javascript functions as a REST/resource-oriented endpoint with a simple 
 
 
 ## TODO
-- [ ] Server => Server communications.
 - [ ] Before/After hooks for logging, value manipulation.
 
 Server examples
