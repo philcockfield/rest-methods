@@ -14,13 +14,13 @@ React.render(
 
 
 // Test code:
-import client from "../../client-browser";
-let server = client();
-server.onReady(() => {
-
-    console.log("server", server);
-    server.methods.foo.bar.put("my-id", "lorem").then((result) => {
-      console.log("result", result);
-    });
-
-});
+// import client from "../../client-browser";
+// let server = client();
+// server.onReady(() => {
+//
+//     console.log("server", server);
+//     server.methods.foo.bar.put("my-id", "lorem").then((result) => {
+//       console.log("result", result);
+//     });
+//
+// });
