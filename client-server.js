@@ -1,8 +1,6 @@
 /**
  * The client for connecting to a remote server on a server.
  */
-
-
 var Client = require('./lib/client/Client').default;
 var http = require('http-promises/server');
 var _ = require('lodash');
