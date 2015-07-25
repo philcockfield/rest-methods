@@ -4,7 +4,7 @@ import { Shell } from './index';
 
 // Render the live React components over the
 // statically server-rendered HTML.
-let script = document.getElementById('script');
+let script = document.getElementById('manifestJson');
 let manifest = JSON.parse(script.dataset.manifest);
 
 React.render(
@@ -13,14 +13,14 @@ React.render(
 );
 
 
-
+// Test code:
 import Client from '../../client-browser';
 let server = Client();
 server.onReady(() => {
 
-  console.log('server', server);
-  server.methods.foo.bar.put('my-id', 'lorem').then((result) => {
-    console.log('result', result);
-  })
+    console.log('server', server);
+    server.methods.foo.bar.put('my-id', 'lorem').then((result) => {
+      console.log('result', result);
+    })
 
 });

@@ -11,6 +11,9 @@ import { MANIFEST_PATH, METHODS } from '../const';
 import stylus from 'stylus';
 import nib from 'nib';
 
+const ROOT_PATH = fsPath.resolve('.');
+
+
 
 /**
   * Determines whether the given URL path matches any of
@@ -52,7 +55,8 @@ export default (server) => {
       };
 
       const getFile = (fileName) => {
-          let path = fsPath.join(__dirname, fileName);
+          let basePath = fileName.startsWith('/') ? ROOT_PATH : __dirname;
+          let path = fsPath.join(basePath, fileName);
           if (!cache[path]) {
             // NB: Only load from file if not in the cache.
             let text = fs.readFileSync(path).toString();
@@ -76,7 +80,7 @@ export default (server) => {
           stylus(file.text)
             .set('filename', file.path)
             .include(require('nib').path)
-            .include(fsPath.join(__dirname, '../docs'))
+            // .include(fsPath.join(__dirname, '../docs'))
             .render((err, css) => {
                 if (err) { throw err; }
                 sendCss(css);
@@ -93,19 +97,20 @@ export default (server) => {
         case `${ basePath }/`:
             if (req.method === 'GET') {
               let manifest = getManifest(server, { docs:true });
-              let html = getFile('../docs/page.html').text
-                    .replace('{TITLE}', `${ server.name } (API)`)
-                    .replace('{MANIFEST}', JSON.stringify(manifest))
-                    .replace('{STYLE_PATH}', `${ basePath }/style.css`)
-                    .replace('{SCRIPT_PATH}', `${ basePath }/docs.js`)
-                    .replace('{CONTENT}', docs.toHtml(docs.Shell, { manifest:manifest }))
-              sendHtml(html)
+              const page = {
+                title: `${ server.name } (API)`,
+                manifest: manifest,
+                stylePath: `${ basePath }/style.css`,
+                scriptPath: `${ basePath }/docs.js`,
+                bodyHtml: docs.toHtml(docs.Shell, { manifest:manifest })
+              };
+              sendHtml(docs.pageHtml(page));
               break;
             }
 
         case `${ basePath }/style.css`:
             if (req.method === 'GET') {
-              sendStylus('../docs/css/index.styl');
+              sendStylus('/src/docs/css/index.styl');
               break;
             }
 

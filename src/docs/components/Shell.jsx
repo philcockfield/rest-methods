@@ -23,6 +23,7 @@ export default class Shell extends React.Component {
         <Header manifest={ manifest }/>
         <Sidebar manifest={ manifest }/>
         <ul className='main-outer'>{ methodItems }</ul>
+        <script id="manifestJson" data-manifest={ JSON.stringify(manifest) }></script>
       </div>
     );
   }
