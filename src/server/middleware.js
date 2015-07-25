@@ -25,7 +25,7 @@ export const matchMethodUrl = (server, url, verb) => {
     verb = verb.toLowerCase();
     let context = new pageJS.Context(url);
     let methods = server[METHODS];
-    let methodName = _.keys(methods).find((key) => {
+    let methodName = _.find(Object.keys(methods), (key) => {
         let methodVerb = methods[key][verb];
         let isMatch = (methodVerb && methodVerb.route.match(context.path, context.params));
         return isMatch;
@@ -84,7 +84,6 @@ export default (server) => {
       };
 
       const sendDocsHtml = () => {
-        if (req.method === "GET") {
           let manifest = getManifest(server, { docs: true });
           const page = {
             title: `${ server.name } (API)`,
@@ -94,7 +93,6 @@ export default (server) => {
             bodyHtml: docs.toHtml(docs.Shell, { manifest: manifest })
           };
           sendHtml(docs.pageHtml(page));
-        }
       };
 
       // Match the route.

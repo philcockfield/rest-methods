@@ -63,7 +63,7 @@ server.methods({
 
 
 // Invoke directly from the server.
-// server.methods.bar.get(123)
-// .then((result) => {
-//   console.log('result - bar:', result);
-// })
+server.methods.bar.get(123)
+.then((result) => {
+  console.log('result - bar:', result);
+})
