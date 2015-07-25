@@ -56,8 +56,7 @@ export default (server) => {
       };
 
       const getFile = (fileName) => {
-          let basePath = fileName.startsWith("/") ? ROOT_PATH : __dirname;
-          let path = fsPath.join(basePath, fileName);
+          const path = fsPath.join(__dirname, fileName);
           if (!cache[path]) {
             // NB: Only load from file if not in the cache.
             let text = fs.readFileSync(path).toString();
@@ -113,7 +112,7 @@ export default (server) => {
             break;
 
         case `${ basePath }/style.css`:
-            sendStylus("/src/docs/css/index.styl");
+            sendStylus("../docs/css/index.styl");
             break;
 
         // GET: The manifest of methods.
