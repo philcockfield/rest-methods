@@ -63,7 +63,7 @@ export default (server) => {
 
 
       const sendJs = (fileName) => {
-          let js = getFile(`../../dist/${ fileName }`).text;
+          let js = getFile(`../../.build/${ fileName }`).text;
           send(js, 'application/javascript');
       };
 
@@ -124,24 +124,11 @@ export default (server) => {
               break;
             }
 
-        case `${ basePath }/browser.min.js`:
-            if (req.method === 'GET') {
-              sendJs('browser.min.js');
-              break;
-            }
-
         case `${ basePath }/docs.js`:
             if (req.method === 'GET') {
               sendJs('docs.js');
               break;
             }
-
-        case `${ basePath }/docs.min.js`:
-            if (req.method === 'GET') {
-              sendJs('docs.min.js');
-              break;
-            }
-
 
 
         default:

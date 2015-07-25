@@ -5,7 +5,8 @@ const NODE_MODULES_PATH = fsPath.join(__dirname, 'node_modules');
 function modulePath(path) { return fsPath.join(NODE_MODULES_PATH, path); };
 
 
-const settings = {
+
+const SETTINGS = {
   resolveLoader: { fallback: NODE_MODULES_PATH },
   resolve: {
     fallback: NODE_MODULES_PATH,
@@ -26,25 +27,38 @@ const settings = {
 };
 
 
-const browser = _.merge(_.clone(settings), {
+const BROWSER = {
   entry: './src/client/browser-entry',
   output: {
     filename: 'browser.js',
-    path: './dist'
-  },
-});
+    path: './.build'
+  }
+};
 
 
-const docs = _.merge(_.clone(settings), {
+const DOCS = {
   entry: './src/docs/browser-entry',
   output: {
     filename: 'docs.js',
-    path: './dist'
+    path: './.build'
   }
-});
+};
+
+
+// ----------------------------------------------------------------------------
+
+
+const getConfiguration = function(config, options) {
+  options = options || {};
+  config = _.merge(_.clone(SETTINGS), _.clone(config));
+  if (options.minify) {
+    config.plugins = [ new webpack.optimize.UglifyJsPlugin({ minimize: true }) ];
+  }
+  return config;
+};
 
 
 module.exports = {
-  browser: browser,
-  docs: docs
+  browser: function(options) { return getConfiguration(BROWSER, options) },
+  docs: function(options) { return getConfiguration(DOCS, options) }
 };

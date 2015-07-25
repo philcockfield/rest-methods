@@ -17,14 +17,14 @@
   },
   "devDependencies": {
     "babel": "^5.8.3",
+    "babel-core": "^5.8.5",
     "babel-eslint": "^3.1.20",
     "babel-loader": "^5.3.1",
     "chai": "^2.2.0",
     "connect": "^3.4.0",
     "gulp": "^3.9.0",
-    "gulp-concat": "^2.6.0",
+    "gulp-babel": "^5.1.0",
     "gulp-eslint": "^0.15.0",
-    "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
     "mocha": "^2.2.1",
     "node-libs-browser": "^0.5.2",
@@ -32,8 +32,9 @@
     "webpack": "^1.10.1"
   },
   "scripts": {
-    "test": "./test.sh",
-    "tdd": "./test.sh --watch"
+    "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
+    "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch",
+    "prepublish": "gulp prepublish"
   },
   "repository": {
     "type": "git",
