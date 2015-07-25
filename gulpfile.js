@@ -5,7 +5,7 @@ var babel = require("gulp-babel");
 var eslint = require("gulp-eslint");
 var webpack = require("webpack");
 var webpackConfig = require("./webpack.config.js");
-var SOURCE_PATH = "./src/**/*.js";
+var SOURCE_PATH = ["./src/**/*.js", "./src/**/*.jsx"];
 
 
 // ----------------------------------------------------------------------------

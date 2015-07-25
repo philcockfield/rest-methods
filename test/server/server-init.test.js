@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Server from '../../server';
+import Server from '../../src/server/server';
 const fakeConnect = { use: () => {} };
 
 

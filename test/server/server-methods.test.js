@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import _ from 'lodash';
 import ServerMethod from '../../src/server/ServerMethod';
-import Server from '../../server';
+import Server from '../../src/server/server';
 import { METHODS } from '../../src/const';
 
 const fakeConnect = { use: () => {} };
