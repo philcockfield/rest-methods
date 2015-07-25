@@ -5,7 +5,7 @@ const extractDescription = (lines) => {
     let description = [];
     for (let line of _.clone(lines)) {
       line = line.trim();
-      if (line.startsWith("@param") || line.startsWith("@return")) { break; }
+      if (_.startsWith(line, "@param") || _.startsWith(line, "@return")) { break; }
       description.push(line);
       lines.shift();
     }
@@ -20,10 +20,10 @@ const extractParameters = (lines) => {
 
     for (let line of _.clone(lines)) {
       line = line.trim();
-      if (line.startsWith("@return")) { break; }
+      if (_.startsWith(line, "@return")) { break; }
 
       // Is this the start of a new parameter?
-      if (line.startsWith("@param")) {
+      if (_.startsWith(line, "@param")) {
         line = line.replace(/^\@param/, "").trim();
 
         // Get the type details.

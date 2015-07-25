@@ -72,7 +72,7 @@ class Client {
     let host = options.host;
     if (!isBrowser && !host) { throw new Error("A [host] name must be given when connecting a server to a remove server (eg. https://domain.com, or localhost:3030) "); }
     if (host) {
-      if (!host.startsWith("http")) { host = `http://${ host }`; }
+      if (!_.startsWith(host, "http")) { host = `http://${ host }`; }
       host = host.replace(/\/*$/, "");
     }
 
