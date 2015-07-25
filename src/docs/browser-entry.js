@@ -14,8 +14,8 @@ React.render(
 
 
 // Test code:
-// import client from "../../client-browser";
-// let server = client();
+// import rest from "../../browser";
+// let server = rest();
 // server.onReady(() => {
 //
 //     console.log("server", server);

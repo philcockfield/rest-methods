@@ -1,7 +1,7 @@
 /**
  * The client for connecting to a remote server on a server.
  */
-var Client = require('./lib/client/Client').default;
+var client = require('./lib/client/Client').default;
 var http = require('http-promises/server');
 var _ = require('lodash');
 
@@ -12,5 +12,5 @@ module.exports = function(options){
   _.merge(options, {
     http: http
   });
-  return Client(options);
+  return client(options);
 };
