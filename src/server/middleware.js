@@ -29,7 +29,7 @@ export const matchMethodUrl = (server, url, verb) => {
     if (!_.isEmpty(methodNames)) {
       let methodName = _.find(Object.keys(methods), (key) => {
           let methodVerb = methods[key][verb];
-          let isMatch = (methodVerb && methodVerb.route.match(context.path, context.params));
+          let isMatch = (methodVerb && methodVerb.pathRoute.match(context.path, context.params));
           return isMatch;
       });
       var method = methods[methodName];

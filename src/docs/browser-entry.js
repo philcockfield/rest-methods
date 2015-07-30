@@ -13,13 +13,18 @@ React.render(
 );
 
 
-// Test code:
+// TEMP - TEST CODE
+// ----------------------------------------------------------------------------
 // import rest from "../../browser";
 // let server = rest();
 // server.onReady(() => {
 //
 //     console.log("server", server);
 //     server.methods.foo.bar.put("my-id", "lorem").then((result) => {
+//       console.log("result", result);
+//     });
+//
+//     server.methods.bar.get("my-foo-get", 5).then((result) => {
 //       console.log("result", result);
 //     });
 //

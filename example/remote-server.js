@@ -8,8 +8,8 @@ server.onReady(function(){
   console.log('server.methods', server.methods);
   console.log('');
 
-  console.log('Invoking: server.methods.bar.get(123)');
-  server.methods.bar.get(123)
+  console.log('Invoking: server.methods.bar.get(123, 5)');
+  server.methods.bar.get(123, 5)
   .then(function(result) {
     console.log('result', result);
     console.log('');

@@ -125,7 +125,7 @@ class Server {
                         // Prepare the URL for the method.
                         const route = method.route;
                         const totalUrlParams = route.keys.length;
-                        const invokeUrl = getMethodUrl(null, route, args);
+                        const invokeUrl = getMethodUrl(method.name, null, route, args);
                         if (totalUrlParams > 0) {
                           args = _.clone(args);
                           // args.splice((args.length - totalUrlParams) , totalUrlParams);

@@ -31,7 +31,7 @@ gulp.task("copy-css", function(){
     .pipe(gulp.dest('./lib'));
 });
 
-// Tanspile the ES6 source to ES5.
+// Tanspile the ES6 source to ES5 (lib).
 gulp.task("transpile-source", function() {
   return gulp.src(SOURCE_PATH)
     .pipe(babel())

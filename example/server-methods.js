@@ -13,7 +13,7 @@ server.methods({
   'empty-2': { docs:'foo' }, // Won't show.
 
   'bar': {
-    url: '/user/:id',
+    url: '/user/:id?skip=:skip',
     docs:
       `Foo
        Lorem \`ipsum\` dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -33,8 +33,8 @@ server.methods({
        @return {object}
       `,
 
-    get: (id) => { return {id:id, date:new Date()} },
-    put: (id, count) => {}
+    get: (id, skip) => { return {id:id, date:new Date(), skip:skip }},
+    put: (id, skip, count) => {}
   },
 
 
@@ -63,7 +63,8 @@ server.methods({
 
 
 // Invoke directly from the server.
-server.methods.bar.get(123)
+// TEMP
+server.methods.bar.get(123, 5)
 .then((result) => {
   console.log('result - bar:', result);
 })

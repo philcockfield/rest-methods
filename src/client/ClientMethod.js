@@ -67,7 +67,7 @@ export default class ClientMethod {
    * @param args: Optional. An array of arguments.
    */
   url(...args) {
-    return getMethodUrl(this.host, this.route, args);
+    return getMethodUrl(this.name, this.host, this.route, args);
   }
 
 

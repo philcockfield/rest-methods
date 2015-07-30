@@ -3,15 +3,18 @@ import util from "js-util";
 import pageJS from "../page-js";
 import { ServerMethodError } from "../errors";
 import MethodDocs from "./MethodDocs";
+import { getUrlParams } from "../url";
 
 
 /**
-* Represents a method.
-*/
+ * Represents a method.
+ */
 export default class ServerMethod {
   constructor(name, func, routePattern, verb, docs) {
     // Setup initial conditions.
     if (_.isEmpty(name)) { throw new Error(`Method name not specified.`); }
+    if (util.isNumeric(name[0])) { throw new Error(`Method names cannot start with numbers. Given name: ${ name }`); }
+    if (name.match(/^[a-zA-Z0-9-\/]*$/) === null) { throw new Error(`A method name can only contain alpha-numeric characters and '/' or '-'.  Given name: ${ name }`); }
     if (!_.isFunction(func)) { throw new Error(`Function not specified for the method "${ name }".`); }
     if (_.isEmpty(routePattern)) { throw new Error(`URL pattern not specified for the method "${ name }".`); }
     if (_.isEmpty(verb)) { throw new Error(`HTTP verb not specified for the method "${ name }".`); }
@@ -20,12 +23,15 @@ export default class ServerMethod {
     this.name = name;
     this.func = func;
     this.verb = verb;
-    this.route = new pageJS.Route(routePattern);
-    let routeKeys = this.route.keys;
     if (docs) { this.docs = new MethodDocs(docs); }
 
+    // Store routes.
+    this.route = new pageJS.Route(routePattern);
+    this.pathRoute = new pageJS.Route(routePattern.split("?")[0]); // Route excluding the query-string pattern.
+    const routeKeys = this.route.keys;
+
     // Calculate parameters.
-    let params = util.functionParameters(func);
+    const params = util.functionParameters(func);
     if (params.length > 0) {
       this.params = params.map(paramName => {
         return { name: paramName };
@@ -52,12 +58,12 @@ export default class ServerMethod {
 
 
   /**
-  * Invokes the method function.
-  *
-  * @param args: An array of arguments.
-  * @param url:  The requesting URL.
-  * @return promise.
-  */
+   * Invokes the method function.
+   *
+   * @param args: An array of arguments.
+   * @param url:  The requesting URL.
+   * @return promise.
+   */
   invoke(args, url) {
     return new Promise((resolve, reject) => {
         const rejectWithError = (err) => {
@@ -65,22 +71,8 @@ export default class ServerMethod {
             reject(err);
         };
 
-        // Determine the URL parameters.
-        // These are parameters passed in via the URL pattern, eg:
-        //        For a URL pattern of "/foo/:id/edit"
-        //        the URL of "/foo/123/edit"
-        //        would produce an id of "123".
-        let urlParams = [];
-        if (_.isString(url)) {
-          let context = new pageJS.Context(url);
-          this.route.match(context.path, context.params);
-          _.keys(context.params).forEach(key => {
-                let value = context.params[key];
-                if (util.isNumeric(value)) { value = parseFloat(value); }
-                urlParams[key] = value;
-                urlParams.push(value);
-          });
-        }
+        // Extract the URL parameters.
+        const urlParams = getUrlParams(this.route, url);
 
         // Prepend the URL params to the arguments if there are any.
         if (urlParams.length > 0) {
