@@ -59,7 +59,7 @@ export default class Method extends React.Component {
           <pre>{ selectedVerb.toUpperCase() }: { url }</pre>
           <pre>{ codeSample }</pre>
 
-          { params ? <Arguments method={method} params={params}/> : null }
+          <Arguments method={method} params={params}/>
         </div>
       </div>
 

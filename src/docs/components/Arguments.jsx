@@ -8,13 +8,18 @@ import Markdown from "./Markdown";
 export default class Arguments extends React.Component {
   render() {
     let { method, params } = this.props;
-    let rows = params.map((param, i) => { return <ArgumentRow key={i} {...param}/>; });
-    return (
-      <div className="arguments">
-        <div className="title">{ this.props.title }</div>
-        <table>{ rows }</table>
-      </div>
-    );
+    let result = <div/>; // Empty (no params).
+
+    if (params) {
+      let rows = params.map((param, i) => { return <ArgumentRow key={i} {...param}/>; });
+      result = (
+        <div className="arguments">
+          <div className="title">{ this.props.title }</div>
+          <table>{ rows }</table>
+        </div>
+      );
+    }
+    return result;
   }
 }
 Arguments.defaultProps = { title: "Arguments" };

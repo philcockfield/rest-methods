@@ -12,6 +12,22 @@ server.methods({
   'empty-1': {}, // Won't show.
   'empty-2': { docs:'foo' }, // Won't show.
 
+  "args": {
+    docs: `
+      Lorem \`ipsum\` dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.
+      - One
+      - Two
+      - Three
+
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et.
+
+    `,
+    get: function() { return { now: new Date() }; },
+    put: function(id) { return { id:id }; }
+
+  },
+
+
   'bar': {
     url: '/user/:id?skip=:skip',
     docs:
