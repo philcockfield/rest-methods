@@ -1,6 +1,6 @@
 import Server from '../server';
 
-var server = Server({
+var service = Server({
   name:'My Service',
   version: '1.0.1',
   basePath: '/v1'
@@ -8,7 +8,7 @@ var server = Server({
 
 
 
-server.methods({
+service.methods({
   'empty-1': {}, // Won't show.
   'empty-2': { docs:'foo' }, // Won't show.
 
@@ -80,7 +80,7 @@ server.methods({
 
 // Invoke directly from the server.
 // TEMP
-server.methods.bar.get(123, 5)
+service.methods.bar.get(123, 5)
 .then((result) => {
   console.log('result - bar:', result);
 })
