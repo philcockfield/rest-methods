@@ -1,6 +1,6 @@
 {
   "name": "rest-methods",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Declaratively publish functions for remote invocation.",
   "main": "./server.js",
   "dependencies": {
