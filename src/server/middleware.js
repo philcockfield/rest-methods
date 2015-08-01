@@ -10,7 +10,7 @@ import stylus from "stylus";
 import nib from "nib";
 
 const ROOT_PATH = fsPath.resolve(".");
-
+const FAVICON = fs.readFileSync(fsPath.join(__dirname, "../docs/favicon.ico"));
 
 
 /**
@@ -87,14 +87,15 @@ export default (server) => {
 
       const sendDocsHtml = () => {
           let manifest = getManifest(server, { docs: true });
-          const page = {
+          const pageProps = {
             title: `${ server.name } (API)`,
             manifest: manifest,
+            faviconPath: `${ basePath }/favicon.ico`,
             stylePath: `${ basePath }/style.css`,
             scriptPath: `${ basePath }/docs.js`,
             bodyHtml: docs.toHtml(docs.Shell, { manifest: manifest })
           };
-          sendHtml(docs.pageHtml(page));
+          sendHtml(docs.pageHtml(pageProps));
       };
 
       // Match the route.
@@ -113,6 +114,10 @@ export default (server) => {
 
         case `${ basePath }/style.css`:
             sendStylus("../docs/css/index.styl");
+            break;
+
+        case `${ basePath }/favicon.ico`:
+            send(FAVICON, "image/x-icon");
             break;
 
         // GET: The manifest of methods.
