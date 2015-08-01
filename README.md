@@ -21,7 +21,7 @@ See the [example project](https://github.com/philcockfield/rest-methods-example)
 #### Create The Server (Quick Start)
 Create and start a new REST web-service with the internal connect server on a default port:
 ```js
-var Service require("rest-methods/server");;
+var Service require("rest-methods/server");
 var service = Service({ name:'My Service' }).start();
 
 ```
@@ -32,7 +32,7 @@ You may be wanting to expose you REST API as part of wider application.  Simply 
 
 ```js
 var express = require("express");
-var Service = require("rest-methods/server");;
+var Service = require("rest-methods/server");
 
 var app = express();
 var service = Service({
