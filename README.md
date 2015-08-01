@@ -18,7 +18,7 @@ Rapidly publish a set of javascript functions as a REST endpoint with a simple p
 ## Getting Started
 See the [example project](https://github.com/philcockfield/rest-methods-example) that contains a working version of everything described in this getting started tutorial.
 
-#### Create The Server (Quick Start)
+#### Quick Start
 Create and start a new REST web-service with the internal connect server on a default port:
 ```js
 var Service require("rest-methods/server");
@@ -27,8 +27,8 @@ var service = Service({ name:'My Service' }).start();
 ```
 
 
-#### Create Server (with Express and Options)
-You may be wanting to expose you REST API as part of wider application.  Simply pass in your connect-based server as an option at setup.
+#### Create the Server with Options
+You may be wanting to expose you REST API as part of a wider application.  Simply pass in your connect-based server as an option at setup.
 
 ```js
 var express = require("express");
@@ -43,7 +43,7 @@ var service = Service({
 }).start({ port:3030 });
 ```
 
-The example above shows additional configuration options, including your service's `version` and a base URL path that all REST urls are prefixed with.
+The example above shows additional configuration options, including your service's `version` and a base path that all REST urls are prefixed with.
 
 
 ## Craft Your API
@@ -64,7 +64,7 @@ Navigate to the services documentation in your browser ([`http://localhost:3030/
 
 By declaring a single function, each of the HTTP verbs (`GET`, `POST`, `PUT`, `DELETE`) is represented by the single handler.  
 
-Click on the URL (`/v1/user`) to see the `GET` method executed, with the server console logging the `this` context that contains details about which verb was invoked and details about the URL.
+Click on the URL (`/v1/user`) to see the `GET` method executed. The example method has a `console.log(this)` showing you which HTTP verb was invoked and details about the URL.
 
 
 ## Modeling the REST API
@@ -92,14 +92,14 @@ The URL to this method would look something like this:
 
     /v1/users/123
 
-...where the `id` is `123` which is passed to the correspondingly named parameters of each of the method handlers.
+...where the `id` parameter is `123` which is passed to the correspondingly named parameters of each of the method's handlers.
 
 #### URL Parameters
 Parameters that are baked into the URL are mapped to correspondingly named function parameters.  URL parameters must come before other parameters on your function definition.  
 
 The service will help you out by throwing useful error messages if you declare something that it is not expecting.
 
-URL parameters can also be placed within the query string, for example:
+URL parameters can also be placed within the query-string, for example:
 
 ```js
 {
@@ -109,7 +109,9 @@ URL parameters can also be placed within the query string, for example:
 ```
 
 #### Documentation
-Providing JSDocs style comments enhances the published documentation for consumers of your service.  The `docs` field can contain markdown along with `@param {type}` details for each parameter:
+Providing JSDocs style comments makes your published API documentation look amazing.  Often times publishing the API docs for a service is low on the priority list, but is essential for consumers of your service.  With `rest-methods` your API is automatically documenting by default, and by including lightweight method comments you will have a complete documentation story without any extra work on your part.
+
+Add a `docs` field to your method declaration.  It can contain markdown along with `@param {type}` details for each parameter:
 
 ```js
 service.methods({
@@ -132,22 +134,22 @@ service.methods({
 
 ```
 
-Produces:
+Produces the following documentation screen:
 
 ![Docs](https://cloud.githubusercontent.com/assets/185555/9017617/d41b2bae-382b-11e5-8f7b-95e24e604920.png)
 
 
 ## Invoking Methods (Isomorphic/Promises)
-A consistent isomorphic experience if provided for consuming your REST service, making it fast and convenient to invoke REST methods without needing to maintain URL manipulation code.
+A consistent isomorphic experience if provided for consuming your REST service, making it fast and convenient to invoke REST methods without needing to write and maintain URL wrangling code.
 
-The service can be consumed using a dynamically created promise-based client library from:
+The service can be consumed using a dynamically created client library that provides a consistent promise-based idiom across all relevant call-sites:
 
 - The browser
 - A remote server
 - The REST service itself.
 
 ### Invoking From the Browser
-The following sample HTML page references the `browser.js` script and then invokes a method on the server using promises:
+The following sample page references the `browser.js` script and then invokes a method on the server using promises:
 
 ```html
 <html>
@@ -174,9 +176,9 @@ The following sample HTML page references the `browser.js` script and then invok
 </html>
 ```
 
-The client calls the service to receive the [method manifest](http://localhost:3030/methods.manifest.json) which it uses to create a set of helper functions that call the method over XHR at the correctly formatted URL and returns a promise.
+In the example above the client calls the service to receive the [method manifest](http://localhost:3030/methods.manifest.json) which it uses to create the set of helper functions that call the server-methods over XHR at the correctly formatted URL, returning a promise.
 
-If you were using [WebPack](http://webpack.github.io/) you would not need to reference the `browser.js` script, rather just require `rest-methods/browser` within your WebPack build.
+If you were using [WebPack](http://webpack.github.io/) you would not need to reference the `browser.js` script, rather just `require("rest-methods/browser")` within your WebPack build.
 
 #### Method Namespaces
 Methods are stored by name on the `.methods` object.  You can introduce the concept of namespacing by using a `/` within your method names, for example:
@@ -185,21 +187,21 @@ Methods are stored by name on the `.methods` object.  You can introduce the conc
 // On the server:
 service.methods({
   "auth/users": () => {}
-  "auth/groups/roles": () => {}
+  "auth/groups/roles": (name, userId) => {}
 });
 
 // On the client:
 RestService.methods.auth.users.get()
 .then(function(result){ ... });
 
-RestService.methods.auth.groups.roles.get()
+RestService.methods.auth.groups.roles.put("admin", 1234)
 .then(function(result){ ... });
 ```
 
 
 
-### Invoking From Remote Server
-To invoke from another server, pass the host to connect to.  Because this is isomorphic, from there the programming idiom is identical to the browser:
+### Invoking from a Remote Server
+To invoke from another server, simply pass the host to connect with.  Because this is isomorphic, from there on the programming idiom is identical to the browser:
 
 ```js
 var RestService = require("rest-methods/client");
@@ -219,7 +221,7 @@ service.onReady(function() {
 
 
 ### Invoking From The Service Itself
-And again, invoking from methods from service itself is identical as a remote client.  This allows you to write shared code between the client and server that uses the promise-based method stubs.
+And again, invoking methods from the service itself is identical to how it's done on a remote client.  This allows you to write shared code between the client and server that uses the consistent promise-based method stubs.
 
 ```js
 // Declaring the service API.
@@ -254,7 +256,7 @@ service.methods.foo.get(123)
 
 ```
 
-This will ensure that a rich `ServerMethodError` will be passed back up to the client's `catch` callback containing your HTTP status-code, your error message as well as details about the method that threw the error that will be helpful in debugging.
+This causes a rich `ServerMethodError` to be passed back to the client's `catch` callback containing your HTTP status-code, your error message as well as details about the method that threw the error.  Very helpful when debugging.
 
 
 --------
