@@ -91,8 +91,8 @@ export const getUrlParams = (route, url) => {
           } else {
             // Convert to boolean.
             switch (value) {
-              case 'true': value = true; break;
-              case 'false': value = false; break;
+              case "true": value = true; break;
+              case "false": value = false; break;
             }
           }
           result[key] = value;

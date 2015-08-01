@@ -9,7 +9,6 @@ import { MANIFEST_PATH, METHODS } from "../const";
 import stylus from "stylus";
 import nib from "nib";
 
-const ROOT_PATH = fsPath.resolve(".");
 const FAVICON = fs.readFileSync(fsPath.join(__dirname, "../docs/favicon.ico"));
 
 
@@ -48,6 +47,9 @@ export const matchMethodUrl = (server, url, verb) => {
 export default (server) => {
   // Middleware.
   return (req, res, next) => {
+      let basePath = server.basePath.replace(/\/$/, "");
+      let url = urlUtil.parse(req.url, true);
+
       const cache = {};
 
       const send = (content, contentType) => {
@@ -99,9 +101,6 @@ export default (server) => {
       };
 
       // Match the route.
-      let basePath = server.basePath.replace(/\/$/, "");
-      let url = urlUtil.parse(req.url, true);
-
       switch (url.pathname) {
         // GET: An HTML representation of the API (docs).
         case basePath:

@@ -13,7 +13,7 @@ export default class Header extends React.Component {
       <div className="header">
         <h1>{ manifest.name }</h1>
         <a
-          href={ MANIFEST_PATH + '?docs=true' }
+          href={ MANIFEST_PATH + "?docs=true" }
           className="version"
           target="_blank">
             { manifest.version }
