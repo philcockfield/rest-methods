@@ -6,7 +6,7 @@ import connectModule from "connect";
 import { METHODS } from "../const";
 import http from "http";
 import chalk from "chalk";
-import util from "js-util";
+import * as util from "js-util";
 import { getMethodUrl } from "../url";
 
 

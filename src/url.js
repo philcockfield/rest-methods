@@ -1,6 +1,6 @@
 import _ from "lodash";
 import pageJS from "./page-js";
-import util from "js-util";
+import * as util from "js-util";
 
 
 /**

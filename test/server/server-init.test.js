@@ -1,50 +1,50 @@
-import { expect } from 'chai';
-import Server from '../../src/server/server';
+import { expect } from "chai";
+import Server from "../../src/server/server";
 const fakeConnect = { use: () => {} };
 
 
-describe('Server', () => {
-  it('has the given connect server', () => {
+describe("Server", () => {
+  it("has the given connect server", () => {
     let server = Server({ connect:fakeConnect });
     expect(server.connect).to.equal(fakeConnect);
   });
 
 
-  it('constructs a default connect server', () => {
+  it("constructs a default connect server", () => {
     let server = Server();
     expect(server.connect.use).to.be.an.instanceof(Function);
   });
 
 
-  it('has no base path by default', () => {
+  it("has no base path by default", () => {
     let server = Server();
-    expect(server.basePath).to.equal('/');
+    expect(server.basePath).to.equal("/");
   });
 
 
-  it('initializes with a base URL path', () => {
-    let server = Server({ basePath: '////api/////' });
-    expect(server.basePath).to.equal('/api');
+  it("initializes with a base URL path", () => {
+    let server = Server({ basePath: "////api/////" });
+    expect(server.basePath).to.equal("/api");
   });
 
 
-  it('initializes with a version', () => {
+  it("initializes with a version", () => {
     let server = Server();
-    expect(server.version).to.equal('0.0.0');
+    expect(server.version).to.equal("0.0.0");
 
-    server = Server({ version:'1.2.3' });
-    expect(server.version).to.equal('1.2.3');
+    server = Server({ version:"1.2.3" });
+    expect(server.version).to.equal("1.2.3");
   });
 
 
-  it('has a default name', () => {
+  it("has a default name", () => {
     let server = Server();
-    expect(server.name).to.equal('Server Methods');
+    expect(server.name).to.equal("Server Methods");
   });
 
 
-  it('has the specified name', () => {
-    let server = Server({ name:'My API' });
-    expect(server.name).to.equal('My API');
+  it("has the specified name", () => {
+    let server = Server({ name:"My API" });
+    expect(server.name).to.equal("My API");
   });
 });

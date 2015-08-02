@@ -1,6 +1,6 @@
 import _ from "lodash";
 import ClientMethod from "./ClientMethod";
-import util from "js-util";
+import * as util from "js-util";
 import xhr from "http-promises/browser";
 import { Handlers } from "js-util";
 import { MANIFEST_PATH } from "../const";

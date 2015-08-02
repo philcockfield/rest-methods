@@ -1,5 +1,5 @@
 import _ from "lodash";
-import util from "js-util";
+import * as util from "js-util";
 import pageJS from "../page-js";
 import { ServerMethodError } from "../errors";
 import MethodDocs from "./MethodDocs";
