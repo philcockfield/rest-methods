@@ -19,7 +19,7 @@ Rapidly publish a set of javascript functions as a REST endpoint with a simple p
 See the [example project](https://github.com/philcockfield/rest-methods-example) that contains a working version of everything described in this getting started tutorial.
 
 #### Quick Start
-Create and start a new REST web-service with the internal connect server:
+Create and start a new REST web-service with the internal [connect middleware](https://github.com/senchalabs/connect) server:
 ```js
 var Service require("rest-methods/server");
 var service = Service({ name:'My Service' }).start({ port:3030 });
@@ -27,7 +27,7 @@ var service = Service({ name:'My Service' }).start({ port:3030 });
 ```
 
 
-#### Create the Server with Options
+#### Create Using Another Server
 You may be wanting to expose you REST API as part of a wider application.  
 Simply pass in your connect-based server as an option at setup.
 
