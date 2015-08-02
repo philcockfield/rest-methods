@@ -19,10 +19,10 @@ Rapidly publish a set of javascript functions as a REST endpoint with a simple p
 See the [example project](https://github.com/philcockfield/rest-methods-example) that contains a working version of everything described in this getting started tutorial.
 
 #### Quick Start
-Create and start a new REST web-service with the internal connect server on a default port:
+Create and start a new REST web-service with the internal connect server:
 ```js
 var Service require("rest-methods/server");
-var service = Service({ name:'My Service' }).start();
+var service = Service({ name:'My Service' }).start({ port:3030 });
 
 ```
 
@@ -40,7 +40,7 @@ var service = Service({
   version: '1.0.1',
   basePath: '/v1',
   connect: app
-}).start({ port:3030 });
+});
 ```
 
 The example above shows additional configuration options, including your service's `version` and a base path that all REST urls are prefixed with.
