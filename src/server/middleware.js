@@ -144,7 +144,7 @@ export default (server) => {
                 .then((result) => { sendJson(result); })
                 .catch((err) => {
                     res.statusCode = err.status || 500;
-                    res.end(JSON.stringify(err));
+                    sendJson(err);
                 });
 
             } else {
