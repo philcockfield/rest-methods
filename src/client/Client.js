@@ -10,8 +10,6 @@ const isBrowser = (typeof window !== "undefined" && window !== null);
 
 
 
-
-
 /**
 * Initalizes the proxy with the server methods.
 * @param {Client} client:  The Client proxy to the server.
@@ -156,5 +154,5 @@ class Client {
 
 
 
-
+// ----------------------------------------------------------------------------
 export default (options) => { return new Client(options); };
