@@ -49,7 +49,10 @@ service.methods({
        @return {object}
       `,
 
-    get: (id, skip) => { return {id:id, date:new Date(), skip:skip }},
+    get: function(id, skip) {
+      // this.throw(403, "Thing");
+      return {id:id, date:new Date(), skip:skip }
+    },
     put: (id, skip, count) => {}
   },
 
@@ -81,6 +84,7 @@ service.methods({
 // Invoke directly from the server.
 // TEMP
 service.methods.bar.get(123, 5)
-.then((result) => {
-  console.log('result - bar:', result);
-})
+  .then((result) => {
+    console.log('result - bar:', result);
+  })
+  .catch((err) => { console.log("err", err); })
