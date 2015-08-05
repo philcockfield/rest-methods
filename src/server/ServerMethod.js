@@ -69,7 +69,7 @@ export default class ServerMethod {
         const rejectWithError = (err) => {
             err = new ServerMethodError(err.status, this.name, args, err.message);
             reject(err);
-        };
+          };
 
         // Extract the URL parameters.
         const urlParams = getUrlParams(this.route, url);
