@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import ServerMethod from "./ServerMethod";
 import middleware from "./middleware";
 import connectModule from "connect";
-import { METHODS } from "../const";
+import { METHODS, HANDLERS } from "../const";
 import http from "http";
 import chalk from "chalk";
 import * as util from "js-util";
@@ -47,6 +47,10 @@ class Server {
     this.name = options.name || "Server Methods";
     this.version = options.version || "0.0.0";
     this[METHODS] = {};
+    this[HANDLERS] = {
+      before: new util.Handlers(),
+      after: new util.Handlers()
+    };
 
     // Store base path.
     let path = options.basePath;
@@ -149,6 +153,26 @@ class Server {
     // Finish up (Constructor).
     return this;
   }
+
+
+  /**
+   * Registers a handler to invoke BEFORE a server method is invoked.
+   * @param {Function} func(arg): The function to invoke.
+   */
+  before(func) {
+    this[HANDLERS].before.push(func);
+    return this;
+  }
+
+  /**
+   * Registers a handler to invoke AFTER a server method is invoked.
+   * @param {Function} func(arg): The function to invoke.
+   */
+  after(func) {
+    this[HANDLERS].after.push(func);
+    return this;
+  }
+
 
 
   /**
