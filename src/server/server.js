@@ -1,10 +1,11 @@
 import _ from "lodash";
 import bodyParser from "body-parser";
+import Promise from "bluebird";
 import ServerMethod from "./ServerMethod";
 import middleware from "./middleware";
 import connectModule from "connect";
 import pageJS from "../page-js";
-import { METHODS, HANDLERS } from "../const";
+import { METHODS, HANDLERS, INVOKE } from "../const";
 import http from "http";
 import chalk from "chalk";
 import * as util from "js-util";
@@ -45,6 +46,7 @@ class Server {
     */
   constructor(options = {}) {
     // Store state.
+    const self = this;
     this.name = options.name || "Server Methods";
     this.version = options.version || "0.0.0";
     this[METHODS] = {};
@@ -133,12 +135,11 @@ class Server {
                         const invokeUrl = getMethodUrl(method.name, null, route, args);
                         if (totalUrlParams > 0) {
                           args = _.clone(args);
-                          // args.splice((args.length - totalUrlParams) , totalUrlParams);
                           args.splice(0, totalUrlParams);
                         }
 
                         // Invoke the method.
-                        return method.invoke(args, invokeUrl);
+                        return self[INVOKE](method, args, invokeUrl);
                       };
                     }
             });
@@ -152,25 +153,6 @@ class Server {
     };
 
     // Finish up (Constructor).
-    return this;
-  }
-
-
-  /**
-   * Registers a handler to invoke BEFORE a server method is invoked.
-   * @param {Function} func(arg): The function to invoke.
-   */
-  before(func) {
-    this[HANDLERS].before.push(func);
-    return this;
-  }
-
-  /**
-   * Registers a handler to invoke AFTER a server method is invoked.
-   * @param {Function} func(arg): The function to invoke.
-   */
-  after(func) {
-    this[HANDLERS].after.push(func);
     return this;
   }
 
@@ -196,6 +178,60 @@ class Server {
       var method = methods[methodName];
     }
     return method ? method[verb] : undefined;
+  }
+
+
+  /**
+   * Registers a handler to invoke BEFORE a server method is invoked.
+   * @param {Function} func(e): The function to invoke.
+   */
+  before(func) {
+    this[HANDLERS].before.push(func);
+    return this;
+  }
+
+  /**
+   * Registers a handler to invoke AFTER a server method is invoked.
+   * @param {Function} func(e): The function to invoke.
+   */
+  after(func) {
+    this[HANDLERS].after.push(func);
+    return this;
+  }
+
+
+
+  /**
+   * Private: Invokes the specified method with BEFORE/AFTER handlers.
+   */
+  [INVOKE](method, args = [], url) {
+    const beforeArgs = {
+      args,
+      url,
+      verb: method.verb,
+      name: method.name
+    };
+
+    // Handlers.
+    this[HANDLERS].before.invoke(beforeArgs);
+    const invokeAfterHandlers = (err, result) => {
+          const afterArgs = _.clone(beforeArgs);
+          afterArgs.result = result;
+          afterArgs.error = err;
+          this[HANDLERS].after.invoke(afterArgs);
+        };
+
+    return new Promise((resolve, reject) => {
+      method.invoke(args, url)
+      .then((result) => {
+          resolve(result);
+          invokeAfterHandlers(undefined, result);
+      })
+      .catch((err) => {
+          reject(err);
+          invokeAfterHandlers(err, undefined);
+      });
+    });
   }
 
 

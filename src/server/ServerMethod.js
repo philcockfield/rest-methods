@@ -1,9 +1,11 @@
 import _ from "lodash";
 import * as util from "js-util";
+import Promise from "bluebird";
 import pageJS from "../page-js";
 import { ServerMethodError } from "../errors";
 import MethodDocs from "./MethodDocs";
 import { getUrlParams } from "../url";
+
 
 
 /**

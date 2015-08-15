@@ -81,10 +81,18 @@ service.methods({
 });
 
 
+service.before((e) => { console.log("BEFORE", e); });
+service.before((e) => { console.log("AFTER", e); });
+
+
 // Invoke directly from the server.
 // TEMP
+console.log("Example invoking on server...");
+console.log("");
 service.methods.bar.get(123, 5)
   .then((result) => {
+    console.log("");
     console.log('result - bar:', result);
+    console.log("");
   })
   .catch((err) => { console.log("err", err); })

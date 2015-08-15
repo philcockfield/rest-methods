@@ -5,7 +5,7 @@ import _ from "lodash";
 import getManifest from "./manifest";
 import pageJS from "../page-js";
 import docs from "../docs";
-import { MANIFEST_PATH, METHODS } from "../const";
+import { MANIFEST_PATH, METHODS, INVOKE } from "../const";
 import stylus from "stylus";
 import nib from "nib";
 
@@ -114,7 +114,7 @@ export default (server) => {
             const methodVerb = server.match(req.url, req.method);
             if (methodVerb) {
               // Invoke the method.
-              methodVerb.invoke(req.body.args, req.url)
+              server[INVOKE](methodVerb, req.body.args, req.url)
                 .then((result) => { sendJson(result); })
                 .catch((err) => {
                     res.statusCode = err.status || 500;
