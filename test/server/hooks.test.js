@@ -44,6 +44,17 @@ describe("Before/After Hooks", function() {
       });
     });
 
+    it("invokes with a self that is the same as the [e] arguments", () => {
+      let e, self;
+      server.before(function(args) {
+        e = args;
+        self = this;
+      });
+      server.methods.foo.get();
+      expect(self).not.to.equal(undefined);
+      expect(self).to.equal(e);
+    });
+
     it("invokes the [before] handler", () => {
       let e;
       server.before(function(args) { e = args; });
@@ -74,7 +85,7 @@ describe("Before/After Hooks", function() {
       });
     });
 
-    it("invokes with error", () => {
+    it("reports error from failed method", () => {
       let beforeArgs, afterArgs;
       server.before(function(args) { beforeArgs = args; });
       server.after(function(args) { afterArgs = args; });
@@ -86,5 +97,30 @@ describe("Before/After Hooks", function() {
       expect(beforeArgs.name).to.equal("fails");
       expect(beforeArgs.error).to.equal(undefined);
     });
+
+    it("throws an error from the [before] handler", (done) => {
+      let e;
+      server.before(function(args) {
+        this.throw(404, "Thing not found!");
+      });
+      server.methods.foo.put(1, 2)
+      .catch((err) => {
+          expect(err.status).to.equal(404);
+          expect(err.method).to.equal("foo");
+          expect(err.args).to.eql([1, 2]);
+          expect(err.message).to.equal("Thing not found!");
+          done();
+      });
+    });
+
+
+    it("the context of the [after] handler does not have a [throw] method", (done) => {
+      server.after(function(e) {
+        expect(e.throw).to.equal(undefined);
+        done();
+      });
+      server.methods.foo.put(1, 2);
+    });
+
   });
 });

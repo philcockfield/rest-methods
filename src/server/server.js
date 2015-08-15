@@ -6,6 +6,7 @@ import middleware from "./middleware";
 import connectModule from "connect";
 import pageJS from "../page-js";
 import { METHODS, HANDLERS, INVOKE } from "../const";
+import { ServerMethodError } from "../errors";
 import http from "http";
 import chalk from "chalk";
 import * as util from "js-util";
@@ -205,23 +206,32 @@ class Server {
    * Private: Invokes the specified method with BEFORE/AFTER handlers.
    */
   [INVOKE](method, args = [], url) {
-    const beforeArgs = {
-      args,
-      url,
-      verb: method.verb,
-      name: method.name
-    };
-
-    // Handlers.
-    this[HANDLERS].before.invoke(beforeArgs);
-    const invokeAfterHandlers = (err, result) => {
-          const afterArgs = _.clone(beforeArgs);
-          afterArgs.result = result;
-          afterArgs.error = err;
-          this[HANDLERS].after.invoke(afterArgs);
-        };
-
     return new Promise((resolve, reject) => {
+      const beforeArgs = {
+        args,
+        url,
+        verb: method.verb,
+        name: method.name,
+        throw: (status, message) => {
+          throw new ServerMethodError(status, method.name, args, message);
+        }
+      };
+
+      // BEFORE/AFTER handlers.
+      const invokeHandlers = (handlers, e) => {
+            handlers.context = e;
+            handlers.invoke(e);
+          };
+      const invokeAfterHandlers = (err, result) => {
+            const afterArgs = _.clone(beforeArgs);
+            afterArgs.result = result;
+            afterArgs.error = err;
+            delete afterArgs.throw; // Cannot throw after the method has been invoked.
+            invokeHandlers(this[HANDLERS].after, afterArgs);
+          };
+      invokeHandlers(this[HANDLERS].before, beforeArgs);
+
+      // Pass execution to the method.
       method.invoke(args, url)
       .then((result) => {
           resolve(result);
