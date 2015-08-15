@@ -284,9 +284,11 @@ service.before(function(e) {
 --------
 
 ## Test
+    # Run tests.
     npm test
 
-
+    # Watch and re-run tests.
+    npm run tdd
 
 ## Development
 

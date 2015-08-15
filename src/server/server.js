@@ -8,9 +8,9 @@ import pageJS from "../page-js";
 import { METHODS, HANDLERS, INVOKE } from "../const";
 import { ServerMethodError } from "../errors";
 import http from "http";
-import chalk from "chalk";
 import * as util from "js-util";
 import { getMethodUrl } from "../url";
+
 
 
 /**
@@ -261,12 +261,14 @@ class Server {
     http.createServer(this.connect).listen(PORT);
 
     // Output some helpful details to the console.
-    const HR = chalk.cyan(_.repeat("-", 80));
+    const HR = _.repeat("-", 80);
     let ADDRESS = `localhost:${ PORT }`;
     if (!this.basePath !== "/") { ADDRESS += this.basePath; }
     console.log("");
     console.log(HR);
-    console.log(`${ chalk.grey("Running") } ${ chalk.black(this.name) } ${ chalk.grey(`(${ this.version }) on`) } ${ chalk.cyan(ADDRESS) }`);
+    console.log("Started:    ", this.name);
+    console.log("- version:  ", this.version);
+    console.log("- address:  ", ADDRESS);
     console.log(HR);
     console.log("");
 
