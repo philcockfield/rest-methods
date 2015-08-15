@@ -3,3 +3,5 @@
 */
 export const MANIFEST_PATH = "/methods.manifest.json";
 export const METHODS = Symbol("methods");
+export const HANDLERS = Symbol("handlers");
+export const INVOKE = Symbol("invoke");

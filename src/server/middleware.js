@@ -5,37 +5,11 @@ import _ from "lodash";
 import getManifest from "./manifest";
 import pageJS from "../page-js";
 import docs from "../docs";
-import { MANIFEST_PATH, METHODS } from "../const";
+import { MANIFEST_PATH, METHODS, INVOKE } from "../const";
 import stylus from "stylus";
 import nib from "nib";
 
 const FAVICON = fs.readFileSync(fsPath.join(__dirname, "../docs/favicon.ico"));
-
-
-/**
-  * Determines whether the given URL path matches any of
-  * the method routes.
-  * @param server:  {Server} instance to examine.
-  * @param url:     {string} The URL path to match.
-  * @param verb:    {string} The HTTP verb to match (GET|PUT|POST|DELETE).
-  * @return {ServerMethod}
-  */
-export const matchMethodUrl = (server, url, verb) => {
-    verb = verb.toLowerCase();
-    const context = new pageJS.Context(url);
-    const methods = server[METHODS];
-    const methodNames = Object.keys(methods);
-    if (!_.isEmpty(methodNames)) {
-      let methodName = _.find(Object.keys(methods), (key) => {
-          let methodVerb = methods[key][verb];
-          let isMatch = (methodVerb && methodVerb.pathRoute.match(context.path, context.params));
-          return isMatch;
-      });
-      var method = methods[methodName];
-    }
-    return method ? method[verb] : undefined;
-};
-
 
 
 
@@ -137,10 +111,10 @@ export default (server) => {
 
         default:
             // Attempt to match the URL for a method.
-            let methodVerb = matchMethodUrl(server, req.url, req.method);
+            const methodVerb = server.match(req.url, req.method);
             if (methodVerb) {
               // Invoke the method.
-              methodVerb.invoke(req.body.args, req.url)
+              server[INVOKE](methodVerb, req.body.args, req.url)
                 .then((result) => { sendJson(result); })
                 .catch((err) => {
                     res.statusCode = err.status || 500;

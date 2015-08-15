@@ -1,9 +1,12 @@
 import _ from "lodash";
 import bodyParser from "body-parser";
+import Promise from "bluebird";
 import ServerMethod from "./ServerMethod";
 import middleware from "./middleware";
 import connectModule from "connect";
-import { METHODS } from "../const";
+import pageJS from "../page-js";
+import { METHODS, HANDLERS, INVOKE } from "../const";
+import { ServerMethodError } from "../errors";
 import http from "http";
 import chalk from "chalk";
 import * as util from "js-util";
@@ -44,9 +47,14 @@ class Server {
     */
   constructor(options = {}) {
     // Store state.
+    const self = this;
     this.name = options.name || "Server Methods";
     this.version = options.version || "0.0.0";
     this[METHODS] = {};
+    this[HANDLERS] = {
+      before: new util.Handlers(),
+      after: new util.Handlers()
+    };
 
     // Store base path.
     let path = options.basePath;
@@ -128,12 +136,11 @@ class Server {
                         const invokeUrl = getMethodUrl(method.name, null, route, args);
                         if (totalUrlParams > 0) {
                           args = _.clone(args);
-                          // args.splice((args.length - totalUrlParams) , totalUrlParams);
                           args.splice(0, totalUrlParams);
                         }
 
                         // Invoke the method.
-                        return method.invoke(args, invokeUrl);
+                        return self[INVOKE](method, args, invokeUrl);
                       };
                     }
             });
@@ -149,6 +156,94 @@ class Server {
     // Finish up (Constructor).
     return this;
   }
+
+
+  /**
+   * Determines whether the given URL path matches any of
+   * the method routes.
+   * @param url:  {string} The URL path to match.
+   * @param verb: {string} The HTTP verb to match (GET|PUT|POST|DELETE).
+   * @return {ServerMethod}
+   */
+  match(url, verb) {
+    verb = verb.toLowerCase();
+    const context = new pageJS.Context(url);
+    const methods = this[METHODS];
+    const methodNames = Object.keys(methods);
+    if (!_.isEmpty(methodNames)) {
+      let methodName = _.find(Object.keys(methods), (key) => {
+          let methodVerb = methods[key][verb];
+          let isMatch = (methodVerb && methodVerb.pathRoute.match(context.path, context.params));
+          return isMatch;
+      });
+      var method = methods[methodName];
+    }
+    return method ? method[verb] : undefined;
+  }
+
+
+  /**
+   * Registers a handler to invoke BEFORE a server method is invoked.
+   * @param {Function} func(e): The function to invoke.
+   */
+  before(func) {
+    this[HANDLERS].before.push(func);
+    return this;
+  }
+
+  /**
+   * Registers a handler to invoke AFTER a server method is invoked.
+   * @param {Function} func(e): The function to invoke.
+   */
+  after(func) {
+    this[HANDLERS].after.push(func);
+    return this;
+  }
+
+
+
+  /**
+   * Private: Invokes the specified method with BEFORE/AFTER handlers.
+   */
+  [INVOKE](method, args = [], url) {
+    return new Promise((resolve, reject) => {
+      const beforeArgs = {
+        args,
+        url,
+        verb: method.verb,
+        name: method.name,
+        throw: (status, message) => {
+          throw new ServerMethodError(status, method.name, args, message);
+        }
+      };
+
+      // BEFORE/AFTER handlers.
+      const invokeHandlers = (handlers, e) => {
+            handlers.context = e;
+            handlers.invoke(e);
+          };
+      const invokeAfterHandlers = (err, result) => {
+            const afterArgs = _.clone(beforeArgs);
+            afterArgs.result = result;
+            afterArgs.error = err;
+            delete afterArgs.throw; // Cannot throw after the method has been invoked.
+            invokeHandlers(this[HANDLERS].after, afterArgs);
+          };
+      invokeHandlers(this[HANDLERS].before, beforeArgs);
+
+      // Pass execution to the method.
+      method.invoke(args, url)
+      .then((result) => {
+          resolve(result);
+          invokeAfterHandlers(undefined, result);
+      })
+      .catch((err) => {
+          reject(err);
+          invokeAfterHandlers(err, undefined);
+      });
+    });
+  }
+
 
 
   /**

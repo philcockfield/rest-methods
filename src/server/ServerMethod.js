@@ -1,9 +1,11 @@
 import _ from "lodash";
 import * as util from "js-util";
+import Promise from "bluebird";
 import pageJS from "../page-js";
 import { ServerMethodError } from "../errors";
 import MethodDocs from "./MethodDocs";
 import { getUrlParams } from "../url";
+
 
 
 /**
@@ -59,10 +61,9 @@ export default class ServerMethod {
 
   /**
    * Invokes the method function.
-   *
    * @param args: An array of arguments.
    * @param url:  The requesting URL.
-   * @return promise.
+   * @return {Promise}.
    */
   invoke(args, url) {
     return new Promise((resolve, reject) => {
