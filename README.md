@@ -266,16 +266,16 @@ You can register global callbacks to be invoked `before` and `after` each method
 This is useful for logging or checking permissions.  An object is passed to the callback providing context about the invoked method.
 
 ```js
-service.before(function(e) { ... });
-service.after(function(e) { ... });
+service.before((e) => { ... });
+service.after((e) => { ... });
 ```
 
-You may wish to throw an error before the method invokes, for example if authorization fails.  Use the `throw` method from within the context of the handler.
+You may wish to throw an error before the method invokes, for example if authorization fails.  Use the `throw` method from within the handler.
 
 
 ```js
 service.before(function(e) {
-  this.throw(401, "Not authorized to launch rocket.");
+  e.throw(401, "Not authorized to launch rocket.");
 });
 ```
 
