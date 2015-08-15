@@ -251,26 +251,32 @@ class Server {
     * Only use this if you"re not passing in a connect server that
     * you are otherwise starting/managing independely for other purposes.
     * @param options:
-    *             - port: The HTTP port to use.
+    *             - port:     The HTTP port to use.
+    *             - silent:   Flag indicating if logging should be suppressed.
+    *                         Default: false
+    *
     * @return
     */
   start(options = {}) {
     const PORT = options.port || 3030;
+    const SILENT = options.silent || false;
 
     // Start the server.
     http.createServer(this.connect).listen(PORT);
 
     // Output some helpful details to the console.
-    const HR = _.repeat("-", 80);
-    let ADDRESS = `localhost:${ PORT }`;
-    if (!this.basePath !== "/") { ADDRESS += this.basePath; }
-    console.log("");
-    console.log(HR);
-    console.log("Started:    ", this.name);
-    console.log("- version:  ", this.version);
-    console.log("- address:  ", ADDRESS);
-    console.log(HR);
-    console.log("");
+    if (SILENT !== true) {
+      const HR = _.repeat("-", 80);
+      let ADDRESS = `localhost:${ PORT }`;
+      if (!this.basePath !== "/") { ADDRESS += this.basePath; }
+      console.log("");
+      console.log(HR);
+      console.log(" Started:    ", this.name);
+      console.log(" - version:  ", this.version);
+      console.log(" - address:  ", ADDRESS);
+      console.log(HR);
+      console.log("");
+    }
 
     // Finish up.
     return this;
