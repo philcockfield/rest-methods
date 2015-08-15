@@ -32,7 +32,7 @@ gulp.task("copy-assets", function(){
 });
 
 // Tanspile the ES6 source to ES5 (lib).
-gulp.task("transpile-source", function() {
+gulp.task("transpile", function() {
   return gulp.src(SOURCE_PATH)
     .pipe(babel())
     .pipe(gulp.dest("lib"));
@@ -43,8 +43,9 @@ gulp.task("transpile-source", function() {
 
 
 gulp.task("watch", function(callback) { gulp.watch("./src/**/*", ["build"]) });
-gulp.task("build", ["transpile-source", "copy-assets", "webpack"]);
-gulp.task("prepublish", ["transpile-source", "copy-assets", "webpack:minified"]);
+gulp.task("watch-transpile", function(callback) { gulp.watch("./src/**/*", ["transpile"]) });
+gulp.task("build", ["transpile", "copy-assets", "webpack"]);
+gulp.task("prepublish", ["transpile", "copy-assets", "webpack:minified"]);
 
 
 // ----------------------------------------------------------------------------
