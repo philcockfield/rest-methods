@@ -254,17 +254,27 @@ service.methods.foo.get(123)
   // Error contains status-code, method-name and message.
 })
 
-
 ```
 
 This causes a rich `ServerMethodError` to be passed back to the client's `catch` callback containing your HTTP status-code, your error message as well as details about the method that threw the error.  Very helpful when debugging.
 
 
+
+## Before/After Hooks
+You can register global callbacks to be invoked `before` and `after` each method is invoked on the server.
+
+This is useful for logging or checking permissions.  An object is passed to the callback providing context about the invoked method.
+
+
+```js
+service.before((e) => { ... })
+service.after((e) => { ... })
+```
+
 --------
 
 ## Test
     npm test
-    npm run tdd  # Watch
 
 
 
