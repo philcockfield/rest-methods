@@ -59,10 +59,9 @@ export default class ServerMethod {
 
   /**
    * Invokes the method function.
-   *
    * @param args: An array of arguments.
    * @param url:  The requesting URL.
-   * @return promise.
+   * @return {Promise}.
    */
   invoke(args, url) {
     return new Promise((resolve, reject) => {

@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import ServerMethod from "./ServerMethod";
 import middleware from "./middleware";
 import connectModule from "connect";
+import pageJS from "../page-js";
 import { METHODS, HANDLERS } from "../const";
 import http from "http";
 import chalk from "chalk";
@@ -171,6 +172,30 @@ class Server {
   after(func) {
     this[HANDLERS].after.push(func);
     return this;
+  }
+
+
+  /**
+   * Determines whether the given URL path matches any of
+   * the method routes.
+   * @param url:  {string} The URL path to match.
+   * @param verb: {string} The HTTP verb to match (GET|PUT|POST|DELETE).
+   * @return {ServerMethod}
+   */
+  match(url, verb) {
+    verb = verb.toLowerCase();
+    const context = new pageJS.Context(url);
+    const methods = this[METHODS];
+    const methodNames = Object.keys(methods);
+    if (!_.isEmpty(methodNames)) {
+      let methodName = _.find(Object.keys(methods), (key) => {
+          let methodVerb = methods[key][verb];
+          let isMatch = (methodVerb && methodVerb.pathRoute.match(context.path, context.params));
+          return isMatch;
+      });
+      var method = methods[methodName];
+    }
+    return method ? method[verb] : undefined;
   }
 
 
