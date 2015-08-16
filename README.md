@@ -139,6 +139,14 @@ Produces the following documentation screen:
 
 ![Docs](https://cloud.githubusercontent.com/assets/185555/9017617/d41b2bae-382b-11e5-8f7b-95e24e604920.png)
 
+If you don't require documentation you can turn it off as a configuration option:
+
+```js
+var Service require("rest-methods/server");
+var service = Service({ docs: false });
+```
+
+
 
 ## Invoking Methods (Isomorphic/Promises)
 A consistent isomorphic experience if provided for consuming your REST service, making it fast and convenient to invoke REST methods without needing to write and maintain URL wrangling code.

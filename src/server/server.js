@@ -44,12 +44,18 @@ class Server {
     *                       If not specified a default Connect server is created.
     *           - basePath: The base path to prepend URL"s with.
     *           - version:  The version number of the service.
+    *           - docs:     Flag indicating if generated docs should be serverd.
+    *                       Default: true.
     */
   constructor(options = {}) {
     // Store state.
     const self = this;
     this.name = options.name || "Server Methods";
     this.version = options.version || "0.0.0";
+    this.docs = _.isBoolean(options.docs) ? options.docs : true;
+
+
+    // Private state.
     this[METHODS] = {};
     this[HANDLERS] = {
       before: new util.Handlers(),
