@@ -1,11 +1,9 @@
 import fs from "fs";
 import fsPath from "path";
 import urlUtil from "url";
-import _ from "lodash";
 import getManifest from "./manifest";
-import pageJS from "../page-js";
 import docs from "../docs";
-import { MANIFEST_PATH, METHODS, INVOKE } from "../const";
+import { MANIFEST_PATH, INVOKE } from "../const";
 import stylus from "stylus";
 import nib from "nib";
 
