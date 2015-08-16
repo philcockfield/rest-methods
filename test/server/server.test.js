@@ -3,7 +3,7 @@ import Server from "../../src/server/server";
 const fakeConnect = { use: () => {} };
 
 
-describe.only("Server (instance)", () => {
+describe("Server (instance)", () => {
   it("has the given connect server", () => {
     let server = Server({ connect:fakeConnect });
     expect(server.connect).to.equal(fakeConnect);
