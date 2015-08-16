@@ -110,7 +110,7 @@ URL parameters can also be placed within the query-string, for example:
 ```
 
 #### Documentation
-Providing JSDocs style comments makes your published API documentation look amazing.  Often times publishing the API docs for a service is low on the priority list, but is essential for consumers of your service.  With `rest-methods` your API is automatically documenting by default, and by including lightweight method comments you will have a complete documentation story without any extra work on your part.
+Providing JSDocs style comments makes your published API documentation look amazing.  Often times publishing the API docs for a service is low on the priority list, but is essential for consumers of your service.  With `rest-methods` your API is automatically documented by default, and by including lightweight method comments you will have a complete documentation story without any extra work on your part.
 
 Add a `docs` field to your method declaration.  It can contain markdown along with `@param {type}` details for each parameter:
 
