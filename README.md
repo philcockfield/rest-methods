@@ -245,6 +245,31 @@ service.methods.foo.bar.put({ stuff:123 })
 
 ```
 
+### Async Methods
+Often times your service method will itself be asynchronous, perhaps making a call to another service or performing some long running operation from which it will receive a callback.
+
+If this is the case simply return a `Promise` from your method.  A helper is provided on the `this` context to construct a new Promise which you can use like this:
+
+```js
+service.methods({
+  "foo": function() {
+    return this.promise((resolve, reject) => {
+      myLongRunningOperation((err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+      });
+    });
+  }
+});
+```
+
+
+
+
+
 ## Throwing Errors
 Throwing elegant and helpful errors is easy.  Within your service method use the `this.throw()` helper:
 
