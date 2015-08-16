@@ -251,7 +251,7 @@ Throwing elegant and helpful errors is easy.  Within your service method use the
 ```js
 // On the server.
 service.methods({
-  "foo": (id) => {
+  "foo": function(id) {
     this.throw(404, `A foo with the id '${ id }' does not exist.`);
   }
 });
