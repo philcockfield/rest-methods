@@ -213,6 +213,7 @@ class Server {
    */
   [INVOKE](method, args = [], url) {
     return new Promise((resolve, reject) => {
+      const startedAt = new Date();
       const beforeArgs = {
         args,
         url,
@@ -232,6 +233,7 @@ class Server {
             const afterArgs = _.clone(beforeArgs);
             afterArgs.result = result;
             afterArgs.error = err;
+            afterArgs.msecs = new Date() - startedAt;
             delete afterArgs.throw; // Cannot throw after the method has been invoked.
             invokeHandlers(this[HANDLERS].after, afterArgs);
           };
