@@ -266,6 +266,27 @@ service.methods({
 });
 ```
 
+### Calling Other Services
+A promise based `http` helper is provided on the `this` context for making HTTP calls to other services that work with promises.  This uses the (http-promises)[https://github.com/philcockfield/http-promises] library.
+
+Using `this.http` you can make `get/post/put/delete` calls and then work with the returned promise, like so:
+
+```js
+service.methods({
+  "foo": function() {
+    return this.promise((resolve, reject) => {
+      this.http.get("http://domain.com/foo")
+      .then((result) => {
+        // Manipulate the result, or pass it back directly.
+        resolve(result);
+      });
+      .catch((err) => { reject(err); })
+    });
+  }
+});
+```
+
+
 
 
 

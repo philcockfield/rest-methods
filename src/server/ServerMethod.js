@@ -1,5 +1,6 @@
 import _ from "lodash";
 import * as util from "js-util";
+import http from "http-promises/server";
 import Promise from "bluebird";
 import pageJS from "../page-js";
 import { ServerMethodError } from "../errors";
@@ -87,7 +88,8 @@ export default class ServerMethod {
             params: urlParams
           },
           throw: (status, message) => { throw new ServerMethodError(status, this.name, args, message); },
-          promise: (func) => { return new Promise(func); }
+          promise: (func) => { return new Promise(func); },
+          http: http
         };
 
         // Attempt to invoke the function.

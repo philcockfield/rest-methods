@@ -52,17 +52,18 @@ service.methods({
       `,
 
     get: function(id, skip) {
-
-      console.log("");
-      console.log("-------------------------------------------");
-      console.log("this.promise", this.promise);
-      console.log("-------------------------------------------");
-      console.log("");
-
       return this.promise((resolve, reject) => {
-        util.delay(3000, () => {
-          resolve({id:id, date:new Date(), skip:skip });
-        });
+        const URL = "https://api.fastchicken.co.nz/TripWallet/RateForCurrencyPair?baseCurrency=NZD&targetCurrency=GBP";
+        this.http.get(URL)
+        .then((result) => {
+          resolve(result);
+        })
+
+
+
+        // util.delay(3000, () => {
+        //   resolve({id:id, date:new Date(), skip:skip });
+        // });
       });
 
 
