@@ -58,12 +58,6 @@ service.methods({
         .then((result) => {
           resolve(result);
         })
-
-
-
-        // util.delay(3000, () => {
-        //   resolve({id:id, date:new Date(), skip:skip });
-        // });
       });
 
 
