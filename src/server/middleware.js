@@ -50,6 +50,11 @@ export default (server) => {
       const sendHtml = (html) => { send(html, "text/html"); };
       const sendCss = (css) => { send(css, "text/css"); };
 
+      const send404 = (message) => {
+        res.statusCode = 404;
+        send(message || "Not found", "text/plain");
+      };
+
       const sendStylus = (fileName) => {
           let file = getFile(fileName);
           stylus(file.text)
@@ -62,16 +67,21 @@ export default (server) => {
       };
 
       const sendDocsHtml = () => {
-          let manifest = getManifest(server, { docs: true });
-          const pageProps = {
-            title: `${ server.name } (API)`,
-            manifest: manifest,
-            faviconPath: `${ basePath }/favicon.ico`,
-            stylePath: `${ basePath }/style.css`,
-            scriptPath: `${ basePath }/docs.js`,
-            bodyHtml: docs.toHtml(docs.Shell, { manifest: manifest })
-          };
-          sendHtml(docs.pageHtml(pageProps));
+          if (server.docs === true) {
+            let manifest = getManifest(server, { docs: true });
+            const pageProps = {
+              title: `${ server.name } (API)`,
+              manifest: manifest,
+              faviconPath: `${ basePath }/favicon.ico`,
+              stylePath: `${ basePath }/style.css`,
+              scriptPath: `${ basePath }/docs.js`,
+              bodyHtml: docs.toHtml(docs.Shell, { manifest: manifest })
+            };
+            sendHtml(docs.pageHtml(pageProps));
+
+          } else {
+            send404();
+          }
       };
 
       // Match the route.
@@ -105,7 +115,11 @@ export default (server) => {
             break;
 
         case `${ basePath }/docs.js`:
-            sendJs("docs.js");
+            if (server.docs === true) {
+              sendJs("docs.js");
+            } else {
+              send404();
+            }
             break;
 
 

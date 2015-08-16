@@ -3,7 +3,7 @@ import Server from "../../src/server/server";
 const fakeConnect = { use: () => {} };
 
 
-describe("Server", () => {
+describe("Server (instance)", () => {
   it("has the given connect server", () => {
     let server = Server({ connect:fakeConnect });
     expect(server.connect).to.equal(fakeConnect);
@@ -46,5 +46,17 @@ describe("Server", () => {
   it("has the specified name", () => {
     let server = Server({ name:"My API" });
     expect(server.name).to.equal("My API");
+  });
+
+
+  it("shows docs by default", () => {
+    let server = Server();
+    expect(server.docs).to.equal(true);
+  });
+
+
+  it("does not show docs", () => {
+    let server = Server({ docs:false });
+    expect(server.docs).to.equal(false);
   });
 });
