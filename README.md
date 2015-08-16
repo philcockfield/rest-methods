@@ -76,7 +76,7 @@ We can craft the shape of the REST API in the following ways:
 - Take parameters.
 - Shape the URL with parameters.
 
-For example, below we are crafting a `user` method that takes the ID of the user in the URL and passes it do the `GET/POST/PUT` methods.  We are choosing not to make a `DELETE` method available:
+For example, below we are crafting a `user` method that takes the ID of the user in the URL and passes it to the `GET/POST/PUT` methods.  We are choosing not to make a `DELETE` method available:
 
 ```js
 service.methods({
