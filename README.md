@@ -165,9 +165,9 @@ The following sample page references the `browser.js` script and then invokes a 
   <script type="text/javascript" src="/v1/browser.js" charset="utf-8"></script>
   <script type="text/javascript" charset="utf-8">
     /*
-      Wait for client the service to be ready.
-         This is pulling the API manifest from the server and
-         constructing the client-method stubs.
+      Wait for the client of the service to be ready.
+         NB: This is pulling the API manifest from the server
+         and constructing the client-method stubs.
     */
     RestService.onReady(function() {
 
