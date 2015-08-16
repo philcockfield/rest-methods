@@ -43,7 +43,7 @@ gulp.task("transpile", function() {
 
 
 gulp.task("watch", function(callback) { gulp.watch("./src/**/*", ["build"]) });
-gulp.task("watch-transpile", function(callback) { gulp.watch("./src/**/*", ["transpile"]) });
+gulp.task("watch-es6", function(callback) { gulp.watch("./src/**/*", ["transpile"]) });
 gulp.task("build", ["transpile", "copy-assets", "webpack"]);
 gulp.task("prepublish", ["transpile", "copy-assets", "webpack:minified"]);
 
