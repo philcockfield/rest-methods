@@ -1,4 +1,5 @@
 import Server from '../server';
+import * as util from "js-util";
 
 var service = Server({
   name:'My Service',
@@ -51,8 +52,23 @@ service.methods({
       `,
 
     get: function(id, skip) {
+
+      console.log("");
+      console.log("-------------------------------------------");
+      console.log("this.promise", this.promise);
+      console.log("-------------------------------------------");
+      console.log("");
+
+      return this.promise((resolve, reject) => {
+        util.delay(3000, () => {
+          resolve({id:id, date:new Date(), skip:skip });
+        });
+      });
+
+
+
       // this.throw(403, "Thing");
-      return {id:id, date:new Date(), skip:skip }
+      // return {id:id, date:new Date(), skip:skip }
     },
     put: (id, skip, count) => {}
   },
@@ -61,6 +77,7 @@ service.methods({
   'foo/bar': function(id, text) {
       // console.log('invoking foo', id);
       // throw new Error('ouch')
+
       console.log('id', id);
       console.log('text', text);
       console.log('');
@@ -83,7 +100,7 @@ service.methods({
 
 
 service.before((e) => { console.log("BEFORE", e); });
-service.before((e) => { console.log("AFTER", e); });
+service.after((e) => { console.log("AFTER", e); });
 
 
 // Invoke directly from the server.
