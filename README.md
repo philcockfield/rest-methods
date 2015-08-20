@@ -35,13 +35,16 @@ Simply pass in your connect-based server as an option at setup.
 var express = require("express");
 var Service = require("rest-methods/server");
 
-var app = express();
 var service = Service({
   name:'My Service',
   version: '1.0.1',
   basePath: '/v1',
-  connect: app
 });
+
+var app = express()
+          .use(service.middleware)
+          .listen(3030);
+
 ```
 
 The example above shows additional configuration options, including your service's `version` and a base path that all REST urls are prefixed with.
