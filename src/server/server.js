@@ -39,8 +39,6 @@ class Server {
     * @param connect: The connect app to apply the middleware to.
     * @param options:
     *           - name:     The name of the service.
-    *           - connect:  The connect app to use.
-    *                       If not specified a default Connect server is created.
     *           - basePath: The base path to prepend URL"s with.
     *           - version:  The version number of the service.
     *           - docs:     Flag indicating if generated docs should be serverd.
@@ -52,6 +50,7 @@ class Server {
     this.name = options.name || "Server Methods";
     this.version = options.version || "0.0.0";
     this.docs = _.isBoolean(options.docs) ? options.docs : true;
+    this.middleware = middleware(this);
 
     // Private state.
     this[METHODS] = {};
@@ -68,14 +67,6 @@ class Server {
       path = "";
     }
     this.basePath = `/${ path }`;
-
-    // Register middleware.
-    let connect = options.connect;
-    if (!connect) {
-      connect = connectModule();
-    }
-    connect.use(middleware(this));
-    this.connect = connect;
 
     /**
     * Registers or retrieves the complete set of methods.
