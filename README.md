@@ -29,7 +29,7 @@ var service = Service({ name:'My Service' }).start({ port:3030 });
 
 #### Create Using Another Server
 You may be wanting to expose your REST API as part of a wider application.  
-Simply pass in your connect-based server as an option at setup.
+Simply `.use` the service middleware.
 
 ```js
 var express = require("express");
