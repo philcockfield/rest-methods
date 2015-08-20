@@ -1,13 +1,20 @@
-import Server from '../server';
+import Service from '../server';
 import * as util from "js-util";
 
-var service = Server({
+import express from "express";
+
+
+var service = Service({
   name:'My Service',
   version: '1.0.1',
   basePath: '/v1'
   // docs: true
-}).start({ port:3030, silent:false });
+})//.start({ port:3030, silent:false });
 
+
+const app = express()
+  .use(service.middleware)
+  .listen(3030);
 
 
 service.methods({
@@ -65,7 +72,12 @@ service.methods({
       // this.throw(403, "Thing");
       // return {id:id, date:new Date(), skip:skip }
     },
-    put: (id, skip, count) => {}
+    put: (id, skip, data) => {
+
+      console.log("PUT", data);
+      return true
+
+    }
   },
 
 
@@ -94,8 +106,8 @@ service.methods({
 });
 
 
-service.before((e) => { console.log("BEFORE", e); });
-service.after((e) => { console.log("AFTER", e); });
+// service.before((e) => { console.log("BEFORE", e); });
+// service.after((e) => { console.log("AFTER", e); });
 
 
 // Invoke directly from the server.

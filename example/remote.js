@@ -11,7 +11,7 @@ server.onReady(function(){
 
   console.log('Invoking: server.methods.bar.get(123, 5)');
   console.log("");
-  server.methods.bar.get(123, 5)
+  server.methods.bar.put(123, 5, { date: new Date() })
     .then(function(result) {
       console.log('Callback Result', result);
       console.log('');
