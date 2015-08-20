@@ -1,13 +1,13 @@
 {
   "name": "rest-methods",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Declaratively publish functions for remote invocation.",
   "main": "./server.js",
   "dependencies": {
     "bluebird": "^2.9.33",
     "body-parser": "^1.13.2",
     "connect": "^3.4.0",
-    "http-promises": "^1.0.3",
+    "http-promises": "^1.0.4",
     "js-util": "^1.0.1",
     "lodash": "^3.6.0",
     "marked": "^0.3.3",
