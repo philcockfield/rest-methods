@@ -1,9 +1,8 @@
 import _ from "lodash";
-import bodyParser from "body-parser";
 import Promise from "bluebird";
 import ServerMethod from "./ServerMethod";
 import middleware from "./middleware";
-import connectModule from "connect";
+import connect from "connect";
 import pageJS from "../page-js";
 import { METHODS, HANDLERS, INVOKE } from "../const";
 import { ServerMethodError } from "../errors";
@@ -40,8 +39,6 @@ class Server {
     * @param connect: The connect app to apply the middleware to.
     * @param options:
     *           - name:     The name of the service.
-    *           - connect:  The connect app to use.
-    *                       If not specified a default Connect server is created.
     *           - basePath: The base path to prepend URL"s with.
     *           - version:  The version number of the service.
     *           - docs:     Flag indicating if generated docs should be serverd.
@@ -53,7 +50,7 @@ class Server {
     this.name = options.name || "Server Methods";
     this.version = options.version || "0.0.0";
     this.docs = _.isBoolean(options.docs) ? options.docs : true;
-
+    this.middleware = middleware(this);
 
     // Private state.
     this[METHODS] = {};
@@ -70,15 +67,6 @@ class Server {
       path = "";
     }
     this.basePath = `/${ path }`;
-
-    // Register middleware.
-    let connect = options.connect;
-    if (!connect) {
-      connect = connectModule();
-    }
-    connect.use(bodyParser.json());
-    connect.use(middleware(this));
-    this.connect = connect;
 
     /**
     * Registers or retrieves the complete set of methods.
@@ -270,7 +258,8 @@ class Server {
     const SILENT = options.silent || false;
 
     // Start the server.
-    http.createServer(this.connect).listen(PORT);
+    const app = connect().use(this.middleware);
+    http.createServer(app).listen(PORT);
 
     // Output some helpful details to the console.
     if (SILENT !== true) {

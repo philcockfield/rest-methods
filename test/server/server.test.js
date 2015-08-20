@@ -1,21 +1,8 @@
 import { expect } from "chai";
 import Server from "../../src/server/server";
-const fakeConnect = { use: () => {} };
 
 
 describe("Server (instance)", () => {
-  it("has the given connect server", () => {
-    let server = Server({ connect:fakeConnect });
-    expect(server.connect).to.equal(fakeConnect);
-  });
-
-
-  it("constructs a default connect server", () => {
-    let server = Server();
-    expect(server.connect.use).to.be.an.instanceof(Function);
-  });
-
-
   it("has no base path by default", () => {
     let server = Server();
     expect(server.basePath).to.equal("/");

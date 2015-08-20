@@ -2,20 +2,18 @@ import { expect } from "chai";
 import _ from "lodash";
 import Server from "../../src/server/server";
 
-const fakeConnect = { use: () => {} };
-
 
 
 describe("Server:stub-methods (executing on the server)", () => {
   let server;
   beforeEach(() => {
-    server = Server({ connect:fakeConnect });
+    server = Server({});
   });
 
 
   it("does not share methods function between instances", () => {
-    let server1 = Server({ connect:fakeConnect });
-    let server2 = Server({ connect:fakeConnect });
+    let server1 = Server({});
+    let server2 = Server({});
     expect(server1.methods).not.to.equal(server2.methods);
   });
 
