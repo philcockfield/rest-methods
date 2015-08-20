@@ -1,5 +1,4 @@
 import _ from "lodash";
-import bodyParser from "body-parser";
 import Promise from "bluebird";
 import ServerMethod from "./ServerMethod";
 import middleware from "./middleware";
@@ -54,7 +53,6 @@ class Server {
     this.version = options.version || "0.0.0";
     this.docs = _.isBoolean(options.docs) ? options.docs : true;
 
-
     // Private state.
     this[METHODS] = {};
     this[HANDLERS] = {
@@ -76,7 +74,6 @@ class Server {
     if (!connect) {
       connect = connectModule();
     }
-    connect.use(bodyParser.json());
     connect.use(middleware(this));
     this.connect = connect;
 
