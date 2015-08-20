@@ -4,15 +4,12 @@ import ServerMethod from "../../src/server/ServerMethod";
 import Server from "../../src/server/server";
 import { METHODS } from "../../src/const";
 
-const fakeConnect = { use: () => {} };
-
-
 
 
 describe("Server:methods", () => {
   let server;
   beforeEach(() => {
-      server = Server({ connect:fakeConnect });
+      server = Server({});
   });
 
 

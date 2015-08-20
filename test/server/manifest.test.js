@@ -3,8 +3,6 @@ import Server from "../../src/server/server";
 import manifest from "../../src/server/manifest";
 import { getMethods } from "../../src/server/manifest";
 
-const fakeConnect = { use: () => {} };
-
 
 
 describe("Server:manifest", () => {
