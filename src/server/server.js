@@ -2,7 +2,7 @@ import _ from "lodash";
 import Promise from "bluebird";
 import ServerMethod from "./ServerMethod";
 import middleware from "./middleware";
-import connectModule from "connect";
+import connect from "connect";
 import pageJS from "../page-js";
 import { METHODS, HANDLERS, INVOKE } from "../const";
 import { ServerMethodError } from "../errors";
@@ -258,7 +258,8 @@ class Server {
     const SILENT = options.silent || false;
 
     // Start the server.
-    http.createServer(this.connect).listen(PORT);
+    const app = connect().use(this.middleware);
+    http.createServer(app).listen(PORT);
 
     // Output some helpful details to the console.
     if (SILENT !== true) {
