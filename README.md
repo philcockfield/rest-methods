@@ -38,7 +38,7 @@ var Service = require("rest-methods/server");
 var service = Service({
   name:'My Service',
   version: '1.0.1',
-  basePath: '/v1',
+  basePath: '/v1'
 });
 
 var app = express()
