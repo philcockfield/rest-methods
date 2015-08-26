@@ -1,3 +1,4 @@
+import _ from "lodash";
 import fs from "fs";
 import fsPath from "path";
 import urlUtil from "url";
@@ -123,7 +124,7 @@ const middleware = (server, req, res, next) => {
           // Invoke the method.
           let args = req.body.args || req.body;
           args = _.isArray(args) ? args : [args];
-          
+
           server[INVOKE](methodVerb, args, req.url)
             .then((result) => { sendJson(result); })
             .catch((err) => {
