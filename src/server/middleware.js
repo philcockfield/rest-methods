@@ -121,7 +121,9 @@ const middleware = (server, req, res, next) => {
         const methodVerb = server.match(req.url, req.method);
         if (methodVerb) {
           // Invoke the method.
-          var args = req.body.args || req.body;
+          let args = req.body.args || req.body;
+          args = _.isArray(args) ? args : [args];
+          
           server[INVOKE](methodVerb, args, req.url)
             .then((result) => { sendJson(result); })
             .catch((err) => {

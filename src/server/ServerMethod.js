@@ -87,7 +87,6 @@ export default class ServerMethod {
             path: url,
             params: urlParams
           },
-          postBody: args,
           throw: (status, message) => { throw new ServerMethodError(status, this.name, args, message); },
           promise: (func) => { return new Promise(func); },
           http: http
