@@ -1,7 +1,9 @@
 # Rest Methods
-Isomorphic, promise-based REST services.
 
 [![Build Status](https://travis-ci.org/philcockfield/rest-methods.svg)](https://travis-ci.org/philcockfield/rest-methods)
+
+Isomorphic, promise-based REST services.
+
 
 Rapidly publish a set of javascript functions as a REST endpoint with a simple promise-based RPC style invocation on the client.  Automatically produces rich API documentation.
 
