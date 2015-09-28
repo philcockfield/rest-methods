@@ -1,8 +1,15 @@
 {
-  "name": "rest-methods",
+  "name": "rest-middleware",
   "version": "1.0.20",
   "description": "Declaratively publish functions for remote invocation.",
   "main": "./server.js",
+  "scripts": {
+    "example-server": "node ./example",
+    "example-client": "node ./example/remote.js",
+    "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
+    "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch",
+    "prepublish": "gulp prepublish"
+  },
   "dependencies": {
     "bluebird": "^2.9.33",
     "body-parser": "^1.13.2",
@@ -32,17 +39,12 @@
     "webpack": "^1.10.1",
     "express": "^4.13.3"
   },
-  "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
-    "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch",
-    "prepublish": "gulp prepublish"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/philcockfield/rest-methods.git"
+    "url": "https://github.com/philcockfield/rest-middleware.git"
   },
   "keywords": [],
   "author": "Phil Cockfield",
   "license": "MIT",
-  "homepage": "https://github.com/philcockfield/rest-methods"
+  "homepage": "https://github.com/philcockfield/rest-middleware"
 }
