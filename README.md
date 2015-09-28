@@ -1,5 +1,4 @@
-# Rest Methods
-
+# Rest Middleware
 [![Build Status](https://travis-ci.org/philcockfield/rest-middleware.svg)](https://travis-ci.org/philcockfield/rest-middleware)
 
 Isomorphic, promise-based REST services.
