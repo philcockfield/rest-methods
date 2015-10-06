@@ -4,7 +4,7 @@
   "description": "Declaratively publish functions for remote invocation.",
   "main": "./server.js",
   "scripts": {
-    "example-server": "node ./example",
+    "example": "node ./example",
     "example-client": "node ./example/remote.js",
     "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
     "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch",

@@ -14,7 +14,9 @@ var service = Service({
 
 const app = express()
   .use(service.middleware)
-  .listen(3030);
+  .listen(8080);
+
+console.log("Listening on port:", 8080);
 
 
 service.methods({
@@ -112,12 +114,12 @@ service.methods({
 
 // Invoke directly from the server.
 // TEMP
-console.log("Example invoking on server...");
-console.log("");
-service.methods.bar.get(123, 5)
-  .then((result) => {
-    console.log("");
-    console.log('result - bar:', result);
-    console.log("");
-  })
-  .catch((err) => { console.log("err", err); })
+// console.log("Example invoking on server...");
+// console.log("");
+// service.methods.bar.get(123, 5)
+//   .then((result) => {
+//     console.log("");
+//     console.log('result - bar:', result);
+//     console.log("");
+//   })
+//   .catch((err) => { console.log("err", err); })
