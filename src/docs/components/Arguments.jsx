@@ -15,7 +15,9 @@ export default class Arguments extends React.Component {
       result = (
         <div className="arguments">
           <div className="title">{ this.props.title }</div>
-          <table>{ rows }</table>
+          <table>
+            <tbody>{ rows }</tbody>
+          </table>
         </div>
       );
     }

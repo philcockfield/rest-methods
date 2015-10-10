@@ -19,7 +19,8 @@
     "lodash": "^3.6.0",
     "marked": "^0.3.3",
     "nib": "^1.1.0",
-    "react": "^0.13.3",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
     "stylus": "^0.51.1"
   },
   "devDependencies": {
@@ -28,16 +29,17 @@
     "babel-eslint": "^3.1.20",
     "babel-loader": "^5.3.1",
     "chai": "^2.2.0",
+    "express": "^4.13.3",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
     "gulp-eslint": "^0.15.0",
+    "gulp-plumber": "^1.0.1",
     "gulp-util": "^3.0.6",
     "json-loader": "^0.5.2",
     "mocha": "^2.2.1",
     "node-libs-browser": "^0.5.2",
     "sinon": "^1.15.4",
-    "webpack": "^1.10.1",
-    "express": "^4.13.3"
+    "webpack": "^1.10.1"
   },
   "repository": {
     "type": "git",

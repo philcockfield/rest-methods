@@ -12,11 +12,11 @@ var service = Service({
 })//.start({ port:3030, silent:false });
 
 
+const PORT = 3030;
 const app = express()
-  .use(service.middleware)
-  .listen(8080);
-
-console.log("Listening on port:", 8080);
+    .use(service.middleware)
+    .listen(PORT);
+console.log("Listening on port:", PORT);
 
 
 service.methods({

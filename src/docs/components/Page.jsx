@@ -17,10 +17,10 @@ export default class Page extends React.Component {
         </head>
         <body>
           <div
-            id="page-root"
-            dangerouslySetInnerHTML={{ __html: this.props.bodyHtml }}/>
+              id="page-root"
+              dangerouslySetInnerHTML={{ __html: this.props.bodyHtml }}/>
+          <script id="script" type="text/javascript" src={ this.props.scriptPath }></script>
         </body>
-        <script id="script" type="text/javascript" src={ this.props.scriptPath }></script>
       </html>
     );
   }

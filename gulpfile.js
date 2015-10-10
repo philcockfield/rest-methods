@@ -1,5 +1,6 @@
 "use strict"
 var gulp = require("gulp");
+var plumber = require("gulp-plumber");
 var gulpUtil = require("gulp-util");
 var babel = require("gulp-babel");
 var eslint = require("gulp-eslint");
@@ -34,8 +35,9 @@ gulp.task("copy-assets", function(){
 // Tanspile the ES6 source to ES5 (lib).
 gulp.task("babel", function() {
   return gulp.src(SOURCE_PATH)
-    .pipe(babel())
-    .pipe(gulp.dest("lib"));
+             .pipe(plumber()) // Keep task alive on build errors.
+             .pipe(babel({ stage: 1 }))
+             .pipe(gulp.dest("lib"));
 });
 
 

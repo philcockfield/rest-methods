@@ -1,6 +1,8 @@
 import React from "react";
+import ReactDOMServer from "react-dom/server";
 import Shell from "./components/Shell";
 import Page from "./components/Page";
+
 
 
 export default {
@@ -8,11 +10,11 @@ export default {
 
   pageHtml(props = {}) {
     const htmlComponent = React.createFactory(Page);
-    return React.renderToStaticMarkup(htmlComponent(props));
+    return ReactDOMServer.renderToStaticMarkup(htmlComponent(props));
   },
 
   toHtml(componentType, props = {}) {
     let component = React.createElement(componentType, props);
-    return React.renderToString(component);
+    return ReactDOMServer.renderToString(component);
   }
 };
