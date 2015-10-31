@@ -32,7 +32,7 @@ var service = Service({ name:'My Service' }).start({ port:3030 });
 ```
 
 
-#### Create Using Another Server
+#### Create Using Your Own Server
 You may be wanting to expose your REST API as part of a wider application.  
 Simply `.use` the service middleware.
 
