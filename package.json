@@ -1,6 +1,6 @@
 {
   "name": "rest-middleware",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Declaratively publish functions for remote invocation.",
   "main": "./server.js",
   "scripts": {
