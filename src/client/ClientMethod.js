@@ -110,7 +110,7 @@ export default class ClientMethod {
         // Send to the server.
         let httpMethod = this.http[verb.toLowerCase()];
         httpMethod(url, payload)
-            .then((result) => { resolve(result); })
+            .then((result) => { resolve(result.data); })
             .catch((err) => {
                 err = parseError(err);
                 reject(err);

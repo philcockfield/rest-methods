@@ -20,7 +20,7 @@ export const registerMethods = (client, methodsManifest = {}) => {
   const { host, http } = client[STATE];
 
   // Store methods.
-  _.keys(methodsManifest).forEach((key) => {
+  Object.keys(methodsManifest).forEach((key) => {
       let options = methodsManifest[key];
       options.host = host;
       let method = new ClientMethod(key, http, options);
@@ -28,7 +28,7 @@ export const registerMethods = (client, methodsManifest = {}) => {
 
       // Create proxy-stubs to the method.
       let stub = util.ns(client.methods, key, { delimiter: "/" });
-      _.keys(method.verbs).forEach(verb => {
+      Object.keys(method.verbs).forEach(verb => {
           stub[verb] = (...args) => { return method.invoke(verb, args); };
       });
   });
@@ -70,7 +70,7 @@ class Client {
     let host = options.host;
     if (!isBrowser && !host) { throw new Error("A [host] name must be given when connecting a server to a remove server (eg. https://domain.com, or localhost:3030) "); }
     if (host) {
-      if (!_.startsWith(host, "http")) { host = `http://${ host }`; }
+      if (!host.startsWith("http")) { host = `http://${ host }`; }
       host = host.replace(/\/*$/, "");
     }
 
@@ -98,7 +98,7 @@ class Client {
     let url = MANIFEST_PATH;
     if (!isBrowser && host) { url = `${ host }${ url }`; }
     http.get(url)
-      .then((result) => { registerMethods(this, result.methods); })
+      .then((result) => { registerMethods(this, result.data.methods); })
       .catch((err) => { throw err; });
   }
 

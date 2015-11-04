@@ -111,7 +111,7 @@ describe("Client:methods (proxy-stubs)", () => {
         if (verb === "put" || verb === "post") { args = 123; }
 
         client.methods.foo[verb](args)
-        .then((result) => {
+        .then(result => {
               expect(fakeXhr.method).to.equal(verb.toUpperCase());
               expect(result).to.eql({ myResponse: true });
               if (verb === "delete") { done(); }
@@ -137,7 +137,7 @@ describe("Client:methods (proxy-stubs)", () => {
     };
 
     client.methods.foo.bar.baz.put(123)
-    .then((result) => {
+    .then(result => {
           expect(fakeXhr.method).to.equal("PUT");
           expect(result).to.eql({ myResponse: true });
           done();
